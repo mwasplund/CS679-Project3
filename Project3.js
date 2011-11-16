@@ -6,13 +6,9 @@ window.addEventListener("load", WindowLoaded, false);
 LoadjsFile("Model/Model.js");
 LoadjsFile("Events.js");
 LoadjsFile("Shader/GLSL_Shader.js");
-LoadjsFile("Model/Level.js");
-LoadjsFile("Model/Layout.js");
-LoadjsFile("Player.js");
 LoadjsFile("glMatrix.js");
 LoadjsFile("Debug.js");
 LoadjsFile("GameState.js");
-LoadjsFile("CollisionDetection.js");
 
 /******************************************************/
 /* Global Variables
@@ -29,22 +25,16 @@ var Models = new Array();
 var Shaders = new Array();
 var mvMatrix;
 var pMatrix;
-var mvMatrixStack = [];
+var mvMatrixStack = [];1
 var lastTime = 0;
 var Time = 0;
 var Light0_Enabled = true;
-var Light1_Enabled = false;
-var Light1_Position = null;
-var MainPlayer;
-var turn = 0;
-var clones = new Array();
-var recordings = new Array();
 var Up = [0,1,0];
-var CurrentShader
+var CurrentShader;
 var GameState;
-var CurrentLevel;
-var CloneModel;
-var SwitchCount;
+var CameraPos = [0,0,-100];
+
+var TestModel;
 
 /******************************************************/
 /* InitializeWebGL
@@ -56,14 +46,31 @@ function InitializeWebGL()
   // Initialize
   Debug.Trace("Initializing WebGL...");
   
-  gl = Canvas.getContext("webgl"); // Completed Webgl
+  try { gl = Canvas.getContext("webgl"); }             // Completed Webgl
+  catch(e){ gl = null; }
+  
   if(!gl)
-    gl = Canvas.getContext("experimental-webgl"); // Development
+  {
+    try { gl = Canvas.getContext("experimental-webg"); }// Development Webgl
+    catch(e){ gl = null; }
+  }
+  
   if(!gl)
-    gl = Canvas.getContext("moz-webgl"); // Firefox
-  if(!gl)got 
-    gl = Canvas.getContext("webkit-3d"); // Safari or Chrome
-    
+  {
+    try { gl = Canvas.getContext("moz-webgl"); }// Firefox
+    catch(e){ gl = null; }
+  }
+  if(!gl)
+  {
+    try { gl = Canvas.getContext("webkit-3d"); }// Safari or Chrome
+    catch(e){ gl = null; }
+  }
+  if(!gl)
+  {
+    alert("ERROR: Could Not Initialize WebGL!");
+    return;
+  }
+  
   // Set the viewport to the same size as the Canvas
   gl.viewportWidth  = Canvas.width;
   gl.viewportHeight = Canvas.height;
@@ -77,7 +84,6 @@ function InitializeWebGL()
   pMatrix = mat4.create();
   
   InitializeShaders();
-  InitializeBuffers();
 }
 
 /******************************************************/
@@ -97,29 +103,17 @@ function WindowLoaded()
     return;
   } 
   
-  try
-  {
-    InitializeCanvas();
-    InitializeWebGL();
-  }
-  catch(e)
-  {
-    Debug.Trace(e);
-  }
-  
+  InitializeCanvas();
+  InitializeWebGL();  
   if(!gl)
-  {
-    alert("ERROR: Could Not Initialize WebGL!");
     return;
-  }
   
-  // Check window size initially
+  // Check window size initially to make sure it fills the desired size
   UpdateWindowSize();
   
   // Instantiate main player
-  MainPlayer = new Player();
-  recordings[0] = new Record();
-
+  //MainPlayer = new Player();
+  
   // Load the models
   InitializeModels();
   
@@ -146,7 +140,7 @@ function WindowLoaded()
 function UpdateWindowSize()
 {
   var WindowSize = GetWindowSize();
-  //Debug.Trace("Window Resized ("+ WindowSize.X +", "+ WindowSize.Y +")");
+
   // Only update the sizes if they are larget than zero
   if(WindowSize.X != 0 && WindowSize.Y != 0)
   {
@@ -208,13 +202,8 @@ function GameLoop()
   
   if(DEBUG)
   {
-    //Context.fillStyle = "#FFFFFF";
-   // var FPS = "FPS = " + Math.round(1000/DeltaMiliSec);
-    //Context.fillText(FPS, 20, 20);
-   // Context.fillText("DESIRED POS.X = " + Math.round(DesiredPosition), 20, 40);
-   // Context.fillText("CURRENT POS.X = " + Math.round(CurrentPosition), 20, 60); 
+
   }
-  
   // Timer = setTimeout("GameLoop()", 1/30 * 1000);
 }
  
@@ -222,53 +211,33 @@ function GameLoop()
 /* InitializeModels
 /*
 /* This function Loads all the models that will be used 
-/* during the time of the game
+/* during the time of the game. We cache all our models
+/* in an array and reuse then throughout the game!
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("Brick_Block"));
-  Models.push(new Model("F1600_1000_Bricks"));
-  Models.push(new Model("F300_300_Bricks"));
-  Models.push(new Model("Human"));
-  Models.push(new Model("Lamp"));
-  Models.push(new Model("Plane"));
-  Models.push(new Model("Pole_Swirly"));
-  Models.push(new Model("SwitchPad"));
-  Models.push(new Model("Sphere"));
-  Models.push(new Model("Sword"));
-  Models.push(new Model("Test"));
-	Models.push(new Model("TestCube"));
-	Models.push(new Model("Title"));
-	Models.push(new Model("Unit_Radius_Sphere"));
-	Models.push(new Model("W50_Bricks"));
-	Models.push(new Model("W100"));
-	Models.push(new Model("W100_Bricks"))
-	Models.push(new Model("W1000_Black"));
-	Models.push(new Model("W1000_Bricks"));
-	Models.push(new Model("W100_Bricks_Exit"));
-	Models.push(new Model("W150"));
-	Models.push(new Model("W150_Bricks"));
-	Models.push(new Model("W70_Bricks"));
-	Models.push(new Model("W200"));
-	Models.push(new Model("W200_Bricks"));
-	Models.push(new Model("W200_Bricks_Exit"));
-	Models.push(new Model("W200_Bricks_Window"));
-	Models.push(new Model("W282_Bricks"));
-	Models.push(new Model("W300"));
-	Models.push(new Model("W300_Bricks"));
-	Models.push(new Model("W400_Bricks"));
-	Models.push(new Model("W50"));
-	Models.push(new Model("W500_Bricks"));
-	Models.push(new Model("W600"));
-	Models.push(new Model("W600_Bricks"));
-	Models.push(new Model("W70"));
-	Models.push(new Model("W700"));
-  Models.push(new Model("W700_Bricks"));
-  Models.push(new Model("W800_Bricks"));
-  Models.push(new Model("W900_Bricks"));
+  Models.push(new Model("Bounce_Ball"));
+  //Models.push(new Model("Brick_Block"));
 
-	TitleModel = GetModel("Title");
-	CloneModel = GetModel("Pole_Swirly");
+	TestModel = GetModel("Bounce_Ball");
+}
+
+/******************************************************/
+/* GetModel
+/*
+/* This function finds one of the pre-loaded models.
+/******************************************************/
+function GetModel(i_ModelName)
+{
+	for(var i = 0; i < Models.length; i++)
+	{
+		if(Models[i].Name == i_ModelName)
+			return Models[i];
+	}
+	
+	// Could not find the Model
+	Debug.Trace("ERROR: Could not find Model - " + i_ModelName);
+	return null;
 }
 
 /******************************************************/
@@ -287,31 +256,25 @@ function AreModelsLoaded()
 			return false;
 		}
 	}
-
+  $("#Collision").val("Done Loading");
 	return true;
 }
 
+/******************************************************/
+/* InitializeLevels
+/*
+/* Load and store the levels, or just the first level.
+/******************************************************/
 function InitializeLevels() 
 {
-	CurrentLevel = new Level(1);
+	//CurrentLevel = new Level(1);
 }
 
-function ResetLevel()
-{
-  // Reset the players position
-  vec3.set(CurrentLevel.PlayerStart_Pos, MainPlayer.pos);
-  MainPlayer.yaw = CurrentLevel.PlayerStart_Rotate;
-  MainPlayer.UpdateLookAt();
-  
-	// Reset the clones positions
- 	for(var x = 0; x < turn; x++)
- 	{
-		vec3.set(CurrentLevel.PlayerStart_Pos, clones[x].pos);
-		clones[x].yaw = CurrentLevel.PlayerStart_Rotate;
-	}
-
-}
-
+/******************************************************/
+/* SelectLevel
+/*
+/* Select a level to play.
+/******************************************************/
 function SelectLevel(i_LevelName)
 {
 	for(var k = 0; k < 2; k++)
@@ -320,15 +283,10 @@ function SelectLevel(i_LevelName)
 		{
 			CurrentLevel = Levels[k];
 			return;
-			Debug.Trace("CurrentLevel "+ CurrentLevel);
-			Debug.Trace("k" + k);
+			Debug.Trace("CurrentLevel: "+ CurrentLevel);
 		}
 	}
-	//Debug.Trace("CurrentLevel "+ CurrentLevel);
-	//Debug.Trace("k" + k);
 }
-//End of levels
-
 
 /******************************************************/
 /* InitializeShaders
@@ -338,12 +296,27 @@ function SelectLevel(i_LevelName)
 /******************************************************/
 function InitializeShaders() 
 {
-    Shaders.push(LoadShader("PerFragmentLighting"));
-    Shaders.push(LoadShader("PerVertexLighting"));
-    Shaders.push(LoadShader("TimeTest"));
-    Shaders.push(LoadShader("InvisoShader"));
-    Shaders.push(LoadShader("whitey"));
-    CurrentShader = Shaders[0];
+  Shaders.push(LoadShader("PerFragmentLighting"));
+  Shaders.push(LoadShader("PerVertexLighting"));
+  Shaders.push(LoadShader("TimeTest"));
+  CurrentShader = Shaders[0];
+}
+
+/******************************************************/
+/* GetShader
+/*
+/* This function finds one of the preloaded shaders.
+/******************************************************/
+function GetShader(i_ShaderName)
+{
+	for(var i = 0; i < Shaders.length; i++)
+	{
+		if(Shaders[i].Name == i_ShaderName)
+			return Shaders[i];
+	}
+	
+	// Could not find the shader
+	return null;
 }
 
 /******************************************************/
@@ -354,13 +327,13 @@ function InitializeShaders()
 /******************************************************/
 function setMatrixUniforms() 
 {
-    gl.uniformMatrix4fv(CurrentShader.Program.pMatrixUniform, false, pMatrix);
-    gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, mvMatrix);
+  gl.uniformMatrix4fv(CurrentShader.Program.pMatrixUniform, false, pMatrix);
+  gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, mvMatrix);
     
-    var normalMatrix = mat3.create();
-    mat4.toInverseMat3(mvMatrix, normalMatrix);
-    mat3.transpose(normalMatrix);
-    gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
+  var normalMatrix = mat3.create();
+  mat4.toInverseMat3(mvMatrix, normalMatrix);
+  mat3.transpose(normalMatrix);
+  gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
 }
 
 /******************************************************/
@@ -370,9 +343,9 @@ function setMatrixUniforms()
 /******************************************************/
 function mvPushMatrix() 
 {
-    var copy = mat4.create();
-    mat4.set(mvMatrix, copy);
-    mvMatrixStack.push(copy);
+  var copy = mat4.create();
+  mat4.set(mvMatrix, copy);
+  mvMatrixStack.push(copy);
 }
 
 /******************************************************/
@@ -382,9 +355,10 @@ function mvPushMatrix()
 /******************************************************/
 function mvPopMatrix() 
 {
-    if (mvMatrixStack.length == 0) 
-        throw "Invalid popMatrix!";
-    mvMatrix = mvMatrixStack.pop();
+  if (mvMatrixStack.length == 0) 
+    throw "Invalid popMatrix!";
+    
+  mvMatrix = mvMatrixStack.pop();
 }
     
 /******************************************************/
@@ -392,106 +366,24 @@ function mvPopMatrix()
 /*
 /* Update movement of Player/Clones
 /******************************************************/
-function Update() 
+function Update(i_DeltaMiliSec) 
 {
-    var timeNow = new Date().getTime();
-    if (lastTime != 0) 
-    {
-        var elapsed = timeNow - lastTime;
-        Time += elapsed / 1000.0;
-		if(GameState == GAME_STATE.PLAYING)
-		{
-		  CurrentLevel.ClearSwitches();
-		  // Check if this player had touched a switch
-      CurrentLevel.CheckSwitches(MainPlayer.boundingSphere);
-		  for(var x = 0; x < turn; x++)
-		    CurrentLevel.CheckSwitches(clones[x].boundingSphere);
-		  
-      recordings[turn].addSlice(MainPlayer);
-      // Record Twice when fast forwarding so it matches up with the other recordins
-      //if(KEY_SPACE_Pressed)
-      //  recordings[turn].addSlice(MainPlayer);
-      
-			//Update Clones
-			for(var x = 0; x < turn; x++)
-			{
-		    clones[x].updateStateWith(recordings[x].playNextSlice());
-		    clones[x].Update();
-		    
-		    // Space should cause double time
-		   // if(KEY_SPACE_Pressed)
-		   // {
-		   ////   clones[x].updateStateWith(recordings[x].playNextSlice());
-		    //  clones[x].Update();
-		    //}
-		  }
-		
-			MainPlayer.Update();
-			
-			// Check if the player has hit the exit
-			if(checkSpherePlaneCollision(MainPlayer.boundingSphere, CurrentLevel.ExitPlane) != null)
-				SetGameState_Beat_Level();	
-				
-				
-		  // Update the lights to turn on when the switch is pressed
-		  Light1_Enabled = false;
-		  SwitchCount = 0;
-		  for(var i = 0; i < CurrentLevel.Switches.length; i++)
-		  {
-		    if(CurrentLevel.Switches[i].pressed)
-		      SwitchCount++;
-		  }
-		}
-		else if(GameState == GAME_STATE.LOADING)
-		{
-			// Stay in loading stat untill all the models are loaded
-			if(AreModelsLoaded())
-				  SetGameState_Start();
-		}
-    }
-    lastTime = timeNow;
+  if(GameState == GAME_STATE.PLAYING)
+  {		    
+    //MainPlayer.Update();
+  }
+  else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
+  {
+  	// Stay in loading stat until all the models are loaded
+    SetGameState_Playing();
+    //SetGameState_Start();
+  }
 }
-
-function DrawClones(){
-	for(var x = 0; x < turn; x++){
-		mvPushMatrix();	
-		clones[x].pos[1]-=50;
-		mat4.translate(mvMatrix, clones[x].pos);
-		clones[x].pos[1]+=50;
-		mat4.rotate(mvMatrix, degToRad(clones[x].yaw)*-1, [0,1,0]);
-		CloneModel.Draw();	
-		mvPopMatrix();
-	}
-}
-function EndTurn(){
-	if(turn > CurrentLevel.numAlottedClones-1)
-	{
-		clones.splice(0,1);
-		recordings.splice(0,1);
-		turn--;
-	}
-	clones[turn] = new Player();
-	turn++;
-	ResetRecordings();
-	recordings[turn] = new Record();
-  ResetLevel();
-}
-function RestartTurn(){
-	ResetRecordings();
-	recordings[turn] = new Record();
-	ResetLevel();
-}
-function ResetRecordings(){
-	for(var x = 0; x < turn; x++){
-		recordings[x].resetP();
-	}
-}
-
 
 /******************************************************/
 /* Draw
 /*
-/* Draw the world
+/* Draw the world.
 /******************************************************/
 function Draw() 
 {
@@ -505,47 +397,25 @@ function Draw()
   if (Light0_Enabled) 
   {
     gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [5, 50, -5]);
-    gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0 - SwitchCount * 0.1, 1.0 - SwitchCount * 0.1]);
+    gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
   }
-	
-	//gl.uniform1i(CurrentShader.Program.Light1_Enabled_Uniform, Light1_Enabled);
-	if(Light1_Enabled)
-	{
-	  //gl.uniform3fv(CurrentShader.Program.Light1_Position_Uniform, Light1_Position);
-    //gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 0.9, 0.9]);
-	}
-	
+		
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	
-	//mat4.identity(mvMatrix);
-	
 	// Setup the camera
-	$("#CameraPos_X").val(MainPlayer.pos[0]);
-	$("#CameraPos_Y").val(MainPlayer.pos[1]);
-	$("#CameraPos_Z").val(MainPlayer.pos[2]);
-	$("#CameraPos_Yaw").val(MainPlayer.yaw);
-	$("#CameraPos_Pitch").val(MainPlayer.pitch);
+	$("#CameraPos_X").val(CameraPos[0]);
+	$("#CameraPos_Y").val(CameraPos[1]);
+	$("#CameraPos_Z").val(CameraPos[2]);
 	
-	
-	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, MainPlayer.pos);
-	//mat4.translate(mvMatrix, [-Camera_Position[0], -Camera_Position[1], -Camera_Position[2]]);
-	mat4.lookAt(MainPlayer.pos, MainPlayer.lookat, Up, mvMatrix);	
+	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
+	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);	
 
-	
 	if(GameState == GAME_STATE.START)
 	{
-		mvPushMatrix();
-		mat4.translate(mvMatrix, [0,-10,100]);
-		mat4.rotate(mvMatrix, degToRad(200), [0, 1, 0]);
-		var TimeTest = GetShader("TimeTest");
-		TitleModel.Draw(CurrentShader.Program);
-		mvPopMatrix();
+    
 	}
 	else if(GameState == GAME_STATE.PLAYING || GameState == GAME_STATE.PAUSED || GameState == GAME_STATE.BEAT_LEVEL)
 	{
-		
-		DrawClones(CurrentShader.Program);
-		CurrentLevel.Draw(CurrentShader.Program);
+    TestModel.Draw();
 	}
-
 }

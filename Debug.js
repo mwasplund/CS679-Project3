@@ -16,19 +16,6 @@ function SelectShader(i_ShaderName)
 
 }
 
-function GetShader(i_ShaderName)
-{
-	for(var i = 0; i < Shaders.length; i++)
-	{
-		if(Shaders[i].Name == i_ShaderName)
-			return Shaders[i];
-	}
-	
-	// Could not find the shader
-	return null;
-}
-
-
 /******************************************************/
 /* SelectModel
 /*
@@ -44,19 +31,6 @@ function SelectModel(i_ModelName)
 	var Model = GetModel(i_ModelName);
 	if(Model != null)
 		TestModel = Model;
-}
-
-function GetModel(i_ModelName)
-{
-	for(var i = 0; i < Models.length; i++)
-	{
-		if(Models[i].Name == i_ModelName)
-			return Models[i];
-	}
-	
-	// Could not find the Model
-	Debug.Trace("ERROR: Could not find Model - " + i_ModelName);
-	return null;
 }
 
 /******************************************************/

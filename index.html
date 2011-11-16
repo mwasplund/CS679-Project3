@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>CS679 | Project 2</title>
+  <title>CS679 | Project 3</title>
   <meta name="description" content="Home Page" />
   <meta name="keywords" content="asplund,mwasplund,wisconsin,wausau,madison,matthew,home,philisawesome" />
-  <link href="Project2.css" rel="stylesheet" type="text/css">
+  <link href="Project3.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="Helper.js"></script>
-  <script type="text/javascript" src="Project2.js"></script>
+  <script type="text/javascript" src="Project3.js"></script>
   <script type="text/javascript" src="jquery.js"></script>
 </head>
 <body>
@@ -18,31 +18,30 @@
    
    <div id="Menu_Start">
 		 <h1>Welcome!</h1>
-         <pre>
+       <pre>
 You find yourself trapped in a room with no way out,
 however you discover a special device that allows you to work
 concurrently with a previous version of yourself and discover
 ways to escape your prison that would be impossible alone...
-         </pre>
-		 <pre>
+       </pre>
+		   <pre>
 Controls:
 ASWD - Control Movement
 Left Arrow  - Rotate Left
 Right Arrow - Rotate Right
 R - Record the previous Play
 T - Try again
-		 </pre>
+		   </pre>
 		 [Press SPACE to <input type="Button" onclick="SetGameState_Playing()" value="Start"/>]
-   </div>
-   
-   <div id="Menu_Paused">
-     <div class="Center">
-	 Game Paused!
-	 <br/>
-	 [Press P to <input type="Button" onclick="SetGameState_Playing()" value="Resume"/>]
-	 </div>
-   </div>
-   
+     </div>
+     <div id="Menu_Paused">
+       <div class="Center">
+	       Game Paused!
+	       <br/>
+	       [Press P to <input type="Button" onclick="SetGameState_Playing()" value="Resume"/>]
+	     </div>
+     </div>
+
    <div id="Menu_Beat_Level">
      <div class="Center">
 	 <h1>You Beat the Level!</h1>
@@ -53,8 +52,7 @@ T - Try again
    </div>
    
    <div id="Menu_Debug">
-     Collision: <input type="input" id="Collision" disabled="disabled" value=""/><br/>
-   
+     Collision: <input type="input" id="Collision" disabled="disabled" value=""/><br/> 
      Select Shader
    	<select id="SelectShader" onchange="SelectShader(this.options[this.selectedIndex].value)">
    		<option value="PerFragmentLighting">Per Fragment Lighting</option>
@@ -81,9 +79,6 @@ T - Try again
     X<input type="text" class="Color" id="CameraPos_X" disabled="disabled" onchange="SetCameraPosition_X(parseFloat(this.value))" value="0.0"/>
    	Y<input type="text" class="Color" id="CameraPos_Y" disabled="disabled" onchange="SetCameraPosition_Y(parseFloat(this.value))" value="0.0"/>
    	Z<input type="text" class="Color" id="CameraPos_Z" disabled="disabled" onchange="SetCameraPosition_Z(parseFloat(this.value))" value="0.0"/>
-    <br/>
-    yaw: <input type="text" class="Color" id="CameraPos_Yaw" disabled="disabled" />
-    pitch: <input type="text" class="Color" id="CameraPos_Pitch" disabled="disabled" />
   </div>
 </body>
 </html>

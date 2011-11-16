@@ -92,55 +92,43 @@
     e = e ? e : ((window.event) ? event : null);
     if(e) 
     {
-      var Unicode = e.charCode? e.charCode : e.keyCode;
-      //Debug.Trace("Key = " + Unicode);
-      
+      var Unicode = e.charCode? e.charCode : e.keyCode;  
       switch(Unicode) 
       {	  
           case KEY_SPACEBAR:
-              KEY_SPACE_Pressed = true;
+              //KEY_SPACE_Pressed = true;
               break;
 		      case KEY_A :
-              MainPlayer.mLeft = true;              
+              //MainPlayer.mLeft = true;              
               break;    
           case KEY_W :
-              MainPlayer.mForward = true;              
+              //MainPlayer.mForward = true;              
               break;    
           case KEY_D :
-              MainPlayer.mRight = true;
+              //MainPlayer.mRight = true;
               break;    
           case KEY_S :
-              MainPlayer.mBackward = true;
+              //MainPlayer.mBackward = true;
               break;    
           case KEY_T :
-              if(GameState == GAME_STATE.PLAYING)
-                RestartTurn();
               break;    
           case KEY_R :
-              if(GameState == GAME_STATE.PLAYING)
-                EndTurn();
               break;    
           case KEY_LEFT_ARROW :
-              MainPlayer.rLeft = true;              
+              //MainPlayer.rLeft = true;              
               break;    
           case KEY_UP_ARROW :
-              MainPlayer.rUp = true;              
+              //MainPlayer.rUp = true;              
               break;    
           case KEY_RIGHT_ARROW :
-              MainPlayer.rRight = true;
+              //MainPlayer.rRight = true;
               break;    
           case KEY_DOWN_ARROW :
-              MainPlayer.rDown = true;
+              //MainPlayer.rDown = true;
               break; 
-			  
-		 case KEY_PAGE_UP :
-              MainPlayer.pos[1] += 2;
-			  MainPlayer.lookat[1] += 2;
+          case KEY_PAGE_UP :
               break;
-			  
-		 case KEY_PAGE_DOWN :
-              MainPlayer.pos[1] += -2;
-			  MainPlayer.lookat[1] -= 2;
+          case KEY_PAGE_DOWN :
               break;
        }
     }
@@ -158,36 +146,34 @@
     if(e) 
     {
       var Unicode = e.charCode? e.charCode : e.keyCode;
-      //Debug.Trace("Key = " + Unicode);
-      
       switch(Unicode ) 
       {
         case KEY_SPACEBAR:
               KEY_SPACE_Pressed = false;
               break;
         case KEY_A :
-              MainPlayer.mLeft = false;              
+              //MainPlayer.mLeft = false;              
               break;    
           case KEY_W :
-              MainPlayer.mForward = false;              
+              //MainPlayer.mForward = false;              
               break;    
           case KEY_D :
-              MainPlayer.mRight = false;
+              //MainPlayer.mRight = false;
               break;    
           case KEY_S :
-              MainPlayer.mBackward = false;
+              //MainPlayer.mBackward = false;
               break;    
           case KEY_LEFT_ARROW :
-              MainPlayer.rLeft = false;              
+              //MainPlayer.rLeft = false;              
               break;    
           case KEY_UP_ARROW :
-              MainPlayer.rUp = false;              
+              //MainPlayer.rUp = false;              
               break;    
           case KEY_RIGHT_ARROW :
-              MainPlayer.rRight = false;
+              //MainPlayer.rRight = false;
               break;    
           case KEY_DOWN_ARROW :
-              MainPlayer.rDown = false;
+              //MainPlayer.rDown = false;
               break;    
        }
     }
@@ -198,7 +184,7 @@
   //
   // Listen for Keyboard events
   ///////////////////////////////////////////////////////////////////
-  var step = 0.1;
+  var step = 1;
   function KeyPress(e)
   {
     e = e ? e : ((window.event) ? event : null);
@@ -210,42 +196,42 @@
       switch(Unicode) 
       {
         case KEY_1 :
-              SetDebugState(!DEBUG);             
-              break;    
-		case KEY_p :
-		case KEY_p :
-			if(GameState == GAME_STATE.PLAYING)
-				SetGameState_Paused();
-			else if(GameState == GAME_STATE.PAUSED)
-				SetGameState_Playing();
-		  break;
-		  
-		case KEY_SPACEBAR :
-			if(GameState == GAME_STATE.BEAT_LEVEL || 
-				GameState == GAME_STATE.START)
-			{
-				SetGameState_Playing();
-			}
-			break;
-		  case KEY_2:
-			SpherePos[2] -= step;
-		  break;
-		 case KEY_4:
-			SpherePos[0] -= step;
-		  break;
-		  case KEY_6:
-			SpherePos[0] += step;
-		  break;
-		  case KEY_8:
-			SpherePos[2] += step;
-		  break;
-		  case KEY_7:
-			SpherePos[1] -= step;
-		  break;
-		  case KEY_9:
-			SpherePos[1] += step;
-		  break;
-       }
+          SetDebugState(!DEBUG);             
+          break;    
+        case KEY_p :
+        case KEY_p :
+          if(GameState == GAME_STATE.PLAYING)
+            SetGameState_Paused();
+          else if(GameState == GAME_STATE.PAUSED)
+            SetGameState_Playing();
+          break;
+        case KEY_SPACEBAR :
+          if(GameState == GAME_STATE.BEAT_LEVEL || 
+             GameState == GAME_STATE.START)
+          {
+            SetGameState_Playing();
+          }
+          break;
+        case KEY_2:
+          CameraPos[2] -= step;
+          break;
+        case KEY_4:
+          CameraPos[0] -= step;
+          break;
+        case KEY_6:
+          CameraPos[0] += step;
+          break;
+        case KEY_8:
+          CameraPos[2] += step;
+          break;
+        case KEY_7:
+          CameraPos[1] -= step;
+          break;
+        case KEY_9:
+          CameraPos[1] += step;
+          break;
+          
+      }
     }
   }
 

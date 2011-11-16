@@ -1,7 +1,10 @@
 /******************************************************/
 /* enum GameState
 /*
-/* an enumeration of all the game states
+/* an enumeration of all the game states. When changing
+/* from one game state to another please call the 
+/* functions below to make sure that the html menus
+/* get updated accordingly!
 /******************************************************/
 var GAME_STATE = 
 {
@@ -12,6 +15,13 @@ var GAME_STATE =
   PAUSED  : 4
 }; 
 
+/******************************************************/
+/* SetGameState_Beat_Level
+/*
+/* Transfer from any state to Beat Level. This should 
+/* only be called from state "Playing", but we just make
+/* sure all manus are up to date.
+/******************************************************/
 function SetGameState_Beat_Level()
 {
   // Hide any menues that were in use
@@ -40,11 +50,6 @@ function GoToLevel(i_LevelNumber)
 {
 	CurrentLevel = new Level(i_LevelNumber);
 	$("#SelectLevel").val(i_LevelNumber);
-	recordings = new Array();
-	turn = 0;
-	 clones = new Array();
-	recordings[0] = new Record();
-	ResetLevel();
 }
 
 function SetGameState_Playing()
@@ -54,7 +59,6 @@ function SetGameState_Playing()
   if(GameState == GAME_STATE.START)
   {
 	  $("#Menu_Start").hide("slow");
-	  ResetLevel();
   }
   else if(GameState == GAME_STATE.PAUSED)
   {
