@@ -9,6 +9,7 @@ LoadjsFile("Model/FBX/FBX_Connections.js");
 LoadjsFile("Model/FBX/FBX_LayerElementUV.js");
 LoadjsFile("Model/FBX/FBX_LayerElementNormal.js");
 LoadjsFile("Model/FBX/FBX_AnimationCurve.js");
+LoadjsFile("Model/FBX/FBX_AnimationCurveNode.js");
 
 function FBX_Parser(i_File)
 {
@@ -20,6 +21,8 @@ function FBX_Parser(i_File)
 	this.GetMaterial = FBX_GetMaterial;
 	this.GetTexture  = FBX_GetTexture;
 	this.GetGeometry = FBX_GetGeometry;
+	this.GetAnimationCurveNode = FBX_GetAnimationCurveNode;
+  this.GetAnimationCurve = FBX_GetAnimationCurve;
   
   // If the first token starts with a semi-colon it is a comment
   while(File.HasNext)
@@ -90,6 +93,15 @@ function FBX_Parser(i_File)
 							//Debug.Trace("Match Model (" + Model.Name  + ") to Material (" + Material.Name + ")");
 							Model.Material = Material;
 						}
+						else 
+						{
+							var AnimationCurveNode = this.GetAnimationCurveNode(Connection.Destination);
+							if(	AnimationCurveNode != null)
+							{
+								Model.Animations.push(AnimationCurveNode);
+								Debug.Trace("Found Animation Node Connection to Model");	
+							}
+						}
 					}
 				}
 				else
@@ -104,13 +116,28 @@ function FBX_Parser(i_File)
 						{
 							if(Connection.Property == "DiffuseColor")
 							{
-  							//Debug.Trace("Match Material (" + Material.Name  + ") to Texture (" + Texture.Name + ")");
-  							Material.Texture = Texture;
-  						}
-  						else
-  						{
-  							Debug.Trace("FBX ERROR: We do not know how to apply textures to " + Connection.Property);
-  						}
+								//Debug.Trace("Match Material (" + Material.Name  + ") to Texture (" + Texture.Name + ")");
+								Material.Texture = Texture;
+							}
+							else
+							{
+								Debug.Trace("FBX ERROR: We do not know how to apply textures to " + Connection.Property);
+							}
+						}
+					}
+					else 
+					{
+						var AnimationCurveNode = this.GetAnimationCurveNode(Connection.Origin);
+						if(AnimationCurveNode != null)
+						{
+							// The source is an Animation Curve node, find the animation curves that connect to it
+							var AnimationCurve = this.GetAnimationCurve(Connection.Destination);
+							if(AnimationCurve != null)
+							{
+								Debug.Trace("Found Animation Connection to a node");
+								AnimationCurve.Property = Connection.Property;
+								AnimationCurveNode.AnimationCurveList.push(AnimationCurve);
+							}
 						}
 					}
 				}
@@ -162,6 +189,28 @@ function FBX_GetGeometry(i_Number)
 	return null;
 }
 
+
+function FBX_GetAnimationCurveNode(i_Number)
+{
+	for(var i = 0; i < this.Objects.AnimationCurveNodeList.length; i++)
+	{
+		var AnimationCurveNode = this.Objects.AnimationCurveNodeList[i];
+		if(AnimationCurveNode.Number == i_Number)
+			return AnimationCurveNode;
+	}
+	return null;
+}
+
+function FBX_GetAnimationCurve(i_Number)
+{
+	for(var i = 0; i < this.Objects.AnimationCurveList.length; i++)
+	{
+		var AnimationCurve = this.Objects.AnimationCurveList[i];
+		if(AnimationCurve.Number == i_Number)
+			return AnimationCurve;
+	}
+	return null;
+}
 
 function FBX_Parser_ParseLine(i_Line)
 {

@@ -82,56 +82,62 @@ function FBX_Parser_ParseAnimationCurve(i_FileContainer)
     }
     else if(CurrentLine[0] == "KeyTime:")
     {
-    	NewAnimationCurve.KeyTime = FBX_Parser_ParseArrayInts(i_FileContainer);
-      if(isNaN(NewAnimationCurve.KeyVer))
+		i_FileContainer.StepBack();
+      NewAnimationCurve.KeyTime = FBX_Parser_ParseArrayInts(i_FileContainer);
+      if(NewAnimationCurve.KeyTime == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyVer was NaN");
+      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyTime was null");
       	return null;
       }
     }
     else if(CurrentLine[0] == "KeyValueFloat:")
     {
+		i_FileContainer.StepBack();
     	NewAnimationCurve.KeyValueFloat = FBX_Parser_ParseArrayFloats(i_FileContainer);
-      if(isNaN(NewAnimationCurve.KeyVer))
+      if(NewAnimationCurve.KeyValueFloat == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was NaN");
+      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was null");
       	return null;
       }
     }
     else if(CurrentLine[0] == "KeyAttrFlags:")
     {
+		i_FileContainer.StepBack();
     	NewAnimationCurve.KeyAttrFlags = FBX_Parser_ParseArrayInts(i_FileContainer);
-      if(isNaN(NewAnimationCurve.KeyAttrFlags))
+      if(NewAnimationCurve.KeyAttrFlags == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was NaN");
+      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyAttrFlags was null");
       	return null;
       }
     }
     else if(CurrentLine[0] == "KeyAttrDataFloat:")
     {
+		i_FileContainer.StepBack();
     	NewAnimationCurve.KeyAttrDataFloat = FBX_Parser_ParseArrayFloats(i_FileContainer);
-      if(isNaN(NewAnimationCurve.KeyAttrDataFloat))
+      if(NewAnimationCurve.KeyAttrDataFloat == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was NaN");
+      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyAttrDataFloat was null");
       	return null;
       }
     }
     else if(CurrentLine[0] == "KeyAttrRefCount:")
     {
+		i_FileContainer.StepBack();
     	NewAnimationCurve.KeyAttrRefCount = FBX_Parser_ParseArrayInts(i_FileContainer);
-      if(isNaN(NewAnimationCurve.KeyAttrRefCount))
+      if(NewAnimationCurve.KeyAttrRefCount == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was NaN");
+      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyAttrRefCount was null");
       	return null;
       }
     }
     else if(CurrentLine[0] == "Post-Extrapolation:")
     {
+		i_FileContainer.StepBack();
     	NewAnimationCurve.PostExtrapolation = FBX_Parser_ParsePostExtrapolation(i_FileContainer);
-      if(isNaN(NewAnimationCurve.PostExtrapolation))
+      if(NewAnimationCurve.PostExtrapolation == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's KeyValueFloat was NaN");
-      	return null;
+      	Debug.Trace("FBX ERROR: The AnimationCurve's PostExtrapolation was null");
+      	// MWA - this isnt working yet return null;
       }
     }
     else
@@ -148,15 +154,97 @@ function FBX_Parser_ParseAnimationCurve(i_FileContainer)
 
 function FBX_Parser_ParseArrayInts(i_FileContainer)
 {
-  while(i_FileContainer.HasNext)
+  var Count = -1;
+  if(i_FileContainer.HasNext)
   {
-    var CurrentLine = i_FileContainer.GetNextLine();
-    if(CurrentLine[0] == "}")
+    var FirstLine = i_FileContainer.GetNextLine();
+    if(FirstLine.length != 3 || FirstLine[2] != "{")
     {
-      // We found the end of the Animation Curve
+      Debug.Trace("FBX ERROR: ArrayInts not formatted correctly");
+      return null;
+    }
+	
+	Count = parseInt(FirstLine[1].substring(1));
+    if(isNaN(Count))
+    {
+      Debug.Trace("FBX ERROR: The ArrayInts: count was NaN");
       return null;
     }
   }
+  
+  var NewArray = new Array(Count);
+  var Index = 0;
+  if(i_FileContainer.HasNext)
+  {
+    var SecondLine = i_FileContainer.GetNextLine();
+    if(SecondLine[0] != "a:")
+    {
+      Debug.Trace("FBX ERROR: ArrayInts a: not formatted correctly");
+      return null;
+    }
+    
+    for(var i = 1; i < SecondLine.length; i++)
+    {
+      var Next = parseInt(SecondLine[i],10);
+      if(isNaN(Next))
+      {
+        Debug.Trace("FBX ERROR: A Integer was NaN");
+        return null;
+      }
+	  
+	  if(Index < NewArray.length)
+	  {
+         NewArray[Index++] = Next;
+	  }
+	  else 
+	  {
+			Debug.Trace("FBX ERROR: There were more Integres in the array than we expected.");  
+			return null;
+	  }
+    }
+  }
+  
+  // Parse lines until we reach and end bracket
+  while(i_FileContainer.HasNext)
+  {
+  	var CurrentLine = i_FileContainer.GetNextLine();
+    if(CurrentLine[0] == "}")
+    {
+    	if(NewArray.length != Index)
+    	{
+    		Debug.Trace("FBX ERROR: Expected " + NewArray.length + " Integers but found " + Index);
+    		return null;
+    	}
+    	else
+    	{
+      	 // The Array was correctly formatted
+ 				return NewArray;
+ 		}
+    }
+  
+    for(var i = 0; i < CurrentLine.length; i++)
+    {
+      var Next = parseInt(CurrentLine[i], 10);
+      if(isNaN(Next))
+      {
+        Debug.Trace("FBX ERROR: A Integer was NaN");
+        return null;
+      }
+	  
+	  if(Index < NewArray.length)
+	  {
+         NewArray[Index++] = Next;
+	  }
+	  else 
+	  {
+			Debug.Trace("FBX ERROR: There were more Integres in the array than we expected.");  
+			return null;
+	  }
+    }
+  }
+  
+   Debug.Trace("FBX ERROR: Never saw the end bracket for IntegerArray");
+   return null;
 }
 
 function FBX_Parser_ParsePostExtrapolation(i_FileContainer)
@@ -175,13 +263,96 @@ function FBX_Parser_ParsePostExtrapolation(i_FileContainer)
 
 function FBX_Parser_ParseArrayFloats(i_FileContainer)
 {
-  while(i_FileContainer.HasNext)
+	
+  var Count = -1;
+  if(i_FileContainer.HasNext)
   {
-    var CurrentLine = i_FileContainer.GetNextLine();
-    if(CurrentLine[0] == "}")
+    var FirstLine = i_FileContainer.GetNextLine();
+    if(FirstLine.length != 3 || FirstLine[2] != "{")
     {
-      // We found the end of the Animation Curve
+      Debug.Trace("FBX ERROR: ArrayFloats not formatted correctly");
+      return null;
+    }
+	
+	Count = parseInt(FirstLine[1].substring(1));
+    if(isNaN(Count))
+    {
+      Debug.Trace("FBX ERROR: The ArrayFloats: count was NaN");
       return null;
     }
   }
+
+  var NewArray = new Array(Count);
+  var Index = 0;
+  if(i_FileContainer.HasNext)
+  {
+    var SecondLine = i_FileContainer.GetNextLine();
+    if(SecondLine[0] != "a:")
+    {
+      Debug.Trace("FBX ERROR: ArrayFloats a: not formatted correctly");
+      return null;
+    }
+    
+    for(var i = 1; i < SecondLine.length; i++)
+    {
+      var Next = parseFloat(SecondLine[i]);
+      if(isNaN(Next))
+      {
+        Debug.Trace("FBX ERROR: A Float was NaN");
+        return null;
+      }
+	  
+	  if(Index < NewArray.length)
+	  {
+         NewArray[Index++] = Next;
+	  }
+	  else 
+	  {
+			Debug.Trace("FBX ERROR: There were more Floats in the array than we expected.");  
+			return null;
+	  }
+    }
+  }
+  
+  // Parse lines until we reach and end bracket
+  while(i_FileContainer.HasNext)
+  {
+  	var CurrentLine = i_FileContainer.GetNextLine();
+    if(CurrentLine[0] == "}")
+    {
+    	if(NewArray.length != Index)
+    	{
+    		Debug.Trace("FBX ERROR: Expected " + Count + " Floats but found " + Index);
+    		return null;
+    	}
+    	else
+    	{
+      	 // The Array was correctly formatted
+ 				return NewArray;
+ 		}
+    }
+  
+    for(var i = 0; i < CurrentLine.length; i++)
+    {
+      var Next = parseFloat(CurrentLine[i]);
+      if(isNaN(Next))
+      {
+        Debug.Trace("FBX ERROR: A Float was NaN");
+        return null;
+      }
+	  
+	  if(Index < NewArray.length)
+	  {
+         NewArray[Index++] = Next;
+	  }
+	  else 
+	  {
+			Debug.Trace("FBX ERROR: There were more Floats in the array than we expected.");  
+			return null;
+	  }
+    }
+  }
+  
+   Debug.Trace("FBX ERROR: Never saw the end bracket for ArrayFloats");
+   return null;
 }

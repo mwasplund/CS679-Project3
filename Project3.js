@@ -32,7 +32,7 @@ var Light0_Enabled = true;
 var Up = [0,1,0];
 var CurrentShader;
 var GameState;
-var CameraPos = [0,0,-100];
+var CameraPos = [-33,16,-36];
 
 var TestModel;
 
@@ -217,9 +217,10 @@ function GameLoop()
 function InitializeModels() 
 {
   Models.push(new Model("Bounce_Ball"));
+  Models.push(new Model("Fancy_Bounce_Ball"));
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("Bounce_Ball");
+	TestModel = GetModel("Fancy_Bounce_Ball");
 }
 
 /******************************************************/
@@ -368,6 +369,8 @@ function mvPopMatrix()
 /******************************************************/
 function Update(i_DeltaMiliSec) 
 {
+	TestModel.Update(i_DeltaMiliSec);
+	
   if(GameState == GAME_STATE.PLAYING)
   {		    
     //MainPlayer.Update();

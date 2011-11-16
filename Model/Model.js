@@ -6,6 +6,16 @@ function Model(i_FileName)
   // Functions
   this.ParseFile = Model_ParseFile;
   this.Draw = Model_Draw;
+  this.Update = function(i_DeltaMilisec)
+  {
+	  if(this.Ready)
+	  {
+		for(var i = 0; i < this.Meshes.length; i++)
+		{
+		  this.Meshes[i].Update(i_DeltaMilisec);
+		}
+	  }
+  }
   
   // Variables
   this.Name = i_FileName;

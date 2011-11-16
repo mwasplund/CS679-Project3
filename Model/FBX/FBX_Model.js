@@ -3,7 +3,7 @@
   this.Name   = null;
   this.Number = 0;
   this.More   = null;
-  
+  this.Animations = new Array();
   this.Value = null;
 }
 

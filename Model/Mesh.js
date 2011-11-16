@@ -1,9 +1,119 @@
-﻿function Mesh(i_Model)
+﻿function Interpolate(i_StartValue, i_EndValue, i_Percent)
+{
+	if(i_Percent > 1)
+		i_Percent = 1;
+	else if(i_Percent < 0)
+		i_Percent = 0;
+		
+	return (i_StartValue * (1 - i_Percent) + i_EndValue * i_Percent);	
+}
+
+
+function Mesh_Update(i_DeltaMilisec)
+{
+	this.DeltaMilisec += i_DeltaMilisec;
+	
+	  var RDM_NUM = 1539538600;
+  var FPS = 24;
+  var TimeToFrames = RDM_NUM / ((1/FPS) * 1000);
+  var Time = this.DeltaMilisec * TimeToFrames;
+  for(var i = 0; i < this.Animations.length; i++)
+  {
+	var AnimationNode = this.Animations[i];
+	if(AnimationNode.Name == "AnimCurveNode::T")
+	{
+		for(var k = 0; k < AnimationNode.AnimationCurveList.length; k++)
+		{
+			var AnimCurve = AnimationNode.AnimationCurveList[k];
+			// Find where we are in the animation
+			
+			var TimeFrame = 0;
+			while(TimeFrame < AnimCurve.KeyTime.length && AnimCurve.KeyTime[TimeFrame] < Time)
+			  TimeFrame++;
+			
+			if(TimeFrame > 0 && TimeFrame < AnimCurve.KeyTime.length)
+			{
+				var StartValue = AnimCurve.KeyValueFloat[TimeFrame-1];
+				var EndValue   = AnimCurve.KeyValueFloat[TimeFrame];
+				
+				var StartTime = AnimCurve.KeyTime[TimeFrame-1];
+				var EndTime   = AnimCurve.KeyTime[TimeFrame];
+				var TimeLength = EndTime - StartTime;
+				var Percent =  (Time - StartTime) / TimeLength; 
+				var Value = Interpolate(StartValue, EndValue, Percent);
+			
+				if(AnimCurve.Property == "d|X")
+				{
+					this.Translate[0] = Value;
+				}
+				else if(AnimCurve.Property == "d|Y")
+				{
+					this.Translate[1] = Value;
+				}
+				else if(AnimCurve.Property == "d|Z")
+				{
+					this.Translate[2] = Value;
+				}
+			}
+			else if(TimeFrame == AnimCurve.KeyTime.length)
+				this.DeltaMilisec = 0;
+		}
+	}
+	else if(AnimationNode.Name == "AnimCurveNode::S")
+	{
+		for(var k = 0; k < AnimationNode.AnimationCurveList.length; k++)
+		{
+			var AnimCurve = AnimationNode.AnimationCurveList[k];
+			// Find where we are in the animation
+			
+			var TimeFrame = 0;
+			while(TimeFrame < AnimCurve.KeyTime.length && AnimCurve.KeyTime[TimeFrame] < Time)
+			  TimeFrame++;
+			
+			if(TimeFrame > 0 && TimeFrame < AnimCurve.KeyTime.length)
+			{
+				var StartValue = AnimCurve.KeyValueFloat[TimeFrame-1];
+				var EndValue   = AnimCurve.KeyValueFloat[TimeFrame];
+				
+				var StartTime = AnimCurve.KeyTime[TimeFrame-1];
+				var EndTime   = AnimCurve.KeyTime[TimeFrame];
+				var TimeLength = EndTime - StartTime;
+				var Percent =  (Time - StartTime) / TimeLength; 
+				var Value = Interpolate(StartValue, EndValue, Percent);
+			
+				if(AnimCurve.Property == "d|X")
+				{
+					this.Scale[0] = Value;
+				}
+				else if(AnimCurve.Property == "d|Y")
+				{
+					this.Scale[1] = Value;
+				}
+				else if(AnimCurve.Property == "d|Z")
+				{
+					this.Scale[2] = Value;
+				}
+			}
+			else if(TimeFrame == AnimCurve.KeyTime.length)
+				this.DeltaMilisec = 0;
+		}
+	}
+  }
+}
+
+function Mesh(i_Model)
 { 
   // Attach Functions
   this.Draw = Mesh_Draw;
-  
+  this.Update = Mesh_Update;
   Debug.Trace("Initialize Mesh");  
+  
+  // Copy over the animations
+  this.Animations = i_Model.Animations;
+  this.DeltaMilisec = 83;
+  
+  
+
   
   // Bind the GL Arrays
   // Vertices
