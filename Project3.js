@@ -413,6 +413,13 @@ function Draw()
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);	
 
+  /*gl.sampleCoverage(10, false);
+  if($("#EnableAntialiasing").val() == "Checked")
+    gl.enable(gl.SAMPLE_COVERAGE);
+  else
+    gl.disable(gl. SAMPLE_COVERAGE);*/
+    
+
 	if(GameState == GAME_STATE.START)
 	{
     
