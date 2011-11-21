@@ -10,10 +10,10 @@ function Model(i_FileName)
   {
 	  if(this.Ready)
 	  {
-		for(var i = 0; i < this.Meshes.length; i++)
-		{
-		  this.Meshes[i].Update(i_DeltaMilisec);
-		}
+  		for(var i = 0; i < this.Meshes.length; i++)
+  		{
+  		  this.Meshes[i].Update(i_DeltaMilisec);
+  		}
 	  }
   }
   
@@ -63,10 +63,10 @@ function Model_ParseFile(i_File)
     var CurrentModel = Parser.Models[i];
 
 	// Ignore Models that failed to load and models that do not have geometry, i.e. Cameras
-	if(CurrentModel != null && CurrentModel.Geometry != null)
+	if(CurrentModel != null)
 	{
-    	this.Meshes.push(new Mesh(CurrentModel));
-		
+    	this.Meshes.push(new Mesh(CurrentModel, null));
+		  
 	}
   }
 

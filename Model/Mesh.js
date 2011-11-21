@@ -98,93 +98,151 @@ function Mesh_Update(i_DeltaMilisec)
 				this.DeltaMilisec = 0;
 		}
 	}
+	
+  else if(AnimationNode.Name == "AnimCurveNode::R")
+	{
+		for(var k = 0; k < AnimationNode.AnimationCurveList.length; k++)
+		{
+			var AnimCurve = AnimationNode.AnimationCurveList[k];
+			// Find where we are in the animation
+			
+			var TimeFrame = 0;
+			while(TimeFrame < AnimCurve.KeyTime.length && AnimCurve.KeyTime[TimeFrame] < Time)
+			  TimeFrame++;
+			
+			if(TimeFrame > 0 && TimeFrame < AnimCurve.KeyTime.length)
+			{
+				var StartValue = AnimCurve.KeyValueFloat[TimeFrame-1];
+				var EndValue   = AnimCurve.KeyValueFloat[TimeFrame];
+				
+				var StartTime = AnimCurve.KeyTime[TimeFrame-1];
+				var EndTime   = AnimCurve.KeyTime[TimeFrame];
+				var TimeLength = EndTime - StartTime;
+				var Percent =  (Time - StartTime) / TimeLength; 
+				var Value = Interpolate(StartValue, EndValue, Percent);
+			
+				if(AnimCurve.Property == "d|X")
+				{
+					this.Rotate[0] = Value ;
+				}
+				else if(AnimCurve.Property == "d|Y")
+				{
+					this.Rotate[1] = Value ;
+				}
+				else if(AnimCurve.Property == "d|Z")
+				{
+					this.Rotate[2] = Value ;
+				}
+			}
+			else if(TimeFrame == AnimCurve.KeyTime.length)
+				this.DeltaMilisec = 0;
+		}
+	}
+
   }
+  
+  
+  // Update the children
+  for(var i = 0; i < this.Children.length; i++)
+  {
+    this.Children[i].Update(i_DeltaMilisec); 
+  }
+
 }
 
-function Mesh(i_Model)
+function Mesh(i_Model, i_Parent)
 { 
   // Attach Functions
+  this.Parent = i_Parent;
   this.Draw = Mesh_Draw;
+  this.TSR = Mesh_TSR;
   this.Update = Mesh_Update;
   Debug.Trace("Initialize Mesh");  
   
   // Copy over the animations
   this.Animations = i_Model.Animations;
-  this.DeltaMilisec = 83;
+  this.DeltaMilisec = 0;
+  this.Children = new Array();
   
-  
-
-  
-  // Bind the GL Arrays
-  // Vertices
-  // Convert the Indexed Triangles to array of vertices
-  var Vertices = new Array();
-  
-  for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
+  if(i_Model.Geometry == null)
   {
-	
-	 	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 0] );
-    	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 1] );
-    	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 2] );
-	  
- }
-  
-  this.VertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Vertices), gl.STATIC_DRAW);
-  this.VertexPositionBuffer.itemSize = 3;
-  this.VertexPositionBuffer.numItems = Vertices.length / 3;
-  
-  Debug.Trace("NumVertices: " + this.VertexPositionBuffer.numItems);
-  
-  if(i_Model.Geometry.TriangleNormals != null)
-  {
-	  this.VertexNormalBuffer = gl.createBuffer();
-	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
-	  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(i_Model.Geometry.TriangleNormals), gl.STATIC_DRAW);
-	  this.VertexNormalBuffer.itemSize = 3;
-	  this.VertexNormalBuffer.numItems = i_Model.Geometry.TriangleNormals.length/3;
-	  Debug.Trace("NumNormals: " + this.VertexNormalBuffer.numItems);
+    this.HasGeometry = false;
   }
-  
-  if(i_Model.Geometry.TriangleUVIndices != null)
+  else
   {
-    //bind the UV buffers
-	var TextureCoords = new Array();
-	var LayerElementUV = i_Model.Geometry.LayerElementUV;
-	for(var i = 0; i <  i_Model.Geometry.TriangleUVIndices.length; i++)
-	{
-	  var Index = i_Model.Geometry.TriangleUVIndices[i];
-	  TextureCoords.push(LayerElementUV.UV[2*Index]);
-	  TextureCoords.push(LayerElementUV.UV[2*Index+1]);
-	  
-	  //Debug.Trace("UV: " + i + " Index: " + Index + "( " +  LayerElementUV.UV[2*Index] + ", " + LayerElementUV.UV[2*Index+1] + ")");
-	}
-	
-	this.VertexTextureCoordBuffer = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
-   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TextureCoords), gl.STATIC_DRAW);
-   this.VertexTextureCoordBuffer.itemSize = 2;
-   this.VertexTextureCoordBuffer.numItems = TextureCoords.length/2;
-   Debug.Trace("NumUV: " + this.VertexTextureCoordBuffer.numItems);
+    this.HasGeometry = true;
+    
+    // Bind the GL Arrays
+    // Vertices
+    // Convert the Indexed Triangles to array of vertices
+    var Vertices = new Array();
+    
+    for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
+    {
+  	
+  	 	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 0] );
+      	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 1] );
+      	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 2] );
+  	  
+   }
+    
+    this.VertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Vertices), gl.STATIC_DRAW);
+    this.VertexPositionBuffer.itemSize = 3;
+    this.VertexPositionBuffer.numItems = Vertices.length / 3;
+    
+    //Debug.Trace("NumVertices: " + this.VertexPositionBuffer.numItems);
+    
+    if(i_Model.Geometry.TriangleNormals != null)
+    {
+  	  this.VertexNormalBuffer = gl.createBuffer();
+  	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
+  	  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(i_Model.Geometry.TriangleNormals), gl.STATIC_DRAW);
+  	  this.VertexNormalBuffer.itemSize = 3;
+  	  this.VertexNormalBuffer.numItems = i_Model.Geometry.TriangleNormals.length/3;
+  	  //Debug.Trace("NumNormals: " + this.VertexNormalBuffer.numItems);
+    }
+    
+    if(i_Model.Geometry.TriangleUVIndices != null)
+    {
+      //bind the UV buffers
+  	var TextureCoords = new Array();
+  	var LayerElementUV = i_Model.Geometry.LayerElementUV;
+  	for(var i = 0; i <  i_Model.Geometry.TriangleUVIndices.length; i++)
+  	{
+  	  var Index = i_Model.Geometry.TriangleUVIndices[i];
+  	  TextureCoords.push(LayerElementUV.UV[2*Index]);
+  	  TextureCoords.push(LayerElementUV.UV[2*Index+1]);
+  	  
+  	  //Debug.Trace("UV: " + i + " Index: " + Index + "( " +  LayerElementUV.UV[2*Index] + ", " + LayerElementUV.UV[2*Index+1] + ")");
+  	}
+  	
+  	this.VertexTextureCoordBuffer = gl.createBuffer();
+     gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
+     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TextureCoords), gl.STATIC_DRAW);
+     this.VertexTextureCoordBuffer.itemSize = 2;
+     this.VertexTextureCoordBuffer.numItems = TextureCoords.length/2;
+     //Debug.Trace("NumUV: " + this.VertexTextureCoordBuffer.numItems);
+    }
+    
+    // Indices
+    /*this.VertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(i_Model.Geometry.Indices), gl.STATIC_DRAW);
+    this.VertexIndexBuffer.itemSize = 1;
+    this.VertexIndexBuffer.numItems = i_Model.Geometry.Indices.length;
+    
+    Debug.Trace("NumIndices: " + this.VertexIndexBuffer.numItems);
+    */
   }
-  
-  // Indices
-  /*this.VertexIndexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(i_Model.Geometry.Indices), gl.STATIC_DRAW);
-  this.VertexIndexBuffer.itemSize = 1;
-  this.VertexIndexBuffer.numItems = i_Model.Geometry.Indices.length;
-  
-  Debug.Trace("NumIndices: " + this.VertexIndexBuffer.numItems);
-  */
   
   // Check if model has predefined rotaion, translation, scale... etc
   this.Scale     = vec3.create([1, 1, 1]);
   this.Translate = vec3.create([0, 0, 0]);
 	this.Rotate    = vec3.create([0, 0, 0]);
-
-	Debug.Trace("Properties.length = " + i_Model.Properties.length);
+  this.PreRotate = vec3.create([0, 0, 0]);
+	//Debug.Trace("Properties.length = " + i_Model.Properties.length);
   for(var i = 0; i < i_Model.Properties.length; i++)
   {
   	var Property = i_Model.Properties[i];
@@ -192,27 +250,26 @@ function Mesh(i_Model)
   	{
   		case "Lcl Translation":
   		{
-  			Debug.Trace("Translate " + vec3.str(Property.Value));
+  			//Debug.Trace("Translate " + vec3.str(Property.Value));
   			vec3.add(this.Translate, Property.Value);
   			break;
   		}
   		case "PreRotation":
   		{
-  			Debug.Trace("PreRotate " + vec3.str(Property.Value));
-	
-  			vec3.add(this.Rotate, Property.Value);
+  		//	Debug.Trace("PreRotate " + vec3.str(Property.Value));
+  			vec3.add(this.PreRotate, Property.Value);
   			break;
   		}
   		case "Lcl Rotation":
   		{
-  			Debug.Trace("Rotate " + vec3.str(Property.Value));
+  			//Debug.Trace("Rotate " + vec3.str(Property.Value));
 	
   			vec3.add(this.Rotate, Property.Value);
   			break;
   		}
       case "Lcl Scaling":
       {
-      	Debug.Trace("Scale " + vec3.str(Property.Value));
+      	//Debug.Trace("Scale " + vec3.str(Property.Value));
 
       	this.Scale[0] *= Property.Value[0];
       	this.Scale[1] *= Property.Value[1];
@@ -241,7 +298,19 @@ function Mesh(i_Model)
   	}
   }
   
+  
   checkGLError();
+  
+  // Check for children
+  for(var i = 0; i < i_Model.Children.length; i++)
+  {
+    var CurrentModel = i_Model.Children[i];
+  	if(CurrentModel != null)
+  	{
+      	this.Children.push(new Mesh(CurrentModel, this));		  
+  	}
+  }
+
   Debug.Trace("Model loaded");
 }
 
@@ -262,54 +331,82 @@ function Mesh_HandleLoadedTexture(i_Texture)
   checkGLError();
 }
 
+function Mesh_TSR()
+{
+	  if(this.Parent != null)
+	  this.Parent.TSR();
+
+	mat4.translate(mvMatrix, this.Translate);
+		
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] + this.PreRotate[0]), [1, 0, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] + this.PreRotate[1]), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] + this.PreRotate[2]), [0, 0, 1]);
+
+	/*mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);*/
+
+	mat4.scale(mvMatrix, this.Scale);
+	
+
+}
+
 function Mesh_Draw()
 {
 	mvPushMatrix();
-	mat4.translate(mvMatrix, this.Translate);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[0]), [1, 0, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[2]), [0, 0, 1]);
 	
-	mat4.scale(mvMatrix, this.Scale);
+	this.TSR();
 	
-	// Bind the Color
-	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, [0.1, 0.1, 0.1]);
-	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, [0.8, 0.8, 0.8]);
-  gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,[0.8, 0.8, 0.8]);
-  gl.uniform1f(CurrentShader.Program.Shininess_Uniform, 30.0);
-	
-	// Bind the texture UV
-	gl.uniform1i(CurrentShader.Program.Texture0_Enabled_Uniform, this.Texture != null);
-	
-	if(this.Texture != null)
+	if(this.HasGeometry)
 	{
-		gl.activeTexture(gl.TEXTURE0);
-	  gl.bindTexture(gl.TEXTURE_2D, this.Texture);
-	  gl.uniform1i(CurrentShader.Program.samplerUniform, 0);
-	}
-	
-	if(this.VertexTextureCoordBuffer != null)
-	{
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
-    gl.vertexAttribPointer(CurrentShader.Program.textureCoordAttribute, this.VertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	}
- 	
-		
-  //Debug.Trace("Draw Mesh: "+ this.VertexPositionBuffer.numItems + " " +  this.VertexColorBuffer.numItems + " " + this.VertexIndexBuffer.numItems );
-  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
-  gl.vertexAttribPointer(CurrentShader.Program.vertexPositionAttribute, this.VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  if(this.VertexNormalBuffer != null)
-  {
-    // Bind the Normal buffer
- 	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
-  	gl.vertexAttribPointer(CurrentShader.Program.vertexNormalAttribute, this.VertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  	// Bind the Color
+  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, [0.1, 0.1, 0.1]);
+  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, [0.8, 0.8, 0.8]);
+    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,[0.8, 0.8, 0.8]);
+    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, 30.0);
+  	
+  	// Bind the texture UV
+  	gl.uniform1i(CurrentShader.Program.Texture0_Enabled_Uniform, this.Texture != null);
+  	
+  	if(this.Texture != null)
+  	{
+  		gl.activeTexture(gl.TEXTURE0);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.Texture);
+  	  gl.uniform1i(CurrentShader.Program.samplerUniform, 0);
+  	}
+  	
+  	if(this.VertexTextureCoordBuffer != null)
+  	{
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
+      gl.vertexAttribPointer(CurrentShader.Program.textureCoordAttribute, this.VertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  	}
+   	
+  		
+    //Debug.Trace("Draw Mesh: "+ this.VertexPositionBuffer.numItems + " " +  this.VertexColorBuffer.numItems + " " + this.VertexIndexBuffer.numItems );
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
+    gl.vertexAttribPointer(CurrentShader.Program.vertexPositionAttribute, this.VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  
+    if(this.VertexNormalBuffer != null)
+    {
+      // Bind the Normal buffer
+   	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
+    	gl.vertexAttribPointer(CurrentShader.Program.vertexNormalAttribute, this.VertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    }
+  
+    setMatrixUniforms();
+    
+    gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+    checkGLError();
   }
+ 
+   
+   mvPopMatrix();
 
-  setMatrixUniforms();
+ 
+  // Draw the children
+  for(var i = 0; i < this.Children.length; i++)
+  {
+    this.Children[i].Draw(); 
+  }
   
-  gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
-  
-  mvPopMatrix();
-  checkGLError();
 }

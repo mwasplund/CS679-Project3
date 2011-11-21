@@ -101,6 +101,16 @@ function FBX_Parser(i_File)
 								Model.Animations.push(AnimationCurveNode);
 								Debug.Trace("Found Animation Node Connection to Model");	
 							}
+							else
+							{
+							  // Check for children of this node
+							  var ChildModel = this.GetModel(Connection.Destination);
+                if(ChildModel != null)
+                {
+                  Model.Children.push(ChildModel);
+                  Debug.Trace("Found Child of model");
+                }
+							}
 						}
 					}
 				}

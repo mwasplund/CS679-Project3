@@ -32,7 +32,7 @@ var Light0_Enabled = true;
 var Up = [0,1,0];
 var CurrentShader;
 var GameState;
-var CameraPos = [-33,16,-36];
+var CameraPos = [-100,100,100];
 
 var TestModel;
 
@@ -218,9 +218,13 @@ function InitializeModels()
 {
   Models.push(new Model("Bounce_Ball"));
   Models.push(new Model("Fancy_Bounce_Ball"));
+  Models.push(new Model("bone_arm"));
+  Models.push(new Model("Link"));
+  Models.push(new Model("TestCube"));
+
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("Fancy_Bounce_Ball");
+	TestModel = GetModel("bone_arm");
 }
 
 /******************************************************/

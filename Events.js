@@ -191,7 +191,7 @@
     if(e) 
     {
       var Unicode = e.charCode? e.charCode : e.keyCode;
-      //Debug.Trace("Key = " + Unicode);
+      Debug.Trace("Key = " + Unicode);
       
       switch(Unicode) 
       {
@@ -230,6 +230,25 @@
         case KEY_9:
           CameraPos[1] += step;
           break;
+        case KEY_LEFT_ARROW :
+            CameraPos[0] += step;             
+            break;    
+        case KEY_UP_ARROW :
+            CameraPos[2] += step;             
+            break;    
+        case KEY_RIGHT_ARROW :
+            CameraPos[0] -= step;
+            break;    
+        case KEY_DOWN_ARROW :
+            CameraPos[2] -= step;
+            break; 
+        case KEY_PAGE_UP :
+            CameraPos[1] += step;
+            break;
+        case KEY_PAGE_DOWN :
+            CameraPos[1] -= step;
+            break;
+
           
       }
     }

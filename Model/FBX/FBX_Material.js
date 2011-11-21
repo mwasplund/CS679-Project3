@@ -32,7 +32,7 @@ function FBX_Parser_ParseMaterial(i_FileContainer)
     if(FirstLine[2][0] == "\"" && FirstLine[2][FirstLine[2].length -1] == "\"")
     {
       NewMaterial.Name = FirstLine[2].substring(1, FirstLine[2].length - 1);
-      Debug.Trace("Material Name = " + NewMaterial.Name);
+      //Debug.Trace("Material Name = " + NewMaterial.Name);
     }
     else
     {
@@ -81,7 +81,7 @@ function FBX_Parser_ParseMaterial(i_FileContainer)
     	if(CurrentLine[1][0] == "\"" && CurrentLine[1][CurrentLine[1].length - 1] == "\"")
       {
         NewMaterial.ShadingModel = CurrentLine[1].substring(1, CurrentLine[1].length - 1);
-        Debug.Trace("Material ShadingModel = " + NewMaterial.ShadingModel);
+        //Debug.Trace("Material ShadingModel = " + NewMaterial.ShadingModel);
       }
       else
       {

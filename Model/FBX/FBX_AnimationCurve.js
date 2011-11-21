@@ -147,7 +147,7 @@ function FBX_Parser_ParseAnimationCurve(i_FileContainer)
     }
   }
   
-  Debug.Trace("Never saw the end bracket for AnimationCurve:");
+  Debug.Trace("FBX ERROR: Never saw the end bracket for AnimationCurve:");
   return null;
 }
 

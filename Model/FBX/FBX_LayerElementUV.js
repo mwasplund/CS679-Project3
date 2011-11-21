@@ -51,7 +51,7 @@ function FBX_Parser_ParseLayerElementUV(i_FileContainer)
     	if(CurrentLine[1][0] == "\"" && CurrentLine[1][CurrentLine[1].length - 1] == "\"")
       {
         LayerElementUV.Name = CurrentLine[1].substring(1, CurrentLine[1].length - 1);
-        Debug.Trace("LayerElementUV Nmae = " + LayerElementUV.Name);
+        //Debug.Trace("LayerElementUV Nmae = " + LayerElementUV.Name);
       }
       else
       {
@@ -207,7 +207,7 @@ function  FBX_Parser_ParseUV(i_FileContainer)
       return null;
     }
     
-    Debug.Trace("UV: " + Count);
+    //Debug.Trace("UV: " + Count);
   }
 
   if(i_FileContainer.HasNext)
