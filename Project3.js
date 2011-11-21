@@ -29,7 +29,7 @@ var Light0_Enabled = true;
 var Up = [0,1,0];
 var CurrentShader;
 var GameState;
-var CameraPos = [-100,100,100];
+var CameraPos = [-5,6,9];
 
 var TestModel;
 
@@ -168,10 +168,16 @@ function InitializeModels()
   Models.push(new Model("bone_arm"));
   Models.push(new Model("Link"));
   Models.push(new Model("TestCube"));
-
+  Models.push(new Model("fbxTest"));
+  Models.push(new Model("skeleton"));
+  
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("bone_arm");
+	TestModel = GetModel("skeleton");
+	CameraPos = [344, 6, 353];
+	
+	//TestModel = GetModel("bone_arm");
+	//CameraPos = [344, 6, 353];
 }
 
 /******************************************************/
