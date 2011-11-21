@@ -22,14 +22,18 @@ function Model(i_FileName)
   var NewModel      = this;
   NewModel.Ready    = false;
   
+  var loadSuccess = function(returned_data) {
+      Debug.Trace("Model ("+ NewModel.Name +") Loaded: " + NewModel.FilePath);
+      NewModel.ParseFile(returned_data);
+  };
   // Load the file
   NewModel.FilePath = "sceneassets/models/" + i_FileName + ".FBX";
-  $.get(NewModel.FilePath,
-      function(returned_data)
-      {
-          Debug.Trace("Model ("+ NewModel.Name +") Loaded: " + NewModel.FilePath);
-          NewModel.ParseFile(returned_data);
-      });
+  $.get(NewModel.FilePath)
+    .success(loadSuccess)
+    .error(function() {
+        NewModel.FilePath = "sceneassets/models/" + i_FileName + ".fbx";
+        $.get(NewModel.FilePath).success(loadSuccess);
+    });
 
   Debug.Trace("Loading Model: " + this.FilePath);
 }
