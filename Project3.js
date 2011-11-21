@@ -8,7 +8,7 @@ LoadjsFile("Events.js");
 LoadjsFile("Shader/GLSL_Shader.js");
 LoadjsFile("glMatrix.js");
 LoadjsFile("Debug.js");
-LoadjsFile("gl.js");
+LoadjsFile("Gl.js");
 LoadjsFile("GameState.js");
 
 /******************************************************/
