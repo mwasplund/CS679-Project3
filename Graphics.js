@@ -39,14 +39,17 @@ function drawArc() {
 	ctx.transform(orientation[0], orientation[1], -orientation[1], orientation[0], 0, 0);
 	
 	var angle = [Math.cos(this.arcAngle), Math.sin(this.arcAngle)];
+	ctx.beginPath();
 	ctx.moveTo(this.outerRadius * angle[0], this.outerRadius * angle[1]);
 	ctx.arc(0, 0, this.outerRadius, this.arcAngle, -this.arcAngle, true);
 	ctx.lineTo(this.innerRadius * angle[0], -this.innerRadius * angle[1]);
 	ctx.arc(0, 0, this.innerRadius, -this.arcAngle, this.arcAngle, false);
 	ctx.lineTo(this.outerRadius * angle[0], this.outerRadius * angle[1]);
+	ctx.closePath();
 
 	ctx.globalAlpha = 0.2;
 	ctx.fillStyle = "#FF0000";
+
 	ctx.fill();
 }
 

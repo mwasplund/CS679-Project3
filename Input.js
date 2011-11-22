@@ -100,4 +100,8 @@ var mouse = {
 function getMouse() {
 	return mouse;
 }
+function mousemove(event) {
+	getMouse().position = [event.clientX, event.clientY];
+	return false;
+}
 

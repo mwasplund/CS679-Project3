@@ -37,10 +37,12 @@ function makeEnemy(v) {
             var ctx = target.context;
             ctx.strokeStyle = "#888888";
             ctx.translate(this.position[0], this.position[1]);
+			ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(0, 0, this.radius + 2, 0, Math.PI*2, true); 
+            ctx.arc(0, 0, this.radius + 3, 0, Math.PI*2, false); 
             ctx.closePath();
             ctx.stroke();
+			//ctx.fill();
         },
     };
 }

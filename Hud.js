@@ -74,7 +74,7 @@ function drawHud() {
   drawHealth();
 
   hud.context.strokeStyle = "#000000";
-  hud.context.strokeRect(1, 1, hud.width() - 2, hud.height() - 2);
+  //hud.context.strokeRect(1, 1, hud.width() - 2, hud.height() - 2);
 }
 
 function HudObject() {}
