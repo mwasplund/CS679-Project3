@@ -4,24 +4,6 @@
 /* Helper Functions that make using javascript easier
 /******************************************************/
 
-/******************************************************/
-/* Debug.Trace
-/*
-/* Helpful little global variable that makes printing 
-/* to the console easy.
-/******************************************************/
-var Debug = function() {};
-Debug.Trace = function(i_Message)
-{
-  try
-  {
-    console.log(i_Message);
-  }
-  catch(e)
-  {
-    return;
-  }
-}
 
 /******************************************************/
 /* CanvasSupported
@@ -38,11 +20,14 @@ function CanvasSupported()
 /* LoadjsFile
 /*
 /* Load a seperate Javascript file to be used on the 
-/* current page.
+/* current page. Assigns the file to the given log namespace
 /*
 /* i_FilePath - the location of the file to be loaded
+/* subSystem - the log namespace to assign this file to
+ *   if not supplied, the file will be assigned to the same
+ *   namespace as the file that it is loaded in
 /******************************************************/
-function LoadjsFile(i_FilePath)
+function LoadjsFile(i_FilePath, subSystem)
 {
   var FileRef = document.createElement('script')
   FileRef.setAttribute("type","text/javascript")
@@ -52,6 +37,11 @@ function LoadjsFile(i_FilePath)
     var head = document.getElementsByTagName("head");
     head[0].appendChild(FileRef)
   }
+  if (!subSystem) {
+      var err = getErrorObject(4);
+      subSystem = getSystemFromFile(err.filename);
+  }
+  logAttachFile(i_FilePath, subSystem);
 }
 
 /******************************************************/
