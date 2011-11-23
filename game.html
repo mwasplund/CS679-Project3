@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link type="text/css" href="Libs/jquery-ui-1.8.13.custom.css" rel="Stylesheet" />	
+        <script type="text/javascript" src="Libs/jquery-1.6.4.js"></script>
+        <script type="text/javascript" src="Libs/jquery-ui-1.8.13.custom.min.js"></script>
+
+        <script type="text/javascript" src="Libs/webgl-utils.js"></script>
+        <script type="text/javascript" src="Libs/glMatrix-0.9.5.min.js"></script>
+
+        <script type="text/javascript" src="./Util.js"></script>
+        <script type="text/javascript" src="./Graphics.js"></script>
+        <script type="text/javascript" src="./Gl.js"></script>
+        <script type="text/javascript" src="./Game.js"></script>
+        <script type="text/javascript" src="./Physics.js"></script>
+
+        <script type="text/javascript" src="./Setup.js"></script>
+
+        <script type="text/javascript" src="./Input.js"></script>
+        <script type="text/javascript" src="./Passwords.js"></script>
+
+        <script type="text/javascript" src="./Attacks.js"></script>
+        <script type="text/javascript" src="./Hud.js"></script>
+        <script type="text/javascript" src="./Player.js"></script>
+        <script type="text/javascript" src="./Camera.js"></script>
+
+        <title>CS679 | Project 3</title>
+        <meta name="description" content="Home Page" />
+        <meta name="keywords" content="asplund,mwasplund,wisconsin,wausau,madison,matthew,home,philisawesome" />
+        <link href="Project3.css" rel="stylesheet" type="text/css">
+        <!--script type="text/javascript" src="Helper.js"></script>
+        <script type="text/javascript" src="Project3.js"></script>
+        <script type="text/javascript" src="jquery.js"></script-->
+    </head>
+
+    <body>
+        <canvas id='CanvasOne'>Your browser does not support HTML5.</canvas>
+
+        <div id="2dDiv" style="position:absolute; top:0px;left:0px;display:inline;">
+            <canvas id="2dCanvas" class="boxed" width="1280" height="800"></canvas>
+        </div>
+
+        <div id="3dDiv" style="position:absolute; top:0px;left:0px;display:none;">
+            <canvas id="3dCanvas" style="border: none; display: none" width="1280" height="800"></canvas>    
+        </div>
+
+        <div id="hudDiv" style="position:absolute; top:0px;left:0px;">
+            <canvas id="hudCanvas" style="border: none;" width="1280" height="800"></canvas>    
+        </div>
+    </body>
+</html>
