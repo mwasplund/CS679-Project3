@@ -163,17 +163,17 @@ function GameLoop()
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("Bounce_Ball"));
+  //Models.push(new Model("Bounce_Ball"));
   Models.push(new Model("Fancy_Bounce_Ball"));
   Models.push(new Model("bone_arm"));
   Models.push(new Model("Link"));
   Models.push(new Model("TestCube"));
   Models.push(new Model("fbxTest"));
-  Models.push(new Model("skeleton"));
+  Models.push(new Model("Human"));
   
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("skeleton");
+	TestModel = GetModel("Human");
 	CameraPos = [344, 6, 353];
 	
 	//TestModel = GetModel("bone_arm");

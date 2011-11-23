@@ -281,6 +281,11 @@ function Mesh(i_Model, i_Parent)
   
   // Check if the image has a texture
   this.Texture = null;
+  this.AmbientColor = [0.1, 0.1, 0.1];
+  this.DiffuseColor = [0.8, 0.8, 0.8];
+  this.SpecularColor = [0.8, 0.8, 0.8];
+  this.Shininess = 30.0;
+
   if(i_Model.Material != null)
   {
   	if(i_Model.Material.Texture != null)
@@ -295,6 +300,20 @@ function Mesh(i_Model, i_Parent)
   		}
   		var RelativeFilename = i_Model.Material.Texture.RelativeFilename;
   		this.Texture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  	}
+  	
+  	// Check for colors
+  	for(var i = 0; i < i_Model.Material.Properties.length; i++)
+  	{
+  	  var Property = i_Model.Material.Properties[i];
+  	  if(Property.Name == "Ambient")
+  	    this.AmbientColor = Property.Value;
+ 	    else if(Property.Name == "Diffuse")
+ 	      this.DiffuseColor = Property.Value;
+ 	    else if(Property.Name == "Specular")
+ 	      this.SpecularColor = Property.Value;
+      else if(Property.Name == "Shininess")
+ 	      this.Shininess = Property.Value;
   	}
   }
   
@@ -360,10 +379,10 @@ function Mesh_Draw()
 	if(this.HasGeometry)
 	{
   	// Bind the Color
-  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, [0.1, 0.1, 0.1]);
-  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, [0.8, 0.8, 0.8]);
-    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,[0.8, 0.8, 0.8]);
-    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, 30.0);
+  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
+  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
+    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
+    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
   	
   	// Bind the texture UV
   	gl.uniform1i(CurrentShader.Program.Texture0_Enabled_Uniform, this.Texture != null);
