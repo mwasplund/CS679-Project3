@@ -3,8 +3,9 @@
   this.Name   = null;
   this.Number = 0;
   this.More   = null;
-  
+  this.Animations = new Array();
   this.Value = null;
+  this.Children = new Array();
 }
 
 function FBX_Parser_ParseModel(i_FileContainer)

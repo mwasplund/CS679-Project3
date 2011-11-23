@@ -6,20 +6,34 @@ function Model(i_FileName)
   // Functions
   this.ParseFile = Model_ParseFile;
   this.Draw = Model_Draw;
+  this.Update = function(i_DeltaMilisec)
+  {
+	  if(this.Ready)
+	  {
+  		for(var i = 0; i < this.Meshes.length; i++)
+  		{
+  		  this.Meshes[i].Update(i_DeltaMilisec);
+  		}
+	  }
+  }
   
   // Variables
   this.Name = i_FileName;
   var NewModel      = this;
   NewModel.Ready    = false;
   
+  var loadSuccess = function(returned_data) {
+      Debug.Trace("Model ("+ NewModel.Name +") Loaded: " + NewModel.FilePath);
+      NewModel.ParseFile(returned_data);
+  };
   // Load the file
   NewModel.FilePath = "sceneassets/models/" + i_FileName + ".FBX";
-  $.get(NewModel.FilePath,
-      function(returned_data)
-      {
-          Debug.Trace("Model ("+ NewModel.Name +") Loaded: " + NewModel.FilePath);
-          NewModel.ParseFile(returned_data);
-      });
+  $.get(NewModel.FilePath)
+    .success(loadSuccess)
+    .error(function() {
+        NewModel.FilePath = "sceneassets/models/" + i_FileName + ".fbx";
+        $.get(NewModel.FilePath).success(loadSuccess);
+    });
 
   Debug.Trace("Loading Model: " + this.FilePath);
 }
@@ -53,10 +67,10 @@ function Model_ParseFile(i_File)
     var CurrentModel = Parser.Models[i];
 
 	// Ignore Models that failed to load and models that do not have geometry, i.e. Cameras
-	if(CurrentModel != null && CurrentModel.Geometry != null)
+	if(CurrentModel != null)
 	{
-    	this.Meshes.push(new Mesh(CurrentModel));
-		
+    	this.Meshes.push(new Mesh(CurrentModel, null));
+		  
 	}
   }
 

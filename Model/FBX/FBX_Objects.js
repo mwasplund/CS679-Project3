@@ -5,6 +5,7 @@
   this.TextureList = new Array();
   this.MaterialList = new Array();
   this.AnimationCurveList = new Array();
+  this.AnimationCurveNodeList = new Array();
 }
 
 function FBX_Parser_ParseObjects(i_FileContainer)
@@ -95,11 +96,24 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing a AnimationCurve in the Objects:");
+        Debug.Trace("FBX ERROR: There was an error parsing an AnimationCurve in the Objects:");
         return null;
       }
     }
-
+    else if(CurrentLine[0] == "AnimationCurveNode:")
+    {
+      i_FileContainer.StepBack();
+      var AnimationCurveNode = FBX_Parser_ParseAnimationCurveNode(i_FileContainer);
+      if(AnimationCurveNode != null)
+      {
+        Objects.AnimationCurveNodeList.push(AnimationCurveNode);
+      }
+      else
+      {
+        Debug.Trace("FBX ERROR: There was an error parsing an AnimationCurveNode in the Objects:");
+        return null;
+      }
+    }
     else
     {
       Debug.Trace("FBX ERROR: Found Unknown Token in Objects: " + CurrentLine[0]);

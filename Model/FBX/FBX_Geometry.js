@@ -197,7 +197,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     }
     else if(CurrentLine[0] == "Vertices:")
     {
-      Debug.Trace("Found Vertices");
+      //Debug.Trace("Found Vertices");
       i_FileContainer.StepBack();
       NewGeometry.Vertices = FBX_Parser_ParseVertices(i_FileContainer);
       if(NewGeometry.Vertices == null)
@@ -264,8 +264,9 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
   if(i_FileContainer.HasNext)
   {
     var FirstLine = i_FileContainer.GetNextLine();
-    for(var i = 0; i < FirstLine.length;i++)
-      Debug.Trace(FirstLine[i]);
+   // for(var i = 0; i < FirstLine.length;i++)
+   //   Debug.Trace(FirstLine[i]);
+      
     if(FirstLine.length != 3 || FirstLine[0] != "PolygonVertexIndex:" || FirstLine[1][0] != "*" || FirstLine[2] != "{")
     {
       Debug.Trace("FBX ERROR: PolygonVertexIndex: not formatted correctly");
