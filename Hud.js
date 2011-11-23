@@ -1,6 +1,6 @@
 function drawHealth() {
     var hpWidth = 0.3;
-    var hp = getPlayer().getHealth();
+    var hp = getLocalPlayer().getHealth();
 
 	var w = hud.width() * hpWidth;
 	var h = w / 15;

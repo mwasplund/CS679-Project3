@@ -97,6 +97,7 @@ var mouse = {
         return ret;
     },
 };
+
 function getMouse() {
 	return mouse;
 }

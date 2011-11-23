@@ -4,10 +4,6 @@ function setup() {
     }
 }
 
-function pushEnemy(e) {
-    enemies.push(e);
-}
-
 function getOptions() {
     return {
         playerVelocity: 0.8,
@@ -15,11 +11,17 @@ function getOptions() {
     };
 }
 
+function pushEnemy(e) {
+    enemies.push(e);
+}
+
 function makeEnemy(v) {
     return {
         v: v,
         radius: 4,
         position: [0, 0],
+        think: function() {
+        },
         move: function() {
             this.v += 0.00005;
             this.updatePosition();

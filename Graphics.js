@@ -5,7 +5,7 @@ function draw() {
 		drawEnvironment();
 		drawSelections();
 		drawSpecial();
-		drawPlayer();
+		drawPlayers();
 		drawHud();
 		postDraw();
 	} else {
@@ -27,7 +27,7 @@ function postDraw() {
 }
 
 function drawSelections() {
-    var arc = getAttackArc();
+    var arc = getLocalAttack();
 	var objs = getEnemiesInArc(arc);
 
 	for (var i = 0; i < objs.length; i++) {
@@ -76,7 +76,7 @@ function drawEnemies() {
 	var objs = getEnemiesInCircle(view[0], view[1]);
 
 	for (var i = 0; i < objs.length; i++) {
-        drawObject2d(objs[i]);
+        drawObject(objs[i]);
 	}
 }
 
@@ -84,6 +84,18 @@ function drawSelected2d(o) {
     target.context.save();
     o.drawSelected();
     target.context.restore();
+}
+
+function drawObject(o) {
+    if (in2dWorld) {
+        drawObject2d(o);
+    } else {
+        drawObjectGl(o);
+    }
+}
+
+function drawObjectGl(o) {
+    return;
 }
 
 function drawObject2d(o) {
@@ -139,8 +151,11 @@ function getEnemiesInArc(arc) {
 	return ret;
 }
 
-function drawPlayer() {
-    drawObject2d(getPlayer());
+function drawPlayers() {
+    var players = getPlayers();
+    for (var i = 0; i < players.length; i++) {
+        drawObject(players[i]);
+    }
 }
 
 function drawEnvironment() {
@@ -148,7 +163,7 @@ function drawEnvironment() {
 
 function drawSpecial() {
 	// draw selection indicator? other stuff?
-	drawObject2d(getAttackArc());
+	drawObject(getLocalAttack());
 }
 
 function drawCircle() {

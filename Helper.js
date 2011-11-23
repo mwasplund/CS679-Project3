@@ -48,8 +48,10 @@ function LoadjsFile(i_FilePath)
   FileRef.setAttribute("type","text/javascript")
   FileRef.setAttribute("src", i_FilePath)
   
-  if (typeof FileRef!= "undefined")
-    document.getElementsByTagName("head")[0].appendChild(FileRef)
+  if (typeof FileRef!= "undefined") {
+    var head = document.getElementsByTagName("head");
+    head[0].appendChild(FileRef)
+  }
 }
 
 /******************************************************/

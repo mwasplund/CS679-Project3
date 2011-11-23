@@ -16,7 +16,6 @@ LoadjsFile("Passwords.js");
 LoadjsFile("Attacks.js");
 LoadjsFile("Hud.js");
 LoadjsFile("Player.js");
-LoadjsFile("Hud.js");
 LoadjsFile("Camera.js");
 LoadjsFile("GameState.js");
 
@@ -54,6 +53,8 @@ $(window).load(function() {
 	InitializeLevels();
 
 	initializeListeners();
+
+    initializePlayer();
 
 	displayTitle();
 
