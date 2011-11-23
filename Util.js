@@ -46,6 +46,10 @@ function pointInCircle(point, center, radius) {
 	return d[0] * d[0] + d[1] * d[1] < radius * radius;
 }
 
+function length2(vec) {
+    return Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+}
+
 function normalize2(vec) {
 	var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 	return [vec[0] / len, vec[1] / len];
@@ -61,6 +65,10 @@ function add2(left, right) {
 
 function scale2(sc, vec) {
     return [sc * vec[0], sc * vec[1]];
+}
+
+function dot2(left, right) {
+    return left[0] * right[0] + left[1] * right[1];
 }
 
 Function.prototype.curry = function() {

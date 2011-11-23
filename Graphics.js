@@ -1,12 +1,16 @@
 function draw() {
-	preDraw();
-    drawEnemies();
-	drawEnvironment();
-    drawSelections();
-	drawSpecial();
-    drawPlayer();
-	drawHud();
-    postDraw();
+	if (in2dWorld) {
+		preDraw();
+		drawEnemies();
+		drawEnvironment();
+		drawSelections();
+		drawSpecial();
+		drawPlayer();
+		drawHud();
+		postDraw();
+	} else {
+		DrawGL(new Date().getTime());
+	}
 }
 
 function preDraw() {
@@ -121,6 +125,16 @@ function getEnemiesInArc(arc) {
 			return !pointInCircle(obj.position, center, arc.innerRadius - obj.radius);
 		});
 	}
+    if (arc.arcAngle && arc.arcAngle < Math.PI) {
+        if (!arc.minDotProduct) {
+            arc.minDotProduct = Math.cos(arc.arcAngle);
+        }
+        ret = ret.filter(function(obj) {
+            var off = sub2(obj.position, center);
+            var dot = dot2(off, orientation) / length2(off);
+            return dot > arc.minDotProduct;
+        });
+    }
 
 	return ret;
 }

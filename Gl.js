@@ -130,13 +130,13 @@ function mvPopMatrix()
 /*
 /* Draw the world.
 /******************************************************/
-function DrawGL() 
+function DrawGL(currentTime) 
 {
 	gl.useProgram(CurrentShader.Program);
 
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.uniform1f(CurrentShader.Program.Time_Uniform, Time);
+	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
 
 	gl.uniform1i(CurrentShader.Program.Light0_Enabled_Uniform, Light0_Enabled);
   if (Light0_Enabled) 

@@ -4,7 +4,6 @@
 /******************************************************/
 
 LoadjsFile("Model/Model.js");
-
 LoadjsFile("Shader/GLSL_Shader.js");
 
 LoadjsFile("Util.js");
@@ -208,6 +207,7 @@ function gameLoop()
 
     var dt = new Date().getTime() - lastDrawTime;
     lastDrawTime += dt;
+	Update(dt);
     setTimeout(gameLoop, Math.max(5, 1000 / maxFps - dt));
 }
  
