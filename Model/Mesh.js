@@ -356,14 +356,15 @@ function Mesh_TSR()
 	  this.Parent.TSR();
 
 	mat4.translate(mvMatrix, this.Translate);
-		
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] + this.PreRotate[0]), [1, 0, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] + this.PreRotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] + this.PreRotate[2]), [0, 0, 1]);
-
-	/*mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
+	
+		mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
 	mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);*/
+	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);
+
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[0]), [1, 0, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[1]), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[2]), [0, 0, 1]);
+
 
 	mat4.scale(mvMatrix, this.Scale);
 	
