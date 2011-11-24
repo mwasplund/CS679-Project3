@@ -1,6 +1,7 @@
 ﻿body
 {
  background-color:#FFFFFF;
+ overflow:hidden;
 }
 canvas#CanvasOne 
 {

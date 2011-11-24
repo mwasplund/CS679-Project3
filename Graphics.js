@@ -1,12 +1,16 @@
 function draw() {
-	preDraw();
-    drawEnemies();
-	drawEnvironment();
-    drawSelections();
-	drawSpecial();
-    drawPlayer();
-	drawHud();
-    postDraw();
+	if (in2dWorld) {
+		preDraw();
+		drawEnemies();
+		drawEnvironment();
+		drawSelections();
+		drawSpecial();
+		drawPlayers();
+		drawHud();
+		postDraw();
+	} else {
+		DrawGL(new Date().getTime());
+	}
 }
 
 function preDraw() {
@@ -23,7 +27,7 @@ function postDraw() {
 }
 
 function drawSelections() {
-    var arc = getAttackArc();
+    var arc = getLocalAttack();
 	var objs = getEnemiesInArc(arc);
 
 	for (var i = 0; i < objs.length; i++) {
@@ -39,14 +43,17 @@ function drawArc() {
 	ctx.transform(orientation[0], orientation[1], -orientation[1], orientation[0], 0, 0);
 	
 	var angle = [Math.cos(this.arcAngle), Math.sin(this.arcAngle)];
+	ctx.beginPath();
 	ctx.moveTo(this.outerRadius * angle[0], this.outerRadius * angle[1]);
 	ctx.arc(0, 0, this.outerRadius, this.arcAngle, -this.arcAngle, true);
 	ctx.lineTo(this.innerRadius * angle[0], -this.innerRadius * angle[1]);
 	ctx.arc(0, 0, this.innerRadius, -this.arcAngle, this.arcAngle, false);
 	ctx.lineTo(this.outerRadius * angle[0], this.outerRadius * angle[1]);
+	ctx.closePath();
 
 	ctx.globalAlpha = 0.2;
 	ctx.fillStyle = "#FF0000";
+
 	ctx.fill();
 }
 
@@ -69,7 +76,7 @@ function drawEnemies() {
 	var objs = getEnemiesInCircle(view[0], view[1]);
 
 	for (var i = 0; i < objs.length; i++) {
-        drawObject2d(objs[i]);
+        drawObject(objs[i]);
 	}
 }
 
@@ -77,6 +84,18 @@ function drawSelected2d(o) {
     target.context.save();
     o.drawSelected();
     target.context.restore();
+}
+
+function drawObject(o) {
+    if (in2dWorld) {
+        drawObject2d(o);
+    } else {
+        drawObjectGl(o);
+    }
+}
+
+function drawObjectGl(o) {
+    return;
 }
 
 function drawObject2d(o) {
@@ -118,12 +137,25 @@ function getEnemiesInArc(arc) {
 			return !pointInCircle(obj.position, center, arc.innerRadius - obj.radius);
 		});
 	}
+    if (arc.arcAngle && arc.arcAngle < Math.PI) {
+        if (!arc.minDotProduct) {
+            arc.minDotProduct = Math.cos(arc.arcAngle);
+        }
+        ret = ret.filter(function(obj) {
+            var off = sub2(obj.position, center);
+            var dot = dot2(off, orientation) / length2(off);
+            return dot > arc.minDotProduct;
+        });
+    }
 
 	return ret;
 }
 
-function drawPlayer() {
-    drawObject2d(getPlayer());
+function drawPlayers() {
+    var players = getPlayers();
+    for (var i = 0; i < players.length; i++) {
+        drawObject(players[i]);
+    }
 }
 
 function drawEnvironment() {
@@ -131,7 +163,7 @@ function drawEnvironment() {
 
 function drawSpecial() {
 	// draw selection indicator? other stuff?
-	drawObject2d(getAttackArc());
+	drawObject(getLocalAttack());
 }
 
 function drawCircle() {
