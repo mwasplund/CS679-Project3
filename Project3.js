@@ -159,9 +159,9 @@ function GameLoop()
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("AxisArrows"));
+  Models.push(new Model("skeleton"));
   Models.push(new Model("Fancy_Bounce_Ball"));
-  Models.push(new Model("bone_arm"));
+  Models.push(new Model("BoneArm"));
   Models.push(new Model("Link"));
   Models.push(new Model("TestCube"));
   Models.push(new Model("fbxTest"));
@@ -169,7 +169,7 @@ function InitializeModels()
   
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("AxisArrows");
+	TestModel = GetModel("skeleton");
 	CameraPos = [200, 200, 200];	
 	
 	//TestModel = GetModel("bone_arm");
