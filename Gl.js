@@ -2,36 +2,35 @@ var gl;
 var mvMatrix;
 var pMatrix;
 var mvMatrixStack = [];1
+var ClearColor = [0.0, 0.0, 0.0];
+var Shaders = new Array();
+var CurrentShader;
+var CameraPos = [-5,6,9];
 
 /******************************************************/
 /* InitializeWebGL
 /*
 /* Initialize Web GL
 /******************************************************/
-function InitializeWebGL(Canvas)
+function tryGetContext(canvas, str) {
+	try { return canvas.getContext(str); }
+	catch (e) { 
+		console.log(str);
+		console.log(e);
+		return null;
+	}
+}
+
+function InitializeWebGL(canvas)
 {
   // Initialize
   Debug.Trace("Initializing WebGL...");
   
-  try { gl = Canvas.getContext("webgl"); }             // Completed Webgl
-  catch(e){ gl = null; }
-  
-  if(!gl)
-  {
-    try { gl = Canvas.getContext("experimental-webg"); }// Development Webgl
-    catch(e){ gl = null; }
-  }
-  
-  if(!gl)
-  {
-    try { gl = Canvas.getContext("moz-webgl"); }// Firefox
-    catch(e){ gl = null; }
-  }
-  if(!gl)
-  {
-    try { gl = Canvas.getContext("webkit-3d"); }// Safari or Chrome
-    catch(e){ gl = null; }
-  }
+  gl = tryGetContext(canvas, "webgl");
+  if (!gl) gl = tryGetContext(canvas, "experimental-webgl");
+  if (!gl) gl = tryGetContext(canvas, "moz-webgl");
+  if (!gl) gl = tryGetContext(canvas, "webkit-3d");
+
   if(!gl)
   {
     alert("ERROR: Could Not Initialize WebGL!");
@@ -39,8 +38,8 @@ function InitializeWebGL(Canvas)
   }
   
   // Set the viewport to the same size as the Canvas
-  gl.viewportWidth  = Canvas.width;
-  gl.viewportHeight = Canvas.height;
+  gl.viewportWidth  = canvas.width;
+  gl.viewportHeight = canvas.height;
   
   gl.clearColor(ClearColor[0], ClearColor[1], ClearColor[2] , 1.0);
   gl.enable(gl.DEPTH_TEST);
@@ -131,13 +130,13 @@ function mvPopMatrix()
 /*
 /* Draw the world.
 /******************************************************/
-function DrawGL() 
+function DrawGL(currentTime) 
 {
 	gl.useProgram(CurrentShader.Program);
 
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.uniform1f(CurrentShader.Program.Time_Uniform, Time);
+	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
 
 	gl.uniform1i(CurrentShader.Program.Light0_Enabled_Uniform, Light0_Enabled);
   if (Light0_Enabled) 

@@ -4,10 +4,6 @@ function setup() {
     }
 }
 
-function pushEnemy(e) {
-    enemies.push(e);
-}
-
 function getOptions() {
     return {
         playerVelocity: 0.8,
@@ -15,11 +11,17 @@ function getOptions() {
     };
 }
 
+function pushEnemy(e) {
+    enemies.push(e);
+}
+
 function makeEnemy(v) {
     return {
         v: v,
         radius: 4,
         position: [0, 0],
+        think: function() {
+        },
         move: function() {
             this.v += 0.00005;
             this.updatePosition();
@@ -37,10 +39,12 @@ function makeEnemy(v) {
             var ctx = target.context;
             ctx.strokeStyle = "#888888";
             ctx.translate(this.position[0], this.position[1]);
+			ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(0, 0, this.radius + 2, 0, Math.PI*2, true); 
+            ctx.arc(0, 0, this.radius + 3, 0, Math.PI*2, false); 
             ctx.closePath();
             ctx.stroke();
+			//ctx.fill();
         },
     };
 }

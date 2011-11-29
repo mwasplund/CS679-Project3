@@ -14,22 +14,17 @@ LoadjsFile("GameState.js");
 /******************************************************/
 /* Global Variables
 /******************************************************/
-var Height
-var Width;
+
 var Canvas;
 var Timer;
 var PrevTime;
 var DEBUG = false;
-var ClearColor = [0.0, 0.0, 0.0];
 var Models = new Array();
-var Shaders = new Array();
 var lastTime = 0;
 var Time = 0;
 var Light0_Enabled = true;
 var Up = [0,1,0];
-var CurrentShader;
 var GameState;
-var CameraPos = [-5,6,9];
 
 var TestModel;
 
@@ -115,17 +110,18 @@ function InitializeCanvas()
 {
   // Attach event listeners
   window.addEventListener('resize', WindowResized, false);
+
   document.addEventListener('keydown', KeyDown, false);
   document.addEventListener('keyup', KeyUp, false);
   document.addEventListener('keypress', KeyPress, false);
+  document.addEventListener('mousedown', MouseDown, false);
+  document.addEventListener('mouseup', MouseUp, false);
+  document.addEventListener('mousemove', MouseMove, false);
+  document.addEventListener('mouseout', MouseOut, false);
+  document.addEventListener('click', MouseClick, false);
+  document.addEventListener('DOMMouseScroll', MouseWheel, false);
   
   Canvas = document.getElementById("CanvasOne");
-  Canvas.addEventListener('mousedown', MouseDown, false);
-  Canvas.addEventListener('mouseup', MouseUp, false);
-  Canvas.addEventListener('mousemove', MouseMove, false);
-  Canvas.addEventListener('mouseout', MouseOut, false);
-  Canvas.addEventListener('click', MouseClick, false);
-  Canvas.addEventListener('DOMMouseScroll', MouseWheel, false);
 }
 
 /******************************************************/
@@ -163,9 +159,9 @@ function GameLoop()
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("Bounce_Ball"));
+  Models.push(new Model("skeleton"));
   Models.push(new Model("Fancy_Bounce_Ball"));
-  Models.push(new Model("bone_arm"));
+  Models.push(new Model("BoneArm"));
   Models.push(new Model("Link"));
   Models.push(new Model("TestCube"));
   Models.push(new Model("fbxTest"));
@@ -180,7 +176,6 @@ function InitializeModels()
 	TestModel = GetModel("Human");
 	CameraPos = [64, 96, 92];
 
-	
 	//TestModel = GetModel("bone_arm");
 	//CameraPos = [217, 79, 133];
 }
