@@ -288,18 +288,31 @@ function Mesh(i_Model, i_Parent)
 
   if(i_Model.Material != null)
   {
-  	if(i_Model.Material.Texture != null)
+  	if(i_Model.Material.DiffuseColorTexture != null)
   	{
-  		Debug.Trace("This mesh uses Texture = " + i_Model.Material.Texture.RelativeFilename);
-  		this.Texture = gl.createTexture();
-  		this.Texture.image = new Image();
-  		var Texture = this.Texture;
-  		this.Texture.image.onload = function()
+  		Debug.Trace("This mesh uses DiffuseColorTexture = " + i_Model.Material.DiffuseColorTexture.RelativeFilename);
+  		this.DiffuseColorTexture = gl.createTexture();
+  		this.DiffuseColorTexture.image = new Image();
+  		var Texture = this.DiffuseColorTexture;
+  		this.DiffuseColorTexture.image.onload = function()
   		{
   			Mesh_HandleLoadedTexture(Texture);
   		}
-  		var RelativeFilename = i_Model.Material.Texture.RelativeFilename;
-  		this.Texture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  		var RelativeFilename = i_Model.Material.DiffuseColorTexture.RelativeFilename;
+  		this.DiffuseColorTexture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  	}
+  	else if(i_Model.Material.TransparentColorTexture != null)
+  	{
+  		Debug.Trace("This mesh uses TransparentColorTexture = " + i_Model.Material.TransparentColorTexture.RelativeFilename);
+  		this.TransparentColorTexture = gl.createTexture();
+  		this.TransparentColorTexture.image = new Image();
+  		var Texture = this.TransparentColorTexture;
+  		this.TransparentColorTexture.image.onload = function()
+  		{
+  			Mesh_HandleLoadedTexture(Texture);
+  		}
+  		var RelativeFilename = i_Model.Material.TransparentColorTexture.RelativeFilename;
+  		this.TransparentColorTexture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
   	}
   	
   	// Check for colors
@@ -329,8 +342,13 @@ function Mesh(i_Model, i_Parent)
       	this.Children.push(new Mesh(CurrentModel, this));		  
   	}
   }
-
-  Debug.Trace("Model loaded");
+  
+  // MWA - threw this in to make it work,
+  // Should actually try to fake threading by allowing the main program to run so 
+  // it can check if models are loaded, but this hack works for now
+  AreModelsLoaded();
+  
+  Debug.log("Model loaded");
 }
 
 function Mesh_HandleLoadedTexture(i_Texture) 
@@ -383,15 +401,24 @@ function Mesh_Draw()
     gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
   	
   	// Bind the texture UV
-  	gl.uniform1i(CurrentShader.Program.Texture0_Enabled_Uniform, this.Texture != null);
-  	
-  	if(this.Texture != null)
+  	var HasDiffuseColorTexture = this.DiffuseColorTexture != null;
+  	gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Enabled_Uniform, HasDiffuseColorTexture);
+  	if(HasDiffuseColorTexture)
   	{
   		gl.activeTexture(gl.TEXTURE0);
-  	  gl.bindTexture(gl.TEXTURE_2D, this.Texture);
-  	  gl.uniform1i(CurrentShader.Program.samplerUniform, 0);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
+  	  gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Uniform, 0);
   	}
   	
+  	var HasTransparentColorTexture = this.TransparentColorTexture != null;
+  	gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Enabled_Uniform, HasTransparentColorTexture);
+  	if(HasTransparentColorTexture)
+  	{
+  		gl.activeTexture(gl.TEXTURE0);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.TransparentColorTexture);
+  	  gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Uniform, 0);
+  	}
+
   	if(this.VertexTextureCoordBuffer != null)
   	{
       gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);

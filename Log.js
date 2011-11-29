@@ -108,4 +108,6 @@ Debug.info = function(message, system) {
 Debug.debug = function(message, system) {
     this.log(message, system, 3);
 }
-Debug.Trace = Debug.info;
+Debug.Trace = function(message) {
+    this.out(message, -1);
+}

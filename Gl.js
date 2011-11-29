@@ -63,7 +63,8 @@ function InitializeShaders()
   Shaders.push(LoadShader("PerFragmentLighting"));
   Shaders.push(LoadShader("PerVertexLighting"));
   Shaders.push(LoadShader("TimeTest"));
-  CurrentShader = Shaders[0];
+  CurrentShader = GetShader("PerVertexLighting");
+
 }
 
 /******************************************************/

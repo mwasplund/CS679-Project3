@@ -25,7 +25,7 @@ var Time = 0;
 var Light0_Enabled = true;
 var Up = [0,1,0];
 var GameState;
-
+var PercentLoaded = 0;
 var TestModel;
 
 /******************************************************/
@@ -166,15 +166,24 @@ function InitializeModels()
   Models.push(new Model("TestCube"));
   Models.push(new Model("fbxTest"));
   Models.push(new Model("skeleton"));
+   Models.push(new Model("skeleton"));
+    Models.push(new Model("skeleton"));
+     Models.push(new Model("skeleton"));
+      Models.push(new Model("skeleton"));
+       Models.push(new Model("skeleton"));
   Models.push(new Model("Human"));
+  Models.push(new Model("Sphere"));
 
   //Models.push(new Model("Brick_Block"));
+
+  TestModel = GetModel("Sphere");
+CameraPos = [344, 6, 353];
 
 	//TestModel = GetModel("skeleton");
 	//CameraPos = [344, 6, 353];
 	
-	TestModel = GetModel("Human");
-	CameraPos = [64, 96, 92];
+	//TestModel = GetModel("Human");
+	//CameraPos = [64, 96, 92];
 
 	//TestModel = GetModel("bone_arm");
 	//CameraPos = [217, 79, 133];
@@ -205,17 +214,30 @@ function GetModel(i_ModelName)
 /******************************************************/
 function AreModelsLoaded() 
 {
+  var Count = 0;
 	for(var i = 0; i < Models.length; i++)
 	{
 		// If we find a single model not ready then leave
-		if(!Models[i].Ready)
+		if(Models[i].Ready)
 		{
+	    Count ++;
+	  }
+	  else
+	  {
 			$("#Collision").val(Models[i].Name);
-			return false;
 		}
 	}
-  $("#Collision").val("Done Loading");
-	return true;
+	
+	PercentLoaded = 100 * (Count / Models.length);
+	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
+	Debug.log(PercentLoaded);
+	
+	if(PercentLoaded == 100)
+	{
+    $("#Collision").val("Done Loading");
+	  return true;
+	}
+	return false;
 }
 
 /******************************************************/
