@@ -7,5 +7,5 @@ vti_modifiedby:SR|mwasplund-TOGO\\mwasplund
 vti_timecreated:TR|21 Nov 2011 22:32:49 -0000
 vti_cacheddtm:TX|21 Nov 2011 22:32:49 -0000
 vti_filesize:IR|247205
-vti_syncwith_ftp.mwasplund.com\:21/%2fpublic_html/test:TR|21 Nov 2011 22:32:49 -0000
-vti_syncofs_ftp.mwasplund.com\:21/%2fpublic_html/test:TW|22 Nov 2011 04:25:38 -0000
+vti_syncofs_ftp.mwasplund.com\:21/public_html/test:TW|26 Nov 2011 02:40:52 -0000
+vti_syncwith_ftp.mwasplund.com\:21/public_html/test:TR|21 Nov 2011 22:32:49 -0000

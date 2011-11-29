@@ -7,5 +7,5 @@ vti_timecreated:TR|21 Nov 2011 22:32:49 -0000
 vti_cacheddtm:TX|21 Nov 2011 22:32:49 -0000
 vti_filesize:IR|2344
 vti_backlinkinfo:VX|cs679/Project3/game.html
-vti_syncwith_ftp.mwasplund.com\:21/%2fpublic_html/test:TX|21 Nov 2011 22:32:49 -0000
-vti_syncofs_ftp.mwasplund.com\:21/%2fpublic_html/test:TW|22 Nov 2011 04:25:08 -0000
+vti_syncofs_ftp.mwasplund.com\:21/public_html/test:TW|26 Nov 2011 02:39:10 -0000
+vti_syncwith_ftp.mwasplund.com\:21/public_html/test:TX|21 Nov 2011 22:32:49 -0000

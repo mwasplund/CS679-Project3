@@ -170,14 +170,19 @@ function InitializeModels()
   Models.push(new Model("TestCube"));
   Models.push(new Model("fbxTest"));
   Models.push(new Model("skeleton"));
-  
+  Models.push(new Model("Human"));
+
   //Models.push(new Model("Brick_Block"));
 
-	TestModel = GetModel("skeleton");
-	CameraPos = [344, 6, 353];
+	//TestModel = GetModel("skeleton");
+	//CameraPos = [344, 6, 353];
+	
+	TestModel = GetModel("Human");
+	CameraPos = [64, 96, 92];
+
 	
 	//TestModel = GetModel("bone_arm");
-	//CameraPos = [344, 6, 353];
+	//CameraPos = [217, 79, 133];
 }
 
 /******************************************************/

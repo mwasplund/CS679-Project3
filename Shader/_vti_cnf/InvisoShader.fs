@@ -6,3 +6,5 @@ vti_filesize:IR|1520
 vti_backlinkinfo:VX|
 vti_syncwith_ftp.mwasplund.com\:21/%2fpublic_html/test:TX|28 Oct 2011 06:19:31 -0000
 vti_syncofs_ftp.mwasplund.com\:21/%2fpublic_html/test:TW|22 Nov 2011 04:26:31 -0000
+vti_syncofs_ftp.mwasplund.com\:21/public_html/test:TW|26 Nov 2011 02:40:56 -0000
+vti_syncwith_ftp.mwasplund.com\:21/public_html/test:TX|28 Oct 2011 06:19:31 -0000
