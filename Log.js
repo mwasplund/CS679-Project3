@@ -8,7 +8,7 @@ function initializeLogSystem(sys, lev) {
     logFileMap[sys] = [];
 }
 
-initializeLogSystem("general",    0);
+initializeLogSystem("general",    3);
 initializeLogSystem("graphics2d", 0);
 initializeLogSystem("graphics3d", 0);
 initializeLogSystem("engine",     3);
@@ -67,14 +67,24 @@ function shouldLog(system, level) {
 }
 
 var Debug = function() {};
-Debug.out = function(i_Message, level)
+Debug.out = function(prefix, message, level)
 {
     try
     {
         if (level == 0) {
-            console.error(i_Message);
+            if (typeof(message) == "string") {
+                console.error(prefix + message);
+            } else {
+                console.log(prefix);
+                console.error(message);
+            }
         } else {
-            console.log(i_Message);
+            if (typeof(message) == "string") {
+                console.log(prefix + message);
+            } else {
+                console.log(prefix);
+                console.log(message);
+            }
         }
     }
     catch(e)
@@ -93,7 +103,7 @@ Debug.log = function(message, system, level) {
     if (shouldLog(system, level)) {
         if (!err) err = getErrorObject(5);
         var prefix = getPrefix(err, system);
-        Debug.out(prefix + message, level);
+        this.out(prefix, message, level);
     }
 }
 Debug.error = function(message, system) {
@@ -109,5 +119,5 @@ Debug.debug = function(message, system) {
     this.log(message, system, 3);
 }
 Debug.Trace = function(message) {
-    this.out(message, -1);
+    this.log(message, false, -1);
 }
