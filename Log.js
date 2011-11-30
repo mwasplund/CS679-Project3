@@ -9,10 +9,10 @@ function initializeLogSystem(sys, lev) {
 }
 
 initializeLogSystem("general",    0);
-initializeLogSystem("graphics2d", 3);
-initializeLogSystem("graphics3d", 3);
+initializeLogSystem("graphics2d", 0);
+initializeLogSystem("graphics3d", 0);
 initializeLogSystem("engine",     3);
-initializeLogSystem("log",        3);
+initializeLogSystem("log",        0);
 
 function getErrorObject(idx) {
     try { throw Error(""); }

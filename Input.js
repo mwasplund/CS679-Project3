@@ -89,10 +89,10 @@ function mouseup(event) {
 var mouse = {
 	position: [0, 0],
     getWorldPosition: function() {
-        var camera = getCamera();
+        var cameraPos = getCamera().getPosition();
 
         var ret = [this.position[0] - target.width() / 2, -this.position[1] + target.height() / 2];
-        ret = [ret[0] + camera.position[0], ret[1] + camera.position[1]];
+        ret = [ret[0] + cameraPos[0], ret[1] + cameraPos[1]];
 
         return ret;
     },
