@@ -82,9 +82,12 @@ function GLSL_AttachShaderProgram(i_Shader)
     i_Shader.Program.mvMatrixUniform = gl.getUniformLocation(i_Shader.Program, "uMVMatrix");
     i_Shader.Program.nMatrixUniform  = gl.getUniformLocation(i_Shader.Program, "uNMatrix");
     
-    i_Shader.Program.samplerUniform           = gl.getUniformLocation(i_Shader.Program, "uSampler"); 
-    i_Shader.Program.Time_Uniform             = gl.getUniformLocation(i_Shader.Program, "uTime");
-    i_Shader.Program.Texture0_Enabled_Uniform = gl.getUniformLocation(i_Shader.Program, "uTexture0_Enabled");
+    i_Shader.Program.Time_Uniform    = gl.getUniformLocation(i_Shader.Program, "uTime");
+    
+    i_Shader.Program.TransparentColorTexture_Uniform         = gl.getUniformLocation(i_Shader.Program, "uTransparentColorTexture"); 
+    i_Shader.Program.TransparentColorTexture_Enabled_Uniform = gl.getUniformLocation(i_Shader.Program, "uTransparentColorTexture_Enabled");
+    i_Shader.Program.DiffuseColorTexture_Uniform             = gl.getUniformLocation(i_Shader.Program, "uDiffuseColorTexture");         
+    i_Shader.Program.DiffuseColorTexture_Enabled_Uniform     = gl.getUniformLocation(i_Shader.Program, "uDiffuseColorTexture_Enabled");
     
     // Lighting Variables
     i_Shader.Program.Light0_Enabled_Uniform   = gl.getUniformLocation(i_Shader.Program, "uLight0_Enabled");  

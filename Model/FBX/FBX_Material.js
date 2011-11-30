@@ -44,7 +44,7 @@ function FBX_Parser_ParseMaterial(i_FileContainer)
     if(FirstLine[3][0] == "\"" && FirstLine[3][FirstLine[3].length - 1] == "\"")
     {
       NewMaterial.Type = FirstLine[3].substring(1, FirstLine[3].length - 1);
-      Debug.Trace("Material Type = " + NewMaterial.Type);
+     // Debug.Trace("Material Type = " + NewMaterial.Type);
     }
     else
     {

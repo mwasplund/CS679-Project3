@@ -40,7 +40,7 @@ function FBX_Parser(i_File)
      }
      else
      {
-       Debug.Trace("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
+       //Debug.Trace("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
        FBX_Parser_HandleUnknownToken(File);
      }
    }
@@ -99,7 +99,7 @@ function FBX_Parser(i_File)
 							if(	AnimationCurveNode != null)
 							{
 								Model.Animations.push(AnimationCurveNode);
-								Debug.Trace("Found Animation Node Connection to Model");	
+								//Debug.Trace("Found Animation Node Connection to Model");	
 							}
 							else
 							{
@@ -108,7 +108,7 @@ function FBX_Parser(i_File)
                 if(ChildModel != null)
                 {
                   Model.Children.push(ChildModel);
-                  Debug.Trace("Found Child of model");
+                  //Debug.Trace("Found Child of model");
                 }
 							}
 						}
@@ -127,7 +127,11 @@ function FBX_Parser(i_File)
 							if(Connection.Property == "DiffuseColor")
 							{
 								//Debug.Trace("Match Material (" + Material.Name  + ") to Texture (" + Texture.Name + ")");
-								Material.Texture = Texture;
+								Material.DiffuseColorTexture = Texture;
+							}
+							else if(Connection.Property == "TransparentColor")
+							{
+							  Material.TransparentColorTexture = Texture;
 							}
 							else
 							{
@@ -144,7 +148,7 @@ function FBX_Parser(i_File)
 							var AnimationCurve = this.GetAnimationCurve(Connection.Destination);
 							if(AnimationCurve != null)
 							{
-								Debug.Trace("Found Animation Connection to a node");
+								//Debug.Trace("Found Animation Connection to a node");
 								AnimationCurve.Property = Connection.Property;
 								AnimationCurveNode.AnimationCurveList.push(AnimationCurve);
 							}

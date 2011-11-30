@@ -132,7 +132,7 @@ function FBX_Parser_ParseTexture(i_FileContainer)
     	if(CurrentLine[1][0] == "\"" && CurrentLine[1][CurrentLine[1].length - 1] == "\"")
       {
         NewTexture.RelativeFilename = CurrentLine[1].substring(1, CurrentLine[1].length - 1);
-        Debug.Trace("Texture RelativeFilename = " + NewTexture.RelativeFilename);
+        //Debug.Trace("Texture RelativeFilename = " + NewTexture.RelativeFilename);
       }
       else
       {

@@ -44,6 +44,7 @@ function InitializeWebGL(canvas)
   gl.clearColor(ClearColor[0], ClearColor[1], ClearColor[2] , 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
+  //gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE); 
 
   mvMatrix = mat4.create();
@@ -63,7 +64,8 @@ function InitializeShaders()
   Shaders.push(LoadShader("PerFragmentLighting"));
   Shaders.push(LoadShader("PerVertexLighting"));
   Shaders.push(LoadShader("TimeTest"));
-  CurrentShader = Shaders[0];
+  CurrentShader = GetShader("PerVertexLighting");
+
 }
 
 /******************************************************/

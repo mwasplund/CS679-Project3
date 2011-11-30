@@ -6,9 +6,8 @@ uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
 uniform mat3 uNMatrix;
 
-uniform bool uTexture0_Enabled;
+uniform bool uDiffuseColorTexture_Enabled;
 uniform bool uLight0_Enabled;
-
 
 uniform vec3  uLight0_Position;
 uniform vec3  uAmbientColor;

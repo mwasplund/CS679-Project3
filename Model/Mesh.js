@@ -138,16 +138,13 @@ function Mesh_Update(i_DeltaMilisec)
 				this.DeltaMilisec = 0;
 		}
 	}
-
   }
-  
   
   // Update the children
   for(var i = 0; i < this.Children.length; i++)
   {
     this.Children[i].Update(i_DeltaMilisec); 
   }
-
 }
 
 function Mesh(i_Model, i_Parent)
@@ -281,20 +278,52 @@ function Mesh(i_Model, i_Parent)
   
   // Check if the image has a texture
   this.Texture = null;
+  this.AmbientColor = [0.1, 0.1, 0.1];
+  this.DiffuseColor = [0.8, 0.8, 0.8];
+  this.SpecularColor = [0.8, 0.8, 0.8];
+  this.Shininess = 30.0;
+
   if(i_Model.Material != null)
   {
-  	if(i_Model.Material.Texture != null)
+  	if(i_Model.Material.DiffuseColorTexture != null)
   	{
-  		Debug.Trace("This mesh uses Texture = " + i_Model.Material.Texture.RelativeFilename);
-  		this.Texture = gl.createTexture();
-  		this.Texture.image = new Image();
-  		var Texture = this.Texture;
-  		this.Texture.image.onload = function()
+  		Debug.Trace("This mesh uses DiffuseColorTexture = " + i_Model.Material.DiffuseColorTexture.RelativeFilename);
+  		this.DiffuseColorTexture = gl.createTexture();
+  		this.DiffuseColorTexture.image = new Image();
+  		var Texture = this.DiffuseColorTexture;
+  		this.DiffuseColorTexture.image.onload = function()
   		{
   			Mesh_HandleLoadedTexture(Texture);
   		}
-  		var RelativeFilename = i_Model.Material.Texture.RelativeFilename;
-  		this.Texture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  		var RelativeFilename = i_Model.Material.DiffuseColorTexture.RelativeFilename;
+  		this.DiffuseColorTexture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  	}
+  	else if(i_Model.Material.TransparentColorTexture != null)
+  	{
+  		Debug.Trace("This mesh uses TransparentColorTexture = " + i_Model.Material.TransparentColorTexture.RelativeFilename);
+  		this.TransparentColorTexture = gl.createTexture();
+  		this.TransparentColorTexture.image = new Image();
+  		var Texture = this.TransparentColorTexture;
+  		this.TransparentColorTexture.image.onload = function()
+  		{
+  			Mesh_HandleLoadedTexture(Texture);
+  		}
+  		var RelativeFilename = i_Model.Material.TransparentColorTexture.RelativeFilename;
+  		this.TransparentColorTexture.image.src = "sceneassets/images/" + RelativeFilename.substring(RelativeFilename.lastIndexOf('\\') + 1);
+  	}
+  	
+  	// Check for colors
+  	for(var i = 0; i < i_Model.Material.Properties.length; i++)
+  	{
+  	  var Property = i_Model.Material.Properties[i];
+  	  if(Property.Name == "Ambient")
+  	    this.AmbientColor = Property.Value;
+ 	    else if(Property.Name == "Diffuse")
+ 	      this.DiffuseColor = Property.Value;
+ 	    else if(Property.Name == "Specular")
+ 	      this.SpecularColor = Property.Value;
+      else if(Property.Name == "Shininess")
+ 	      this.Shininess = Property.Value;
   	}
   }
   
@@ -310,8 +339,13 @@ function Mesh(i_Model, i_Parent)
       	this.Children.push(new Mesh(CurrentModel, this));		  
   	}
   }
-
-  Debug.Trace("Model loaded");
+  
+  // MWA - threw this in to make it work,
+  // Should actually try to fake threading by allowing the main program to run so 
+  // it can check if models are loaded, but this hack works for now
+  AreModelsLoaded();
+  
+  Debug.log("Model loaded");
 }
 
 function Mesh_HandleLoadedTexture(i_Texture) 
@@ -336,19 +370,17 @@ function Mesh_TSR()
 	  if(this.Parent != null)
 	  this.Parent.TSR();
 
-	mat4.translate(mvMatrix, this.Translate);
-		
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] + this.PreRotate[0]), [1, 0, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] + this.PreRotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] + this.PreRotate[2]), [0, 0, 1]);
-
-	/*mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);*/
-
 	mat4.scale(mvMatrix, this.Scale);
-	
 
+	mat4.translate(mvMatrix, this.Translate);
+
+	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);
+  mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
+	
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] ), [0, 0, 1]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] ), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] ), [1, 0, 0]);
 }
 
 function Mesh_Draw()
@@ -360,21 +392,30 @@ function Mesh_Draw()
 	if(this.HasGeometry)
 	{
   	// Bind the Color
-  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, [0.1, 0.1, 0.1]);
-  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, [0.8, 0.8, 0.8]);
-    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,[0.8, 0.8, 0.8]);
-    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, 30.0);
+  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
+  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
+    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
+    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
   	
   	// Bind the texture UV
-  	gl.uniform1i(CurrentShader.Program.Texture0_Enabled_Uniform, this.Texture != null);
-  	
-  	if(this.Texture != null)
+  	var HasDiffuseColorTexture = this.DiffuseColorTexture != null;
+  	gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Enabled_Uniform, HasDiffuseColorTexture);
+  	if(HasDiffuseColorTexture)
   	{
   		gl.activeTexture(gl.TEXTURE0);
-  	  gl.bindTexture(gl.TEXTURE_2D, this.Texture);
-  	  gl.uniform1i(CurrentShader.Program.samplerUniform, 0);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
+  	  gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Uniform, 0);
   	}
   	
+  	var HasTransparentColorTexture = this.TransparentColorTexture != null;
+  	gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Enabled_Uniform, HasTransparentColorTexture);
+  	if(HasTransparentColorTexture)
+  	{
+  		gl.activeTexture(gl.TEXTURE0);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.TransparentColorTexture);
+  	  gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Uniform, 0);
+  	}
+
   	if(this.VertexTextureCoordBuffer != null)
   	{
       gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);

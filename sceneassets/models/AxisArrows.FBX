@@ -10,11 +10,11 @@ FBXHeaderExtension:  {
         Version: 1000
         Year: 2011
         Month: 11
-        Day: 23
-        Hour: 12
-        Minute: 10
-        Second: 5
-        Millisecond: 184
+        Day: 24
+        Hour: 1
+        Minute: 24
+        Second: 29
+        Millisecond: 336
     }
     Creator: "FBX SDK/FBX Plugins version 2011.1"
     SceneInfo: "SceneInfo::GlobalInfo", "UserData" {
@@ -30,19 +30,19 @@ FBXHeaderExtension:  {
             Comment: ""
         }
         Properties70:  {
-            P: "DocumentUrl", "KString", "Url", "", "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\models\AxisArrows.FBX"
-            P: "SrcDocumentUrl", "KString", "Url", "", "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\models\AxisArrows.FBX"
+            P: "DocumentUrl", "KString", "Url", "", "C:\Users\mwasplund\Documents\My Web Sites\mwasplund\CS679\Project3\sceneassets\models\AxisArrows.FBX"
+            P: "SrcDocumentUrl", "KString", "Url", "", "C:\Users\mwasplund\Documents\My Web Sites\mwasplund\CS679\Project3\sceneassets\models\AxisArrows.FBX"
             P: "Original", "Compound", "", ""
             P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "Original|ApplicationName", "KString", "", "", "3ds Max"
             P: "Original|ApplicationVersion", "KString", "", "", "2011.1"
-            P: "Original|DateTime_GMT", "DateTime", "", "", "23/11/2011 18:10:05.149"
-            P: "Original|FileName", "KString", "", "", "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\models\AxisArrows.FBX"
+            P: "Original|DateTime_GMT", "DateTime", "", "", "24/11/2011 07:24:29.335"
+            P: "Original|FileName", "KString", "", "", "C:\Users\mwasplund\Documents\My Web Sites\mwasplund\CS679\Project3\sceneassets\models\AxisArrows.FBX"
             P: "LastSaved", "Compound", "", ""
             P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "LastSaved|ApplicationName", "KString", "", "", "3ds Max"
             P: "LastSaved|ApplicationVersion", "KString", "", "", "2011.1"
-            P: "LastSaved|DateTime_GMT", "DateTime", "", "", "23/11/2011 18:10:05.149"
+            P: "LastSaved|DateTime_GMT", "DateTime", "", "", "24/11/2011 07:24:29.335"
         }
     }
 }
@@ -72,7 +72,7 @@ GlobalSettings:  {
 
 Documents:  {
     Count: 1
-    Document: 708347200, "", "Scene" {
+    Document: 832633824, "", "Scene" {
         Properties70:  {
             P: "SourceObject", "object", "", ""
             P: "ActiveAnimStackName", "KString", "", "", ""
@@ -92,7 +92,7 @@ References:  {
 
 Definitions:  {
     Version: 100
-    Count: 15
+    Count: 19
     ObjectType: "GlobalSettings" {
         Count: 1
     }
@@ -239,13 +239,19 @@ Definitions:  {
             }
         }
     }
+    ObjectType: "AnimationCurve" {
+        Count: 3
+    }
+    ObjectType: "AnimationCurveNode" {
+        Count: 1
+    }
 }
 
 ; Object properties
 ;------------------------------------------------------------------
 
 Objects:  {
-    Geometry: 1236271936, "Geometry::", "Mesh" {
+    Geometry: 845187344, "Geometry::", "Mesh" {
         Properties70:  {
             P: "Color", "ColorRGB", "Color", "",0.105882352941176,0.694117647058824,0.345098039215686
         }
@@ -427,7 +433,7 @@ a: 0
             }
         }
     }
-    Geometry: 1236271520, "Geometry::", "Mesh" {
+    Geometry: 845186928, "Geometry::", "Mesh" {
         Properties70:  {
             P: "Color", "ColorRGB", "Color", "",0.529411764705882,0.0235294117647059,0.0235294117647059
         }
@@ -527,7 +533,7 @@ a: 0
             }
         }
     }
-    Geometry: 1236272352, "Geometry::", "Mesh" {
+    Geometry: 845189840, "Geometry::", "Mesh" {
         Properties70:  {
             P: "Color", "ColorRGB", "Color", "",0.529411764705882,0.0235294117647059,0.0235294117647059
         }
@@ -627,7 +633,7 @@ a: 0
             }
         }
     }
-    Geometry: 1236272768, "Geometry::", "Mesh" {
+    Geometry: 845190672, "Geometry::", "Mesh" {
         Properties70:  {
             P: "Color", "ColorRGB", "Color", "",0.529411764705882,0.0235294117647059,0.0235294117647059
         }
@@ -727,7 +733,7 @@ a: 0
             }
         }
     }
-    Model: 1239589552, "Model::Sphere001", "Mesh" {
+    Model: 1545318448, "Model::Sphere001", "Mesh" {
         Version: 232
         Properties70:  {
             P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
@@ -742,15 +748,13 @@ a: 0
         Shading: T
         Culling: "CullingOff"
     }
-    Model: 1239591008, "Model::Arrow_Z", "Mesh" {
+    Model: 1545319936, "Model::Arrow_Z", "Mesh" {
         Version: 232
         Properties70:  {
-            P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
-            P: "RotationActive", "bool", "", "",1
             P: "InheritType", "enum", "", "",1
             P: "ScalingMin", "Vector3D", "Vector", "",1,1,1
             P: "DefaultAttributeIndex", "int", "Integer", "",0
-            P: "Lcl Translation", "Lcl Translation", "", "A+",0,10,-0
+            P: "Lcl Translation", "Lcl Translation", "", "A+",0,0,10
             P: "MaxHandle", "int", "Integer", "U",2
         }
         MultiLayer: 0
@@ -758,15 +762,29 @@ a: 0
         Shading: T
         Culling: "CullingOff"
     }
-    Model: 1239713424, "Model::Arrow_Y", "Mesh" {
+    Model: 1557468992, "Model::Arrow_X", "Mesh" {
         Version: 232
         Properties70:  {
-            P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
-            P: "RotationActive", "bool", "", "",1
             P: "InheritType", "enum", "", "",1
             P: "ScalingMin", "Vector3D", "Vector", "",1,1,1
             P: "DefaultAttributeIndex", "int", "Integer", "",0
-            P: "Lcl Translation", "Lcl Translation", "", "A+",0,0,-10
+            P: "Lcl Translation", "Lcl Translation", "", "A+",10,0,0
+            P: "Lcl Rotation", "Lcl Rotation", "", "A+",0,90,0
+            P: "Lcl Scaling", "Lcl Scaling", "", "A+",1,1,1
+            P: "MaxHandle", "int", "Integer", "U",6
+        }
+        MultiLayer: 0
+        MultiTake: 1
+        Shading: T
+        Culling: "CullingOff"
+    }
+    Model: 1557470480, "Model::Arrow_Y", "Mesh" {
+        Version: 232
+        Properties70:  {
+            P: "InheritType", "enum", "", "",1
+            P: "ScalingMin", "Vector3D", "Vector", "",1,1,1
+            P: "DefaultAttributeIndex", "int", "Integer", "",0
+            P: "Lcl Translation", "Lcl Translation", "", "A+",0,10,0
             P: "Lcl Rotation", "Lcl Rotation", "", "A+",-90.0000093346676,-0,0
             P: "Lcl Scaling", "Lcl Scaling", "", "A+",1,1.00000000000001,1.00000000000001
             P: "MaxHandle", "int", "Integer", "U",5
@@ -776,25 +794,7 @@ a: 0
         Shading: T
         Culling: "CullingOff"
     }
-    Model: 1239717792, "Model::Arrow_X", "Mesh" {
-        Version: 232
-        Properties70:  {
-            P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
-            P: "RotationActive", "bool", "", "",1
-            P: "InheritType", "enum", "", "",1
-            P: "ScalingMin", "Vector3D", "Vector", "",1,1,1
-            P: "DefaultAttributeIndex", "int", "Integer", "",0
-            P: "Lcl Translation", "Lcl Translation", "", "A+",10,0,-0
-            P: "Lcl Rotation", "Lcl Rotation", "", "A+",0,90,0
-            P: "Lcl Scaling", "Lcl Scaling", "", "A+",1.00000000000001,1,1.00000000000001
-            P: "MaxHandle", "int", "Integer", "U",6
-        }
-        MultiLayer: 0
-        MultiTake: 1
-        Shading: T
-        Culling: "CullingOff"
-    }
-    Material: 1236461968, "Material::07 - Default", "" {
+    Material: 1245134784, "Material::07 - Default", "" {
         Version: 102
         ShadingModel: "phong"
         MultiLayer: 0
@@ -816,7 +816,7 @@ a: 0
             P: "Reflectivity", "double", "Number", "",0
         }
     }
-    Material: 1236462336, "Material::02 - Default", "" {
+    Material: 1245137728, "Material::02 - Default", "" {
         Version: 102
         ShadingModel: "phong"
         MultiLayer: 0
@@ -838,29 +838,7 @@ a: 0
             P: "Reflectivity", "double", "Number", "",0
         }
     }
-    Material: 1236462704, "Material::01 - Default", "" {
-        Version: 102
-        ShadingModel: "phong"
-        MultiLayer: 0
-        Properties70:  {
-            P: "ShadingModel", "KString", "", "", "phong"
-            P: "EmissiveFactor", "double", "Number", "",0
-            P: "AmbientColor", "ColorRGB", "Color", "",0,0.662745118141174,0.0313725508749485
-            P: "DiffuseColor", "ColorRGB", "Color", "",0,0.662745118141174,0.0313725508749485
-            P: "TransparentColor", "ColorRGB", "Color", "",1,1,1
-            P: "SpecularColor", "ColorRGB", "Color", "",0.899999976158142,0.899999976158142,0.899999976158142
-            P: "SpecularFactor", "double", "Number", "",0
-            P: "ShininessExponent", "double", "Number", "",1.99999991737042
-            P: "Emissive", "Vector3D", "Vector", "",0,0,0
-            P: "Ambient", "Vector3D", "Vector", "",0,0.662745118141174,0.0313725508749485
-            P: "Diffuse", "Vector3D", "Vector", "",0,0.662745118141174,0.0313725508749485
-            P: "Specular", "Vector3D", "Vector", "",0,0,0
-            P: "Shininess", "double", "Number", "",1.99999991737042
-            P: "Opacity", "double", "Number", "",1
-            P: "Reflectivity", "double", "Number", "",0
-        }
-    }
-    Material: 708075024, "Material::03 - Default", "" {
+    Material: 1245136256, "Material::03 - Default", "" {
         Version: 102
         ShadingModel: "phong"
         MultiLayer: 0
@@ -882,9 +860,108 @@ a: 0
             P: "Reflectivity", "double", "Number", "",0
         }
     }
-    AnimationStack: 1229354928, "AnimStack::Take 001", "" {
+    Material: 1245137360, "Material::01 - Default", "" {
+        Version: 102
+        ShadingModel: "phong"
+        MultiLayer: 0
+        Properties70:  {
+            P: "ShadingModel", "KString", "", "", "phong"
+            P: "EmissiveFactor", "double", "Number", "",0
+            P: "AmbientColor", "ColorRGB", "Color", "",0,0.662745118141174,0.0313725508749485
+            P: "DiffuseColor", "ColorRGB", "Color", "",0,0.662745118141174,0.0313725508749485
+            P: "TransparentColor", "ColorRGB", "Color", "",1,1,1
+            P: "SpecularColor", "ColorRGB", "Color", "",0.899999976158142,0.899999976158142,0.899999976158142
+            P: "SpecularFactor", "double", "Number", "",0
+            P: "ShininessExponent", "double", "Number", "",1.99999991737042
+            P: "Emissive", "Vector3D", "Vector", "",0,0,0
+            P: "Ambient", "Vector3D", "Vector", "",0,0.662745118141174,0.0313725508749485
+            P: "Diffuse", "Vector3D", "Vector", "",0,0.662745118141174,0.0313725508749485
+            P: "Specular", "Vector3D", "Vector", "",0,0,0
+            P: "Shininess", "double", "Number", "",1.99999991737042
+            P: "Opacity", "double", "Number", "",1
+            P: "Reflectivity", "double", "Number", "",0
+        }
     }
-    AnimationLayer: 1234666592, "AnimLayer::BaseLayer", "" {
+    AnimationStack: 1545679296, "AnimStack::AxisArrows", "" {
+    }
+    AnimationLayer: 832635840, "AnimLayer::BaseLayer", "" {
+    }
+    AnimationCurveNode: 841064128, "AnimCurveNode::R", "" {
+        Properties70:  {
+            P: "d", "Compound", "", ""
+            P: "d|X", "Number", "", "A+",0
+            P: "d|Y", "Number", "", "A+",0
+            P: "d|Z", "Number", "", "A+",0
+        }
+    }
+    AnimationCurve: 1545296528, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4007
+        KeyTime: *4 {
+a: 0,46186158000,92372316000,138558474000
+} 
+        KeyValueFloat: *4 {
+a: 0,0,0,-360
+} 
+        KeyAttrFlags: *4 {
+a: 50332680,50332680,50332680,16778248
+} 
+        KeyAttrDataFloat: *16 {
+a: 0,0,4.069131e-031,0,0,0,4.069131e-031,0,0,-0,4.069131e-031,0,0,0,4.103033e-031,0
+} 
+        KeyAttrRefCount: *4 {
+a: 1,1,1,1
+} 
+        Post-Extrapolation:  {
+            Type: C
+            Repetition: 1
+        }
+    }
+    AnimationCurve: 1545296608, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4007
+        KeyTime: *4 {
+a: 0,46186158000,92372316000,138558474000
+} 
+        KeyValueFloat: *4 {
+a: 0,0,-360,-360
+} 
+        KeyAttrFlags: *4 {
+a: 50332680,50332680,50332680,16778248
+} 
+        KeyAttrDataFloat: *16 {
+a: 0,0,4.069131e-031,0,0,0,4.069131e-031,0,0,-0,4.069131e-031,0,0,0,4.103033e-031,0
+} 
+        KeyAttrRefCount: *4 {
+a: 1,1,1,1
+} 
+        Post-Extrapolation:  {
+            Type: C
+            Repetition: 1
+        }
+    }
+    AnimationCurve: 1545296768, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4007
+        KeyTime: *4 {
+a: 0,46186158000,92372316000,138558474000
+} 
+        KeyValueFloat: *4 {
+a: 0,360,360,360
+} 
+        KeyAttrFlags: *4 {
+a: 50332680,50332680,50332680,16778248
+} 
+        KeyAttrDataFloat: *16 {
+a: 0,0,4.069131e-031,0,0,0,4.069131e-031,0,0,-0,4.069131e-031,0,0,0,4.103033e-031,0
+} 
+        KeyAttrRefCount: *4 {
+a: 1,1,1,1
+} 
+        Post-Extrapolation:  {
+            Type: C
+            Repetition: 1
+        }
     }
 }
 
@@ -892,28 +969,33 @@ a: 0
 ;------------------------------------------------------------------
 
 Connections:  {
-    C: "OO",1239589552,0
-    C: "OO",1239591008,0
-    C: "OO",1239713424,0
-    C: "OO",1239717792,0
-    C: "OO",1234666592,1229354928
-    C: "OO",1236271936,1239589552
-    C: "OO",1236461968,1239589552
-    C: "OO",1236271520,1239591008
-    C: "OO",1236462336,1239591008
-    C: "OO",1236272352,1239713424
-    C: "OO",1236462704,1239713424
-    C: "OO",1236272768,1239717792
-    C: "OO",708075024,1239717792
+    C: "OO",1545318448,0
+    C: "OO",832635840,1545679296
+    C: "OO",841064128,832635840
+    C: "OO",1545319936,1545318448
+    C: "OO",1557468992,1545318448
+    C: "OO",1557470480,1545318448
+    C: "OO",845187344,1545318448
+    C: "OO",1245134784,1545318448
+    C: "OP",841064128,1545318448, "Lcl Rotation"
+    C: "OO",845186928,1545319936
+    C: "OO",1245137728,1545319936
+    C: "OO",845189840,1557468992
+    C: "OO",1245136256,1557468992
+    C: "OO",845190672,1557470480
+    C: "OO",1245137360,1557470480
+    C: "OP",1545296528,841064128, "d|X"
+    C: "OP",1545296608,841064128, "d|Y"
+    C: "OP",1545296768,841064128, "d|Z"
 }
 ;Takes section
 ;----------------------------------------------------
 
 Takes:  {
     Current: ""
-    Take: "Take 001" {
-        FileName: "Take_001.tak"
-        LocalTime: 0,46186158000
-        ReferenceTime: 0,46186158000
+    Take: "AxisArrows" {
+        FileName: "AxisArrows.tak"
+        LocalTime: 0,138558474000
+        ReferenceTime: 0,138558474000
     }
 }
