@@ -3,13 +3,13 @@
 /* files.
 /******************************************************/
 window.addEventListener("load", WindowLoaded, false);
-LoadjsFile("Model/Model.js");
 LoadjsFile("Events.js");
 LoadjsFile("Shader/GLSL_Shader.js");
 LoadjsFile("glMatrix.js");
 LoadjsFile("Debug.js");
 LoadjsFile("Gl.js");
 LoadjsFile("GameState.js");
+LoadjsFile("Model/ModelLoader.js");
 
 /******************************************************/
 /* Global Variables
@@ -27,6 +27,7 @@ var Up = [0,1,0];
 var GameState;
 var PercentLoaded = 0;
 var TestModel;
+var Loader;
 
 /******************************************************/
 /* WindowLoaded
@@ -37,6 +38,8 @@ var TestModel;
 /******************************************************/
 function WindowLoaded()
 {
+  Loader = new ModelLoader();
+
   // Check if the Canvas is supported
   GameState = GAME_STATE.LOADING;
   if(!CanvasSupported())
@@ -159,25 +162,22 @@ function GameLoop()
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("skeleton"));
-  Models.push(new Model("Fancy_Bounce_Ball"));
-  Models.push(new Model("BoneArm"));
-  Models.push(new Model("Link"));
-  Models.push(new Model("TestCube"));
-  Models.push(new Model("fbxTest"));
-  Models.push(new Model("skeleton"));
-   Models.push(new Model("skeleton"));
-    Models.push(new Model("skeleton"));
-     Models.push(new Model("skeleton"));
-      Models.push(new Model("skeleton"));
-       Models.push(new Model("skeleton"));
-  Models.push(new Model("Human"));
-  Models.push(new Model("Sphere"));
-
+  Loader.load("skeleton");
+  Loader.load("Fancy_Bounce_Ball");
+  Loader.load("BoneArm");
+  Loader.load("Link");
+  Loader.load("TestCube");
+  Loader.load("fbxTest");
+  Loader.load("skeleton");
+  Loader.load("skeleton");
+  Loader.load("Human");
+  Loader.load("Sphere");
+  Loader.StartLoading();
+  
   //Models.push(new Model("Brick_Block"));
 
-  TestModel = GetModel("Sphere");
-CameraPos = [344, 6, 353];
+  TestModel = Loader.GetModel("Sphere");
+  CameraPos = [344, 6, 353];
 
 	//TestModel = GetModel("skeleton");
 	//CameraPos = [344, 6, 353];
@@ -189,23 +189,6 @@ CameraPos = [344, 6, 353];
 	//CameraPos = [217, 79, 133];
 }
 
-/******************************************************/
-/* GetModel
-/*
-/* This function finds one of the pre-loaded models.
-/******************************************************/
-function GetModel(i_ModelName)
-{
-	for(var i = 0; i < Models.length; i++)
-	{
-		if(Models[i].Name == i_ModelName)
-			return Models[i];
-	}
-	
-	// Could not find the Model
-	Debug.Trace("ERROR: Could not find Model - " + i_ModelName);
-	return null;
-}
 
 /******************************************************/
 /* AreModelsLoaded
@@ -214,21 +197,7 @@ function GetModel(i_ModelName)
 /******************************************************/
 function AreModelsLoaded() 
 {
-  var Count = 0;
-	for(var i = 0; i < Models.length; i++)
-	{
-		// If we find a single model not ready then leave
-		if(Models[i].Ready)
-		{
-	    Count ++;
-	  }
-	  else
-	  {
-			$("#Collision").val(Models[i].Name);
-		}
-	}
-	
-	PercentLoaded = 100 * (Count / Models.length);
+	PercentLoaded = Loader.getPercentLoaded();
 	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
 	Debug.log(PercentLoaded);
 	

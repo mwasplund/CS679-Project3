@@ -40,7 +40,7 @@ function FBX_Parser(i_File)
      }
      else
      {
-       Debug.Trace("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
+       //Debug.Trace("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
        FBX_Parser_HandleUnknownToken(File);
      }
    }

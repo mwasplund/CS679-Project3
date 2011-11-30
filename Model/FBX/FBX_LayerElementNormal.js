@@ -50,11 +50,11 @@ function FBX_Parser_ParseLayerElementNormal(i_FileContainer)
     	if(CurrentLine[1][0] == "\"" && CurrentLine[1][CurrentLine[1].length - 1] == "\"")
       {
         LayerElementNormal.Name = CurrentLine[1].substring(1, CurrentLine[1].length - 1);
-        Debug.Trace("FBX ERROR: LayerElementNormal Name = " + LayerElementNormal.Name);
+        //throw "FBX ERROR: LayerElementNormal Name = " + LayerElementNormal.Name;
       }
       else
       {
-      	Debug.Trace("FBX ERROR: LayerElementNormal Name was formatted incorrectly");
+      	throw  "FBX ERROR: LayerElementNormal Name was formatted incorrectly";
         return null;
       }
     }

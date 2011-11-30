@@ -138,16 +138,13 @@ function Mesh_Update(i_DeltaMilisec)
 				this.DeltaMilisec = 0;
 		}
 	}
-
   }
-  
   
   // Update the children
   for(var i = 0; i < this.Children.length; i++)
   {
     this.Children[i].Update(i_DeltaMilisec); 
   }
-
 }
 
 function Mesh(i_Model, i_Parent)

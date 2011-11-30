@@ -136,7 +136,7 @@ function FBX_Parser_ParseAnimationCurve(i_FileContainer)
     	NewAnimationCurve.PostExtrapolation = FBX_Parser_ParsePostExtrapolation(i_FileContainer);
       if(NewAnimationCurve.PostExtrapolation == null)
       {
-      	Debug.Trace("FBX ERROR: The AnimationCurve's PostExtrapolation was null");
+      	//Debug.Trace("FBX ERROR: The AnimationCurve's PostExtrapolation was null");
       	// MWA - this isnt working yet return null;
       }
     }

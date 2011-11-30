@@ -116,7 +116,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
     }
     else
     {
-      Debug.Trace("FBX ERROR: Found Unknown Token in Objects: " + CurrentLine[0]);
+      //Debug.Trace("FBX ERROR: Found Unknown Token in Objects: " + CurrentLine[0]);
       FBX_Parser_HandleUnknownToken(i_FileContainer);
     }
   }
