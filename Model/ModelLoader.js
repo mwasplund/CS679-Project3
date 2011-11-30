@@ -20,6 +20,7 @@ function ModelLoader()
   this.Timer = null;
   this.TimerOn = false;
   this.StartLoading = ModelLoader_StartLoading;
+  this.StopLoading = ModelLoader_StopLoading;
   this.GetModel = ModelLoader_GetModel;
   
   this.getPercentLoaded = function()
@@ -75,7 +76,7 @@ function ModelLoader_load(i_FileName)
 
 function ModelLoader_TimerFunc()
 {
-  Debug.out("Timer Loop");
+ // Debug.out("Timer Loop");
   Loader.LoadLoop();
 }
 
@@ -88,9 +89,16 @@ function ModelLoader_StartLoading()
   }
 }
 
+function ModelLoader_StopLoading()
+{
+  this.TimerOn = false;
+  clearTimeout(this.Timer);
+}
+
+
 function ModelLoader_LoadLoop()
 {
-  Debug.out("Load Loop");
+  //Debug.out("Load Loop");
   if(this.TimerOn)
   {
     if(this.Files.length > 0)

@@ -168,24 +168,24 @@ function InitializeModels()
   Loader.load("Link");
   Loader.load("TestCube");
   Loader.load("fbxTest");
-  Loader.load("skeleton");
-  Loader.load("skeleton");
-  Loader.load("Human");
+  //Loader.load("skeleton");
+  Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
+  
   Loader.StartLoading();
   
   //Models.push(new Model("Brick_Block"));
 
-  TestModel = Loader.GetModel("Sphere");
-  CameraPos = [344, 6, 353];
+  //TestModel = Loader.GetModel("Sphere");
+  //CameraPos = [118, 12, 27];
 
-	//TestModel = GetModel("skeleton");
+	//TestModel = Loader.GetModel("skeleton");
 	//CameraPos = [344, 6, 353];
 	
-	//TestModel = GetModel("Human");
-	//CameraPos = [64, 96, 92];
+	TestModel = Loader.GetModel("WolfSpider_Linked");
+	CameraPos = [285, 240, -701];
 
-	//TestModel = GetModel("bone_arm");
+	//TestModel = Loader.GetModel("bone_arm");
 	//CameraPos = [217, 79, 133];
 }
 
@@ -199,11 +199,12 @@ function AreModelsLoaded()
 {
 	PercentLoaded = Loader.getPercentLoaded();
 	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
-	Debug.log(PercentLoaded);
+//	Debug.log(PercentLoaded);
 	
 	if(PercentLoaded == 100)
 	{
     $("#Collision").val("Done Loading");
+    Loader.StopLoading();
 	  return true;
 	}
 	return false;
