@@ -18,6 +18,7 @@ LoadjsFile("Hud.js", "hud");
 LoadjsFile("Player.js", "engine");
 LoadjsFile("Camera.js", "graphics2d");
 LoadjsFile("GameState.js");
+LoadjsFile("Model/ModelLoader.js");
 
 var canvases = [];
 var target;
@@ -54,7 +55,7 @@ $(window).load(function() {
 
 	initializeListeners();
 
-    initializePlayer();
+    initializePlayer(Loader.GetModel("Sphere"));
 
 	displayTitle();
 
@@ -73,8 +74,8 @@ function displayTitle() {
 }
 
 function startGame() {
-	keydownHandler = keydown;
-    keyupHandler = keyup;
+	keydownhandler = keydown;
+    keyuphandler = keyup;
 
     setup();
     gameLoop();
@@ -91,13 +92,19 @@ function preupdate() {
 /******************************************************/
 /* Global Variables
 /******************************************************/
-
+var Canvas;
+var Timer;
+var PrevTime;
+var DEBUG = false;
 var Models = new Array();
-
+var lastTime = 0;
+var Time = 0;
 var Light0_Enabled = true;
 var Up = [0,1,0];
-var DEBUG = false;
+var GameState;
+var PercentLoaded = 0;
 var TestModel;
+var Loader;
 
 /******************************************************/
 /* UpdateWindowSize
@@ -130,8 +137,8 @@ function initializeListeners() {
 	// Attach event listeners
 	window.addEventListener('resize', UpdateWindowSize, false);
 
-    document.onkeydown = function(ev) { return keydownHandler(ev); };
-    document.onkeyup = function(ev) { return keyupHandler(ev); };
+    document.onkeydown = function(ev) { return keydownhandler(ev); };
+    document.onkeyup = function(ev) { return keyuphandler(ev); };
     document.onkeypress = function () { };
 	$(document).mousemove(mousemove);
 	$(document).mousedown(mousedown);
@@ -223,40 +230,21 @@ function gameLoop()
 /******************************************************/
 function InitializeModels() 
 {
-  Models.push(new Model("Bounce_Ball"));
-  Models.push(new Model("Fancy_Bounce_Ball"));
-  Models.push(new Model("bone_arm"));
-  Models.push(new Model("Link"));
-  Models.push(new Model("TestCube"));
-  Models.push(new Model("fbxTest"));
-  Models.push(new Model("skeleton"));
+  Loader = new ModelLoader();
   
-  //Models.push(new Model("Brick_Block"));
-
-	TestModel = GetModel("skeleton");
-	CameraPos = [344, 6, 353];
-	
-	//TestModel = GetModel("bone_arm");
-	//CameraPos = [344, 6, 353];
+  Loader.load("skeleton");
+  Loader.load("Fancy_Bounce_Ball");
+  Loader.load("BoneArm");
+  Loader.load("Link");
+  Loader.load("TestCube");
+  Loader.load("fbxTest");
+  Loader.load("handFbx");
+  Loader.load("WolfSpider_Linked");
+  Loader.load("Sphere");
+  
+  Loader.StartLoading();
 }
 
-/******************************************************/
-/* GetModel
-/*
-/* This function finds one of the pre-loaded models.
-/******************************************************/
-function GetModel(i_ModelName)
-{
-	for(var i = 0; i < Models.length; i++)
-	{
-		if(Models[i].Name == i_ModelName)
-			return Models[i];
-	}
-	
-	// Could not find the Model
-	Debug.Trace("ERROR: Could not find Model - " + i_ModelName);
-	return null;
-}
 
 /******************************************************/
 /* AreModelsLoaded
@@ -265,17 +253,17 @@ function GetModel(i_ModelName)
 /******************************************************/
 function AreModelsLoaded() 
 {
-	for(var i = 0; i < Models.length; i++)
+	PercentLoaded = Loader.getPercentLoaded();
+	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
+//	Debug.log(PercentLoaded);
+	
+	if(PercentLoaded == 100)
 	{
-		// If we find a single model not ready then leave
-		if(!Models[i].Ready)
-		{
-			$("#Collision").val(Models[i].Name);
-			return false;
-		}
+    $("#Collision").val("Done Loading");
+    Loader.StopLoading();
+	  return true;
 	}
-  $("#Collision").val("Done Loading");
-	return true;
+	return false;
 }
 
 /******************************************************/
@@ -313,8 +301,6 @@ function SelectLevel(i_LevelName)
 /******************************************************/
 function Update(i_DeltaMiliSec) 
 {
-	TestModel.Update(i_DeltaMiliSec);
-	
   if(GameState == GAME_STATE.PLAYING)
   {		    
     //MainPlayer.Update();

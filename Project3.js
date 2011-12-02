@@ -168,7 +168,7 @@ function InitializeModels()
   Loader.load("Link");
   Loader.load("TestCube");
   Loader.load("fbxTest");
-  //Loader.load("skeleton");
+  Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
   
@@ -179,7 +179,7 @@ function InitializeModels()
   //TestModel = Loader.GetModel("Sphere");
   //CameraPos = [118, 12, 27];
 
-	//TestModel = Loader.GetModel("skeleton");
+	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
 	TestModel = Loader.GetModel("WolfSpider_Linked");

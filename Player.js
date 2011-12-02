@@ -1,5 +1,5 @@
 var player;
-function initializePlayer() {
+function initializePlayer(i_Model) {
 	var stats = {
 		speed: getOptions().playerVelocity,
 	};
@@ -9,9 +9,11 @@ function initializePlayer() {
         direction: [0, 1],
         radius: 20,
         fillStyle: "#00FF44",
+		model: i_Model,
         move: basicMove,
         getHealth: function() { return 0.7; },
         draw: drawCircle,
+		drawGL: drawModel,
     }
     initializeAttacks();
 

@@ -1,5 +1,4 @@
 function draw() {
-	if (in2dWorld) {
 		preDraw();
 		drawEnemies();
 		drawEnvironment();
@@ -8,9 +7,6 @@ function draw() {
 		drawPlayers();
 		drawHud();
 		postDraw();
-	} else {
-		DrawGL(new Date().getTime());
-	}
 }
 
 function preDraw() {
@@ -21,6 +17,9 @@ function preDraw() {
     ctx.translate(target.width() / 2, -target.height() / 2);
 
     getCamera().preDraw(ctx);
+	
+	
+	PreDrawGL();
 }
 
 function postDraw() {
@@ -90,12 +89,9 @@ function drawObject(o) {
     if (in2dWorld) {
         drawObject2d(o);
     } else {
-        drawObjectGl(o);
+		if(o.drawGL)
+        	o.drawGL();
     }
-}
-
-function drawObjectGl(o) {
-    return;
 }
 
 function drawObject2d(o) {

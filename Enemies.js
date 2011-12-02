@@ -23,10 +23,10 @@ function makeSimpleEnemy(pos) {
 	return makeEnemy({
 			radius: 4,
 			speed: 0.6,
-		}, pos);
+		}, pos, Loader.GetModel("TestCube"));
 }
 
-function makeEnemy(stats, position) {
+function makeEnemy(stats, position, i_Model) {
 	var ret = {};
 
 	ret.stats = stats;
@@ -36,7 +36,9 @@ function makeEnemy(stats, position) {
 	ret.drawSelected = drawCircleSelected;
 	ret.radius = stats.radius;
 	ret.fillStyle = "#111166";
+	ret.model = i_Model;
 	ret.position = position.slice(0);
+	ret.drawGL = drawModel;
 
 	return ret;
 }

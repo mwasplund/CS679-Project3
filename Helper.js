@@ -227,12 +227,17 @@ function degToRad(degrees)
 /*
 /* A function that checks for an error in gl
 /******************************************************/
+var PrevError = -1;
 function checkGLError() 
 {
  var error = gl.getError();
  if (error != gl.NO_ERROR && error != gl.CONTEXT_LOST_WEBGL)
  {
-   var str = "GL Error: " + error;
-   Debug.Trace(str);
+	 if(error != PrevError)
+	 {
+		   var str = "GL Error: " + error;
+		   Debug.Trace(str);
+		   PrevError = error;
+	 }
  }
 }

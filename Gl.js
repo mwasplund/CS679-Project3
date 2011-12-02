@@ -21,6 +21,16 @@ function tryGetContext(canvas, str) {
 	}
 }
 
+function drawModel()
+{
+	mvPushMatrix();
+	mat4.scale(mvMatrix, [0.02, 0.02, 0.02]);
+	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
+	mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
+	this.model.Draw();	
+	mvPopMatrix();
+}
+
 function InitializeWebGL(canvas)
 {
   // Initialize
@@ -132,7 +142,7 @@ function mvPopMatrix()
 /*
 /* Draw the world.
 /******************************************************/
-function DrawGL(currentTime) 
+function PreDrawGL(currentTime) 
 {
 	gl.useProgram(CurrentShader.Program);
 
@@ -156,20 +166,4 @@ function DrawGL(currentTime)
 	
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);	
-
-  /*gl.sampleCoverage(10, false);
-  if($("#EnableAntialiasing").val() == "Checked")
-    gl.enable(gl.SAMPLE_COVERAGE);
-  else
-    gl.disable(gl. SAMPLE_COVERAGE);*/
-    
-
-	if(GameState == GAME_STATE.START)
-	{
-    
-	}
-	else if(GameState == GAME_STATE.PLAYING || GameState == GAME_STATE.PAUSED || GameState == GAME_STATE.BEAT_LEVEL)
-	{
-    TestModel.Draw();
-	}
 }

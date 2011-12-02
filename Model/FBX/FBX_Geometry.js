@@ -84,7 +84,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 			NewGeometry.TriangleUVIndices = new Array();
 		}
 		
-		  if(NewGeometry.LayerElementNormal == null || NewGeometry.PolygonVertexIndex.length != NewGeometry.LayerElementNormal.Normals.length / 3)
+		  if(NewGeometry.LayerElementNormal == null )
  		  {
  		 		Debug.Trace("FBX ERROR: There was either no LayerEementNormal or its length was invalid, did not initialize the triangle Normals");
  		  }
@@ -121,15 +121,24 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 					if(NewGeometry.TriangleNormals != null)
 					{
 						// Copy over the Normals
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
+						if(NewGeometry.LayerElementNormal.MappingInformationType == "ByPolygonVertex")
+						{
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
+						}
+						else if(NewGeometry.LayerElementNormal.MappingInformationType == "ByVertice")
+						{
+					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+1]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
+						}
 					}
        	}
        	else if(NumSides == 4)
@@ -158,25 +167,38 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 					if(NewGeometry.TriangleNormals != null)
 					{
 						// Normals
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
-	
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+9]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+10]);
-						NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+11]);
+						if(NewGeometry.LayerElementNormal.MappingInformationType == "ByPolygonVertex")
+						{
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
+							
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+9]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+10]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+11]);
+						}
+						else if(NewGeometry.LayerElementNormal.MappingInformationType == "ByVertice")
+						{
+					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+1]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
+							
+					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+3]);
+						}
 					}
        	}
        	else
