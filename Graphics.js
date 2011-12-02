@@ -105,12 +105,7 @@ function drawObject2d(o) {
 }
 
 function getViewDrawCircle() {
-    return [[0, 0], 1000];
-}
-
-var enemies = [];
-function getEnemies() {
-    return enemies;
+	return [getLocalPlayer().getPosition(), 1000]
 }
 
 function getEnemiesInGrid(topLeft, bottomRight) {
@@ -159,6 +154,11 @@ function drawPlayers() {
 }
 
 function drawEnvironment() {
+    var walls = getWalls();
+    for (var i = 0; i < walls.length; i++) {
+        var w = walls[i];
+        drawObject(w);
+    }
 }
 
 function drawSpecial() {
@@ -174,6 +174,17 @@ function drawCircle() {
     ctx.arc(0, 0, this.radius, 0, Math.PI*2, true); 
     ctx.closePath();
     ctx.fill();
+}
+
+function drawCircleSelected() {
+	var ctx = target.context;
+	ctx.strokeStyle = "#888888";
+	ctx.translate(this.position[0], this.position[1]);
+	ctx.lineWidth = 2;
+	ctx.beginPath();
+	ctx.arc(0, 0, this.radius + 3, 0, Math.PI*2, false); 
+	ctx.closePath();
+	ctx.stroke();
 }
 
 function clearCanvas(tgt) {

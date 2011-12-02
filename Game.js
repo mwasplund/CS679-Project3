@@ -9,6 +9,7 @@ LoadjsFile("Util.js");
 LoadjsFile("Graphics.js", "graphics2d");
 LoadjsFile("Gl.js", "graphics3d");
 LoadjsFile("Physics.js", "engine");
+LoadjsFile("Enemies.js", "engine");
 LoadjsFile("Setup.js", "engine");
 LoadjsFile("Input.js", "interface");
 LoadjsFile("Passwords.js", "interface");
@@ -191,6 +192,7 @@ var lastUpdateTime = 0;
 var lastDrawTime = 0;
 var maxFps = 60;
 var tick = 0;
+var drawTick = 0;
 function gameLoop()
 {
     var maxSteps = 4; // 1000 / timeStep / maxSteps ~= min framerate
@@ -204,6 +206,7 @@ function gameLoop()
         tick++;
     }
     draw();
+    drawTick++;
 
     var dt = new Date().getTime() - lastDrawTime;
     lastDrawTime += dt;

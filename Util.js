@@ -50,6 +50,10 @@ function length2(vec) {
     return Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 }
 
+function dist2(left, right) {
+	return Math.sqrt((left[0] - right[0]) * (left[0] - right[0]) + (left[1] - right[1]) * (left[1] - right[1]));
+}
+
 function normalize2(vec) {
 	var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 	return [vec[0] / len, vec[1] / len];
@@ -79,3 +83,18 @@ Function.prototype.curry = function() {
 		return __method.apply(this, args.concat(toArray(arguments)));
 	}
 }
+
+Array.prototype.minElement = function(compare) {
+	if (this.length == 0) return null;
+	if (!compare) {
+		compare = function(left, right) { return left < right; };
+	}
+
+	var v = this[0];
+	for (var i = 1; i < this.length; i++) {
+		v = compare(this[i], v) ? this[i] : v;
+	}
+	return v;
+}
+
+

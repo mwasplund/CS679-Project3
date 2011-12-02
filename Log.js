@@ -9,10 +9,11 @@ function initializeLogSystem(sys, lev) {
 }
 
 initializeLogSystem("general",    3);
-initializeLogSystem("graphics2d", 0);
-initializeLogSystem("graphics3d", 0);
+initializeLogSystem("graphics2d", 3);
+initializeLogSystem("graphics3d", 3);
 initializeLogSystem("engine",     3);
 initializeLogSystem("log",        0);
+
 
 function getErrorObject(idx) {
     try { throw Error(""); }
@@ -93,6 +94,15 @@ Debug.out = function(prefix, message, level)
     }
 }
 
+var hasLogged = {};
+Debug.once = function() {
+    var err = getErrorObject(5);
+    var pfx = err.filename + err.lineNumber;
+    if (hasLogged[err + pfx]) return false;
+    hasLogged[err + pfx] = true;
+    return true;
+}
+
 Debug.log = function(message, system, level) {
     var err;
     if (!level) level = 0;
@@ -109,14 +119,26 @@ Debug.log = function(message, system, level) {
 Debug.error = function(message, system) {
     this.log(message, system, 0);
 }
+Debug.errorOnce = function(message, system) {
+    if (this.once()) this.log(message, system, 0);
+}
 Debug.warn = function(message, system) {
     this.log(message, system, 1);
+}
+Debug.warnOnce = function(message, system) {
+    if (this.once()) this.log(message, system, 1);
 }
 Debug.info = function(message, system) {
     this.log(message, system, 2);
 }
+Debug.infoOnce = function(message, system) {
+    if (this.once()) this.log(message, system, 2);
+}
 Debug.debug = function(message, system) {
     this.log(message, system, 3);
+}
+Debug.debugOnce = function(message, system) {
+    if (this.once()) this.log(message, system, 3);
 }
 Debug.Trace = function(message) {
     this.log(message, false, -1);
