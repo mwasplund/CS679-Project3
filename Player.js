@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-var player = {
-    position: [0, 0],
-    velocity: 0.1,
-    direction: [0, 1],
-    radius: 20,
-    fillStyle: "#00FF44",
-    move: function() { 
-        this.position = add2(this.position, scale2(this.velocity, this.direction));
-    },
-    getHealth: function() { return 0.7; },
-    draw: drawCircle,
-};
-function getPlayer() {
-    return player;
-}
-=======
 var player;
 function initializePlayer() {
 	var stats = {
@@ -74,4 +57,3 @@ function shouldMoveY() {
         ((getKeyState(keyId.up) != 0) ? 1 : 0);
 }
 
->>>>>>> 26c48ecddf664051298530a771984e5367c5af72

@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-function getCamera() {
-    return {
-		move: function() { },
-		position: [0, 0],
-    };
-}
-
-=======
 function getCamera() {
     return {
 		move: function() { },
@@ -21,4 +12,3 @@ function getCamera() {
     };
 }
 
->>>>>>> 26c48ecddf664051298530a771984e5367c5af72
