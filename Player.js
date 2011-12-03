@@ -55,7 +55,7 @@ function shouldMoveX() {
 }
 
 function shouldMoveY() {
-    return ((getKeyState(keyId.down) != 0) ? -1 : 0) + 
-        ((getKeyState(keyId.up) != 0) ? 1 : 0);
+    return ((getKeyState(keyId.down) != 0) ? 1 : 0) + 
+        ((getKeyState(keyId.up) != 0) ? -1 : 0);
 }
 

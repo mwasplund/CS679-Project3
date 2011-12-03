@@ -47,33 +47,33 @@ function intersectPathLine(path, line) {
 }
 
 function intersectPathHorzLine(path, line) {
-	if (path[0][0] == path[1][0]) return null;
+	//if (path[0][0] == path[1][0]) return null;
 	var left = path[0][1] < line[0][1];
-	var off = left ? [0, -path[2]] : [0, path[2]];
-	var ret = intersectLineLine([path[0], path[1]], [add2(line[0], off), add2(line[1], off)]);
+	var offy = left ? -path[2] : path[2];
+    var offx = line[0][0] < line[1][0] ? -path[2] : path[2];
+    var offLine = [add2(line[0], [offx, offy]), add2(line[1], [-offx, offy])];
+
+	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = add2(ret, left ? [0, -0.01] : [0, 0.01]);
 		ret = [ret, line, dist2(ret, path[0])];
 	}
 	return ret;
 }
 function intersectPathVertLine(path, line) {
-    return null;
-	if (path[0][1] == path[1][1]) return null;
+	//if (path[0][1] == path[1][1]) return null;
+
 	var left = path[0][0] < line[0][0];
-	var off = left ? -path[2] : path[2];
-    var offLine = [[line[0].slice(0)], [line[1].slice(0)]];
+	var offx = left ? -path[2] : path[2];
+    var offy = line[0][1] < line[1][1] ? -path[2] : path[2];
+    var offLine = [add2(line[0], [offx, offy]), add2(line[1], [offx, -offy])];
 
-
-    
-
-	var ret = intersectLineLine([path[0], path[1]], [add2(line[0], off), add2(line[1], off)]);
+	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = add2(ret, left ? [-0.01, 0] : [0.01, 0]);
 		ret = [ret, line, dist2(ret, path[0])];
 	}
 	return ret;
 }
+var EPS = 0.0000001;
 function intersectLineLine(left, right) {
 	var x = [0, left[0][0], left[1][0], right[0][0], right[1][0]];
 	var y = [0, left[0][1], left[1][1], right[0][1], right[1][1]];
@@ -84,12 +84,12 @@ function intersectLineLine(left, right) {
     var ua = (x[4] - x[3]) * (y[1] - y[3]) - (y[4] - y[3]) * (x[1] - x[3]);
     ua /= den;
 
-    if (ua < 0 || ua > 1) return null;
+    if (ua < 0 - EPS || ua > 1 + EPS) return null;
 
     var ub = (x[2] - x[1]) * (y[1] - y[3]) - (y[2] - y[1]) * (x[1] - x[3]);
     ub /= den;
 
-    if (ub < 0 || ub > 1) return null;
+    if (ub < 0 - EPS || ub > 1 + EPS) return null;
 
     return [x[1] + ua * (x[2] - x[1]), y[1] + ua * (y[2] - y[1])];
 }
@@ -110,7 +110,11 @@ function intersectPathWalls(begin, end, radius) {
 	}
 
 	if (hit) {
-		return [hit[0], hit[1]];
+        if (dist2(hit, begin) < 0.01) {
+            return [begin, null];
+        }
+        var h = add2(hit[0], scale2(0.01, normalize2(sub2(begin, end))));
+		return [h, hit[1]];
 	} else {
 		return [end, null];
 	}

@@ -24,7 +24,6 @@ function tryGetContext(canvas, str) {
 function drawModel()
 {
 	mvPushMatrix();
-	mat4.scale(mvMatrix, [0.02, 0.02, 0.02]);
 	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
 	mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
 	this.model.Draw();	
@@ -159,11 +158,17 @@ function PreDrawGL(currentTime)
 		
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	
-	// Setup the camera
-	$("#CameraPos_X").val(CameraPos[0]);
-	$("#CameraPos_Y").val(CameraPos[1]);
-	$("#CameraPos_Z").val(CameraPos[2]);
+    var playerPos = getLocalPlayer().getPosition();
+    playerPos = [playerPos[0], 0, playerPos[1]];
+    CameraPos = playerPos.slice(0);
+    CameraPos[2] += 200;
+    CameraPos[1] += 600;
+
+    var scale = 0.02;
+    vec3.scale(playerPos, scale);
+    vec3.scale(CameraPos, scale);
 	
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
-	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);	
+	mat4.lookAt(CameraPos, playerPos, Up, mvMatrix);	
+	mat4.scale(mvMatrix, [scale, scale, scale]);
 }

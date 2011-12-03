@@ -13,9 +13,8 @@ function preDraw() {
     clear();
 
     var ctx = target.context;
-    ctx.setTransform(1, 0, 0, -1, 0, 0);
-    ctx.translate(target.width() / 2, -target.height() / 2);
 
+    ctx.translate(target.width() / 2, target.height() / 2);
     getCamera().preDraw(ctx);
 	
 	

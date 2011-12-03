@@ -91,7 +91,7 @@ var mouse = {
     getWorldPosition: function() {
         var cameraPos = getCamera().getPosition();
 
-        var ret = [this.position[0] - target.width() / 2, -this.position[1] + target.height() / 2];
+        var ret = [this.position[0] - target.width() / 2, this.position[1] - target.height() / 2];
         ret = [ret[0] + cameraPos[0], ret[1] + cameraPos[1]];
 
         return ret;

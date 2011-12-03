@@ -345,7 +345,7 @@ function Mesh(i_Model, i_Parent)
   // it can check if models are loaded, but this hack works for now
   AreModelsLoaded();
   
-  Debug.log("Model loaded");
+  Debug.info("Model loaded");
 }
 
 function Mesh_HandleLoadedTexture(i_Texture) 
