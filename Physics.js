@@ -5,23 +5,19 @@ function update() {
 }
 
 function movePhase() {
-    var enemies = getEnemies();
-    for (var i = 0; i < enemies.length; i++) {
-        var e = enemies[i];
-        e.think();
-        processEffects(e);
-        e.move();
-    }
-
-    var players = getPlayers();
-    for (var i = 0; i < players.length; i++) {
-        var pl = players[i];
-        pl.think();
-        processEffects(pl);
-        pl.move();
+    var entities = getEntities();
+    for (var i = 0; i < entities.length; i++) {
+        var ent = entities[i];
+        ent.think();
+        processEffects(ent);
+        ent.move();
     }
 
 	getCamera().move();
+}
+
+function getEntities() {
+    return getEnemies().concat(getPlayers());
 }
 
 function processEffects(ent) {
@@ -107,21 +103,73 @@ function intersectPathWalls(begin, end, radius) {
 				hit = x;
 			}
 		}
+        if (hit) {
+            if (dist2(hit, begin) < 0.01) {
+                return [begin, null];
+            }
+            var h = add2(hit[0], scale2(0.01, normalize2(sub2(begin, end))));
+            return [h, hit[1]];
+        }
 	}
 
-	if (hit) {
-        if (dist2(hit, begin) < 0.01) {
-            return [begin, null];
-        }
-        var h = add2(hit[0], scale2(0.01, normalize2(sub2(begin, end))));
-		return [h, hit[1]];
-	} else {
-		return [end, null];
-	}
+    return [end, null];
+}
+
+function intersectLineCircle(line, circle) {
+    var x = [line[0][0], line[1][0], circle[0][0]];
+    var y = [line[0][1], line[1][1], circle[0][1]];
+
+    var un = ((x[2] - x[0]) * (x[1] - x[0]) + (y[2] - y[0]) * (y[1] - y[0]));
+    var ud = ((x[1] - x[0]) * (x[1] - x[0]) + (y[1] - y[0]) * (y[1] - y[0]));
+
+    // This assumes that the line doesn't begin inside the circle
+    if (un < 0) return null;
+
+    var p = add2(line[0], scale2(un / ud, sub2(line[1], line[0])));
+
+    // If the closest point on the line is outside the circle or too far past the end of the segment
+    if (dist2(p, circle[0]) > circle[1] || 
+            (un > ud && dist2(p, line[1]) > circle[1])) {
+        return null;
+    }
+
+
+    //var u = 
+
+
+
+    return null;
+}
+
+function intersectPathEntity(path, entity) {
+    var hit = intersectLineCircle([path[0], path[1]], [entity.position, entity.radius + path[2]]);
+    if (hit) {
+        return [hit, entity, dist2(hit, path[0])];
+    } else return null;
+}
+
+function getEntityBucket(idx) {
+    return getEntities();
+}
+
+function getEntityBucketsFromLine(begin, end) {
+    return [0];
 }
 
 function intersectPathEntities(begin, end, radius, self) {
 	var hit;
+
+    var buckets = getEntityBucketsFromLine(begin, end);
+    for (var i = 0; i < buckets.length; i++) {
+        var entities = getEntityBucket(buckets[i]);
+        for (var j = 0; j < entities.length; j++) {
+            var  x = intersectPathEntity([begin, end, radius], entities[j]);
+            if (x && (!hit || hit[2] > x[2])) {
+                hit = x;
+            }
+        }
+
+    }
 	return [end, hit];
 }
 

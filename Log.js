@@ -8,12 +8,11 @@ function initializeLogSystem(sys, lev) {
     logFileMap[sys] = [];
 }
 
-initializeLogSystem("general",    3);
+initializeLogSystem("general",    0);
 initializeLogSystem("graphics2d", 3);
-initializeLogSystem("graphics3d", 3);
+initializeLogSystem("graphics3d", 0);
 initializeLogSystem("engine",     3);
 initializeLogSystem("log",        0);
-
 
 function getErrorObject(idx) {
     try { throw Error(""); }
@@ -36,11 +35,11 @@ function getErrorObject(idx) {
         return err; 
     }
 }
-function getPrefix(err, sys) {
+function getPrefix(err, sys, lvl) {
     var pad = "                    ";
     var file = (err.filename + pad).slice(0, 12);
 
-    return (pad + sys).slice(-10) + "::" + (err.filename + ":" + err.lineNumber + " " + pad).slice(0, 20) + "| ";
+    return (pad + sys + "(" + lvl + ")").slice(-15) + "::" + (err.filename + ":" + err.lineNumber + " " + pad).slice(0, 20) + "| ";
 }
 
 function getSystemFromFile(file) {
@@ -55,7 +54,7 @@ function logAttachFile(file, system) {
     var idx = file.lastIndexOf("/");
     var fileStrip = file.slice(idx + 1);
     if (!logFileMap[system]) {
-        initializeLogSystem(system, 3);
+        initializeLogSystem(system, 0);
     }
     logFileMap[system].push(fileStrip);
     Debug.debug("Added " + fileStrip + " to " + system, "log");
@@ -112,7 +111,7 @@ Debug.log = function(message, system, level) {
     }
     if (shouldLog(system, level)) {
         if (!err) err = getErrorObject(5);
-        var prefix = getPrefix(err, system);
+        var prefix = getPrefix(err, system, level);
         this.out(prefix, message, level);
     }
 }
@@ -141,5 +140,5 @@ Debug.debugOnce = function(message, system) {
     if (this.once()) this.log(message, system, 3);
 }
 Debug.Trace = function(message) {
-    this.log(message, false, -1);
+    this.log(message, false, 1);
 }

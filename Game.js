@@ -18,7 +18,7 @@ LoadjsFile("Hud.js", "hud");
 LoadjsFile("Player.js", "engine");
 LoadjsFile("Camera.js", "graphics2d");
 LoadjsFile("GameState.js");
-LoadjsFile("Model/ModelLoader.js");
+LoadjsFile("Model/ModelLoader.js", "graphics3d");
 
 var canvases = [];
 var target;
