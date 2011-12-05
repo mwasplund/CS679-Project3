@@ -31,7 +31,7 @@ function cleanupPhase() {
 }
 
 // If an object on the path will intersect the line
-// then return [stopping point, line, stopping point's distance along the path]
+// then return [intersection point, intersection point's distance along the path]
 function intersectPathLine(path, line) {
 	if (line[0][0] == line[1][0]) {
 		return intersectPathVertLine(path, line);
@@ -51,7 +51,7 @@ function intersectPathHorzLine(path, line) {
 
 	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = [ret, line, dist2(ret, path[0])];
+		ret = [ret, dist2(ret, path[0])];
 	}
 	return ret;
 }
@@ -65,7 +65,7 @@ function intersectPathVertLine(path, line) {
 
 	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = [ret, line, dist2(ret, path[0])];
+		ret = [ret, dist2(ret, path[0])];
 	}
 	return ret;
 }
@@ -99,20 +99,15 @@ function intersectPathWalls(begin, end, radius) {
 		var walls = getWallBucket(buckets[i]);
 		for (var j = 0; j < walls.length; j++) {
 			var x = intersectPathLine([begin, end, radius], walls[j].pts);
-			if (x && (!hit || hit[2] > x[2])) {
-				hit = x;
+			if (x && (!hit || hit[1] > x[1])) {
+				hit = x.concat(walls[j]);
 			}
 		}
         if (hit) {
-            if (dist2(hit, begin) < 0.01) {
-                return [begin, null];
-            }
-            var h = add2(hit[0], scale2(0.01, normalize2(sub2(begin, end))));
-            return [h, hit[1]];
+            return hit;
         }
 	}
-
-    return [end, null];
+    return null;
 }
 
 function intersectLineCircle(line, circle) {
@@ -133,18 +128,30 @@ function intersectLineCircle(line, circle) {
         return null;
     }
 
+    // a = ud
+    // b = -2 * un
 
-    //var u = 
+    var c = x[2] * x[2] + y[2] * y[2] + x[0] * x[0] + y[0] * y[0] +
+        -2 * (x[2] * x[0] + y[2] * y[0]) - circle[1] * circle[1];
+
+    var d = 4 * un * un - 4 * c * ud;
+
+    if (d < 0) return null;
+
+    // u = (-b - sqrt(d) ) / 2a
+    var u = (2 * un - Math.sqrt(d)) / (2 * ud);
+    if (u < 0 || u > 1) return null;
+
+    Debug.debug(line[0].toString() + " " + line[1].toString() + " " + u + " " + ud + " " + un);
 
 
-
-    return null;
+    return add2(line[0], scale2(u, sub2(line[1], line[0])));
 }
 
 function intersectPathEntity(path, entity) {
     var hit = intersectLineCircle([path[0], path[1]], [entity.position, entity.radius + path[2]]);
     if (hit) {
-        return [hit, entity, dist2(hit, path[0])];
+        return [hit, dist2(hit, path[0]), entity];
     } else return null;
 }
 
@@ -168,20 +175,21 @@ function intersectPathEntities(begin, end, radius, self) {
                 hit = x;
             }
         }
-
+        if (hit) {
+            return hit;
+        }
     }
-	return [end, hit];
-}
-
-function closestTo(target, left, right) {
-	return left[0] == right[0] || dist2(left[0], target) < dist2(right[0], target) ? left : right;
+    return null;
 }
 
 function tryMove(ent, begin, end) {
-	var wall = intersectPathWalls(begin, end, ent.radius);
-	var ent = intersectPathEntities(begin, end, ent.radius, ent);
-	var stop = closestTo(begin, wall, ent);
-	return stop;
+    if (dist2(begin, end) < 0.0001) return [begin, null, null];
+	var wall = intersectPathWalls(begin, end, ent.radius) || [end, 1e20, null];
+	var ent = intersectPathEntities(begin, end, ent.radius, ent) || [end, 1e20, null];
+    var stop = wall[1] < ent[1] ? wall : ent;
+    if (stop[1] < 0.01) return [begin, null];
+    if (stop[1] >= 1e20) return [end, null];
+    return [add2(stop[0], scale2(0.01, normalize2(sub2(begin, end)))), stop[2]];
 }
 
 function clipMove() {
