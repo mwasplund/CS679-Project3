@@ -22,7 +22,7 @@ function makeSimpleEnemy(pos) {
 	}
 	return makeEnemy({
 			radius: 4,
-			speed: 0.6,
+			speed: 2.5,
 		}, pos, Loader.GetModel("TestCube"));
 }
 

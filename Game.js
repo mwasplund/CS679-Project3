@@ -78,6 +78,8 @@ function startGame() {
     keyuphandler = keyup;
 
     setup();
+
+	prepareGame();
     gameLoop();
 }
 
@@ -186,6 +188,17 @@ function InitializeCanvas()
 	canvases.push(glCanvas.canvas);
 }
 
+
+var timeStep = 30;
+var lastUpdateTime = 0;
+var lastDrawTime = 0;
+var maxFps = 60;
+var tick = 0;
+var drawTick = 0;
+function prepareGame() {
+	lastUpdateTime = new Date().getTime();
+	lastDrawTime = lastUpdateTime;
+}
 /******************************************************/
 /* GameLoop
 /*
@@ -194,30 +207,39 @@ function InitializeCanvas()
 /* sets a timer so the function will call itself in 
 /* another 60th of a second
 /******************************************************/
-var timeStep = 30;
-var lastUpdateTime = 0;
-var lastDrawTime = 0;
-var maxFps = 60;
-var tick = 0;
-var drawTick = 0;
 function gameLoop()
 {
-    var maxSteps = 4; // 1000 / timeStep / maxSteps ~= min framerate
+    var maxSteps = 8; // 1000 / timeStep / maxSteps ~= min framerate
+	var beginTime = new Date().getTime();
+	var lastTime = beginTime;
+	var dt = 0;
     for (var steps = 0;
-			(new Date().getTime() - lastUpdateTime > timeStep) && steps < maxSteps;
+			(lastTime - lastUpdateTime > timeStep) && steps < maxSteps;
 			steps++) {
         preupdate();
         update();
         lastUpdateTime += timeStep;
-        steps++;
         tick++;
+		dt = new Date().getTime() - lastTime;
+		lastTime += dt;
     }
+
+	addDebugValue("update dt", dt);
+	addDebugValue("update/frame", steps);
+
     draw();
     drawTick++;
 
-    var dt = new Date().getTime() - lastDrawTime;
-    lastDrawTime += dt;
-	Update(dt);
+	var currTime = new Date().getTime();
+	addDebugValue("draw dt", currTime - lastTime);
+	Update(currTime - lastDrawTime);
+	lastDrawTime = currTime;
+
+	currTime = new Date().getTime();
+	addDebugValue("anim update dt", currTime - lastDrawTime);
+
+	addDebugValue("loop dt", currTime - beginTime);
+
     setTimeout(gameLoop, Math.max(5, 1000 / maxFps - dt));
 }
  

@@ -81,7 +81,7 @@ function makeWall(pt0, pt1) {
 
 function getOptions() {
     return {
-        playerVelocity: 0.8,
+        playerVelocity: 3.3,
         keyUpWaitMax: 30,
     };
 }

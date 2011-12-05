@@ -367,9 +367,6 @@ function Mesh_HandleLoadedTexture(i_Texture)
 
 function Mesh_TSR()
 {
-	  if(this.Parent != null)
-	  this.Parent.TSR();
-
 	mat4.scale(mvMatrix, this.Scale);
 
 	mat4.translate(mvMatrix, this.Translate);
@@ -441,13 +438,13 @@ function Mesh_Draw()
   }
  
    
-   mvPopMatrix();
-
- 
   // Draw the children
   for(var i = 0; i < this.Children.length; i++)
   {
     this.Children[i].Draw(); 
   }
   
+   mvPopMatrix();
+
+ 
 }
