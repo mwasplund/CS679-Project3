@@ -37,6 +37,7 @@ function makeEnemy(stats, position, i_Model) {
 	ret.radius = stats.radius;
 	ret.fillStyle = "#111166";
 	ret.model = i_Model;
+	ret.rotation = 0;
 	ret.position = position.slice(0);
 	ret.drawGL = drawModel;
 

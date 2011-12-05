@@ -8,6 +8,7 @@ function initializePlayer(i_Model) {
         position: [0, 0],
         direction: [0, 1],
         radius: 20,
+        rotation: 0,
         fillStyle: "#00FF44",
 		model: i_Model,
         move: basicMove,

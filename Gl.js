@@ -5,7 +5,8 @@ var mvMatrixStack = [];1
 var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
 var CurrentShader;
-var CameraPos = [-5,6,9];
+var CameraPos = [0,0,0];
+var CameraOffset = [0, 500, 500];
 
 /******************************************************/
 /* InitializeWebGL
@@ -25,7 +26,7 @@ function drawModel()
 {
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
+	mat4.rotate(mvMatrix, degToRad(this.rotation), [0, 1, 0]);
 	this.model.Draw();	
 	mvPopMatrix();
 }
@@ -160,9 +161,8 @@ function PreDrawGL(currentTime)
 	
     var playerPos = getLocalPlayer().getPosition();
     playerPos = [playerPos[0], 0, playerPos[1]];
-    CameraPos = playerPos.slice(0);
-    CameraPos[2] += 200;
-    CameraPos[1] += 600;
+    vec3.set(playerPos, CameraPos);
+    vec3.add(CameraPos, CameraOffset);
 
     var scale = 0.02;
     vec3.scale(playerPos, scale);
