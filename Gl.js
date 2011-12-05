@@ -25,8 +25,28 @@ function tryGetContext(canvas, str) {
 function drawModel()
 {
 	mvPushMatrix();
-	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	mat4.rotate(mvMatrix, degToRad(this.rotation), [0, 1, 0]);
+	//mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
+	//mat4.rotate(mvMatrix, degToRad(this.rotation), [0, 1, 0]);
+	var p = this.position;
+	var d = this.direction;
+
+	if (false) {
+		// Assumes model faces positive X
+		mat4.multiply(mvMatrix,
+			[d[0], 0, d[1], 0, 
+			 0, 1, 0, 0, 
+			 -d[1], 0, d[0], 0,
+			 p[0], 0, p[1], 1]);
+	} else {
+		// Assumes model faces negative Z
+		mat4.multiply(mvMatrix,
+			[-d[1], 0, d[0], 0, 
+			 0, 1, 0, 0, 
+			 -d[0], 0, -d[1], 0,
+			 p[0], 0, p[1], 1]);
+	}
+
+	//mat4.multiply(mvMatrix, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, p[0], 0, p[1], 1]);
 	this.model.Draw();	
 	mvPopMatrix();
 }

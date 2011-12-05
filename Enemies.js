@@ -39,6 +39,7 @@ function makeEnemy(stats, position, i_Model) {
 	ret.model = i_Model;
 	ret.rotation = 0;
 	ret.position = position.slice(0);
+	ret.direction = [0, 1];
 	ret.drawGL = drawModel;
 
 	return ret;
