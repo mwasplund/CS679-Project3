@@ -55,7 +55,7 @@ $(window).load(function() {
 
 	initializeListeners();
 
-    initializePlayer(Loader.GetModel("Sphere"));
+    initializePlayer(Loader.GetModel("WolfSpider_Linked"));
 
 	displayTitle();
 
@@ -303,7 +303,10 @@ function Update(i_DeltaMiliSec)
 {
   if(GameState == GAME_STATE.PLAYING)
   {		    
-    //MainPlayer.Update();
+    player.model.Update(i_DeltaMiliSec);
+    
+    //for(var i = 0; i < enemies.length; i ++)
+      enemies[0].model.Update(i_DeltaMiliSec);
   }
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {
