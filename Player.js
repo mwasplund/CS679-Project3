@@ -36,7 +36,7 @@ function initializePlayer(i_Model) {
             this.direction = d;
             this.velocity = this.stats.speed;
         } else {
-            this.direction = [0, 0];
+            this.direction = this.direction;
             this.velocity = 0; 
         }
     }
