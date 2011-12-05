@@ -142,9 +142,6 @@ function intersectLineCircle(line, circle) {
     var u = (2 * un - Math.sqrt(d)) / (2 * ud);
     if (u < 0 || u > 1) return null;
 
-    Debug.debug(line[0].toString() + " " + line[1].toString() + " " + u + " " + ud + " " + un);
-
-
     return add2(line[0], scale2(u, sub2(line[1], line[0])));
 }
 

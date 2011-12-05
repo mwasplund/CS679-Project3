@@ -227,6 +227,10 @@ function gameLoop()
 	addDebugValue("update dt", dt);
 	addDebugValue("update/frame", steps);
 
+
+    addDebugValue("playerPosition", getLocalPlayer().getPosition().toString());
+    addDebugValue("playerDirection", getLocalPlayer().direction.toString());
+    addDebugValue("numEnemies", getEnemies().length);
     draw();
     drawTick++;
 

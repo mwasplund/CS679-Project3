@@ -75,8 +75,12 @@ function drawHud() {
   drawDebugData(ctx);
 }
 
+var debugDataOn = true;
 function shouldDrawDebug() {
-	return true;
+	return debugDataOn;
+}
+function toggleDebugData() {
+    debugDataOn = !debugDataOn;
 }
 
 var debugData = {};

@@ -17,11 +17,12 @@ function enemyThink() {
 
 
 function makeSimpleEnemy(pos) {
-	if (!pos) {
+	while (!pos) {
 		pos = [(Math.random() - 0.5) * 300, (Math.random() - 0.5) * 300];
+        if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) pos = null;
 	}
 	return makeEnemy({
-			radius: 4,
+			radius: 16,
 			speed: 2.5,
 		}, pos, Loader.GetModel("TestCube"));
 }

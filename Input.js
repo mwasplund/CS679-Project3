@@ -31,11 +31,15 @@ function getKeyState(id) {
 }
 
 function keydown(event){
-    //console.log("keydown: " + event.keyCode + " " + tick);
+    Debug.info("keydown: " + event.keyCode + " " + tick);
     switch(event.keyCode) {
 		default:
 			// If the keyCode doesn't explicitly appear here, we ignore it
 			return true;
+
+        case 220: // \
+            toggleDebugData();
+            break;
 
         case 82: // r
             break;
