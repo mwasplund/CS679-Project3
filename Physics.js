@@ -167,6 +167,7 @@ function intersectPathEntities(begin, end, radius, self) {
     for (var i = 0; i < buckets.length; i++) {
         var entities = getEntityBucket(buckets[i]);
         for (var j = 0; j < entities.length; j++) {
+			if (entities[j] == self) continue;
             var  x = intersectPathEntity([begin, end, radius], entities[j]);
             if (x && (!hit || hit[2] > x[2])) {
                 hit = x;
@@ -184,22 +185,51 @@ function tryMove(ent, begin, end) {
 	var wall = intersectPathWalls(begin, end, ent.radius) || [end, 1e20, null];
 	var ent = intersectPathEntities(begin, end, ent.radius, ent) || [end, 1e20, null];
     var stop = wall[1] < ent[1] ? wall : ent;
-    if (stop[1] < 0.01) return [begin, null];
-    if (stop[1] >= 1e20) return [end, null];
-    return [add2(stop[0], scale2(0.01, normalize2(sub2(begin, end)))), stop[2]];
+	return stop;
+}
+
+function slideMove(ent, begin, end) {
+	var mv = tryMove(ent, begin, end);
+	var hit = mv[2];
+	if (!hit) return mv;
+	var norm = hit.isWall ? hit.normal : normalize2(sub2(mv[0], hit.position));
+	var decomp = normalDecompose(sub2(end, mv[0]), norm);
+	return tryMove(ent, begin, add2(mv[0], decomp[2]));
 }
 
 function clipMove() {
 	this.position = add2(this.position, scale2(this.velocity, this.direction));
 }
 
+function collideMove(ent, begin, end, stop) {
+	var target = add2(stop[0], scale2(Math.min(0.1, stop[1]), normalize2(sub2(begin, end))));
+	if (dist2(target, begin) < 0.1) {
+		return begin;
+	}
+	var stop = tryMove(ent, begin, target);
+	if (stop[2]) {
+		return begin;
+	} else {
+		return stop[0];
+	}
+}
+
 function basicMove() {
 	var target = add2(this.position, scale2(this.velocity, this.direction));
 
-	// TODO(cjhopman): do collision detection...
-	
-	target = tryMove(this, this.position, target)[0];
+	var stop = tryMove(this, this.position, target);
+	target = stop[2] ? collideMove(this, this.position, target, stop) : stop[0];
 	
 	this.position = target;
 }
+
+function slidingMove() {
+	var target = add2(this.position, scale2(this.velocity, this.direction));
+
+	var stop = slideMove(this, this.position, target);
+	target = stop[2] ? collideMove(this, this.position, target, stop) : stop[0];
+	
+	this.position = target;
+}
+	
 

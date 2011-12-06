@@ -32,7 +32,7 @@ function makeEnemy(stats, position, i_Model) {
 
 	ret.stats = stats;
 	ret.think = enemyThink;
-	ret.move = basicMove;
+	ret.move = slidingMove;
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
 	ret.radius = stats.radius;

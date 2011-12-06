@@ -75,6 +75,15 @@ function dot2(left, right) {
     return left[0] * right[0] + left[1] * right[1];
 }
 
+function normalDecompose(d, normal) {
+    var negnormal = scale2(-1, normal);
+    var dotn = dot2(d, negnormal);
+    var ncomp = scale2(dotn, negnormal);
+    var tcomp = sub2(d, ncomp);
+    return [dotn, ncomp, tcomp];
+}
+
+
 Function.prototype.curry = function() {
 	if (arguments.length < 1) { return this; }
 	var __method = this;
@@ -83,6 +92,10 @@ Function.prototype.curry = function() {
 		return __method.apply(this, args.concat(toArray(arguments)));
 	}
 }
+
+Array.prototype.toString = function(old) {
+	return function() { return "[" + old.apply(this) + "]"; };
+}(Array.prototype.toString);
 
 Array.prototype.minElement = function(compare) {
 	if (this.length == 0) return null;

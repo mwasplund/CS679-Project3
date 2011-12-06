@@ -11,10 +11,11 @@ function initializePlayer(i_Model) {
         rotation: 0,
         fillStyle: "#00FF44",
 		model: i_Model,
-        move: basicMove,
+        move: slidingMove,
         getHealth: function() { return 0.7; },
         draw: drawCircle,
 		drawGL: drawModel,
+		isPlayer: true,
     }
     initializeAttacks();
 
