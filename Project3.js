@@ -38,8 +38,6 @@ var Loader;
 /******************************************************/
 function WindowLoaded()
 {
-  Loader = new ModelLoader();
-
   // Check if the Canvas is supported
   GameState = GAME_STATE.LOADING;
   if(!CanvasSupported())
@@ -62,9 +60,6 @@ function WindowLoaded()
   // Load the models
   InitializeModels();
   
-  //Load levels
-  InitializeLevels();
- 
   // Set initial time
   var CurDate = new Date();
   PrevTime = CurDate.getTime();
@@ -162,6 +157,8 @@ function GameLoop()
 /******************************************************/
 function InitializeModels() 
 {
+  Loader = new ModelLoader();
+
   Loader.load("skeleton");
   Loader.load("Fancy_Bounce_Ball");
   Loader.load("BoneArm");
@@ -210,33 +207,6 @@ function AreModelsLoaded()
 	return false;
 }
 
-/******************************************************/
-/* InitializeLevels
-/*
-/* Load and store the levels, or just the first level.
-/******************************************************/
-function InitializeLevels() 
-{
-	//CurrentLevel = new Level(1);
-}
-
-/******************************************************/
-/* SelectLevel
-/*
-/* Select a level to play.
-/******************************************************/
-function SelectLevel(i_LevelName)
-{
-	for(var k = 0; k < 2; k++)
-	{
-		if(Levels[k].Name == i_LevelName)
-		{
-			CurrentLevel = Levels[k];
-			Debug.Trace("CurrentLevel: "+ CurrentLevel);
-			return;
-		}
-	}
-}
     
 /******************************************************/
 /* Update
@@ -257,4 +227,24 @@ function Update(i_DeltaMiliSec)
     SetGameState_Playing();
     //SetGameState_Start();
   }
+}
+
+function DrawGL() {
+	var currentTime = new Date().getTime();
+	gl.useProgram(CurrentShader.Program);
+	gl.uniform2fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
+
+	gl.uniform1i(CurrentShader.Program.Light0_Enabled_Uniform, Light0_Enabled);
+  if (Light0_Enabled) 
+  {
+    gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [5, 50, -5]);
+    gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
+  }
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
+	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
+	if (GameState != GAME_STATE.START) {
+		TestModel.Draw();
+	}
 }
