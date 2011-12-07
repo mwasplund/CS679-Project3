@@ -1,7 +1,7 @@
 var gl;
 var mvMatrix;
 var pMatrix;
-var mvMatrixStack = [];1
+var mvMatrixStack = [];
 var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
 var CurrentShader;
@@ -25,10 +25,20 @@ function tryGetContext(canvas, str) {
 var scale = 0.1;
 function drawModel()
 {
+	// Move Toward the desired rotations
+	var DesiredRotation = Math.atan2(-this.direction[0], -this.direction[1])
+	if(this.rotation > DesiredRotation + 0.1)
+		this.rotation -= 0.1;
+	else if(this.rotation < DesiredRotation - 0.1)
+		this.rotation += 0.1;
+	else
+		this.rotation = DesiredRotation;
+
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
 	mat4.scale(mvMatrix, [scale, scale, scale]);
-	mat4.rotate(mvMatrix, Math.atan2(-this.direction[0], -this.direction[1]), [0, 1, 0]);
+	mat4.rotate(mvMatrix, this.rotation, [0, 1, 0]);
+
 	this.model.Draw();	
 	mvPopMatrix();
 }
@@ -56,7 +66,7 @@ function InitializeWebGL(canvas)
   gl.clearColor(ClearColor[0], ClearColor[1], ClearColor[2] , 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
-  //gl.enable(gl.BLEND);
+  gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE); 
 
   mvMatrix = mat4.create();

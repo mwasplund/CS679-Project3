@@ -7,6 +7,7 @@ function initializePlayer(i_Model) {
 		stats: stats,
         position: [0, 0],
         direction: [0, 1],
+		rotation: 0,
         radius: 20,
         rotation: 0,
         fillStyle: "#00FF44",

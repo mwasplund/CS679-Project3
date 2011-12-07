@@ -155,7 +155,6 @@ function GameLoop()
 /* during the time of the game. We cache all our models
 /* in an array and reuse then throughout the game!
 /******************************************************/
-var CameraPos;
 function InitializeModels() 
 {
   Loader = new ModelLoader();
@@ -234,6 +233,7 @@ function UpdateMINE(i_DeltaMiliSec)
 function DrawTestModel() {
 	var currentTime = new Date().getTime();
 	gl.useProgram(CurrentShader.Program);
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.uniform2fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
@@ -247,6 +247,8 @@ function DrawTestModel() {
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
 	if (GameState != GAME_STATE.LOADING) {
+	mvPushMatrix();	
 		TestModel.Draw();
+		mvPopMatrix();	
 	}
 }
