@@ -87,11 +87,7 @@ function UpdateWindowSize()
     // Update the canvas size
     Canvas.width = WindowSize.X;
     Canvas.height = WindowSize.Y;
-    
-    // Save the Canvas size
-    Width  = Canvas.width;
-    Height = Canvas.height;
-    
+
     // Update the Vieport to match the size of the canvas
     gl.viewportWidth  = Canvas.width;
     gl.viewportHeight = Canvas.height;
@@ -119,7 +115,7 @@ function InitializeCanvas()
   document.addEventListener('click', MouseClick, false);
   document.addEventListener('DOMMouseScroll', MouseWheel, false);
   
-  Canvas = document.getElementById("CanvasOne");
+  Canvas = document.getElementById("3dCanvas");
 }
 
 /******************************************************/
@@ -138,8 +134,12 @@ function GameLoop()
   var DeltaMiliSec = CurTime - PrevTime;
   PrevTime = CurTime;
   
-	Update(DeltaMiliSec);
-  DrawGL();
+	UpdateMINE(DeltaMiliSec);
+  DrawTestModel();
+  
+  $("#CameraPos_X").val(CameraPos[0]);
+  $("#CameraPos_Y").val(CameraPos[1]);
+  $("#CameraPos_Z").val(CameraPos[2]);
   
   if(DEBUG)
   {
@@ -155,6 +155,7 @@ function GameLoop()
 /* during the time of the game. We cache all our models
 /* in an array and reuse then throughout the game!
 /******************************************************/
+var CameraPos;
 function InitializeModels() 
 {
   Loader = new ModelLoader();
@@ -174,14 +175,14 @@ function InitializeModels()
   
   //Models.push(new Model("Brick_Block"));
 
-  //TestModel = Loader.GetModel("Sphere");
-  //CameraPos = [118, 12, 27];
+  TestModel = Loader.GetModel("Sphere");
+  CameraPos = [118, 12, 27];
 
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
-	TestModel = Loader.GetModel("dagger");
-	CameraPos = [0,0, -10];
+	//TestModel = Loader.GetModel("Sphere");
+	//CameraPos = [0,0, -10];
 
 	//TestModel = Loader.GetModel("bone_arm");
 	//CameraPos = [217, 79, 133];
@@ -214,7 +215,7 @@ function AreModelsLoaded()
 /*
 /* Update movement of Player/Clones
 /******************************************************/
-function Update(i_DeltaMiliSec) 
+function UpdateMINE(i_DeltaMiliSec) 
 {
 	TestModel.Update(i_DeltaMiliSec);
 	
@@ -230,7 +231,7 @@ function Update(i_DeltaMiliSec)
   }
 }
 
-function DrawGL() {
+function DrawTestModel() {
 	var currentTime = new Date().getTime();
 	gl.useProgram(CurrentShader.Program);
 	gl.uniform2fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
@@ -242,10 +243,10 @@ function DrawGL() {
   {
     gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [5, 50, -5]);
     gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
-  }
+  } 
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
-	if (GameState != GAME_STATE.START) {
+	if (GameState != GAME_STATE.LOADING) {
 		TestModel.Draw();
 	}
 }

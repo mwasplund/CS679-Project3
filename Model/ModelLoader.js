@@ -46,7 +46,7 @@ function ModelLoader_GetModel(i_ModelName)
 	}
 	
 	// Could not find the Model
-	Debug.Trace("ERROR: Could not find Model - " + i_ModelName);
+	Debug.error("ERROR: Could not find Model - " + i_ModelName);
 	return null;
 }
 
