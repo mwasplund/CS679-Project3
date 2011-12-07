@@ -193,11 +193,29 @@ function Mesh(i_Model, i_Parent)
     
     if(i_Model.Geometry.TriangleNormals != null)
     {
+		var Normals;
+		if(i_Model.Geometry.TriangleNormals.length == i_Model.Geometry.Vertices.length)
+		{
+			Normals = new Array();
+		    for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
+			{
+				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 0]);
+				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 1]);
+				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 2]);
+			  
+		   }
+		}
+		else
+		{
+			Normals = i_Model.Geometry.TriangleNormals;
+		}		
+	
+	
   	  this.VertexNormalBuffer = gl.createBuffer();
   	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
-  	  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(i_Model.Geometry.TriangleNormals), gl.STATIC_DRAW);
+  	  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Normals), gl.STATIC_DRAW);
   	  this.VertexNormalBuffer.itemSize = 3;
-  	  this.VertexNormalBuffer.numItems = i_Model.Geometry.TriangleNormals.length/3;
+  	  this.VertexNormalBuffer.numItems = Normals.length/3;
   	  //Debug.Trace("NumNormals: " + this.VertexNormalBuffer.numItems);
     }
     

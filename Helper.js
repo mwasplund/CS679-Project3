@@ -236,7 +236,7 @@ function checkGLError()
 	 if(error != PrevError)
 	 {
 		   var str = "GL Error: " + error;
-		   Debug.Trace(str);
+		   Debug.error(str);
 		   PrevError = error;
 	 }
  }

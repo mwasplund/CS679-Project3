@@ -159,23 +159,23 @@ function InitializeModels()
 {
   Loader = new ModelLoader();
 
-  Loader.load("skeleton");
-  Loader.load("Fancy_Bounce_Ball");
-  Loader.load("BoneArm");
-  Loader.load("Link");
-  Loader.load("TestCube");
-  Loader.load("fbxTest");
-  Loader.load("handFbx");
-  Loader.load("WolfSpider_Linked");
-  Loader.load("Sphere");
+  //Loader.load("skeleton");
+  //Loader.load("Fancy_Bounce_Ball");
+  //Loader.load("BoneArm");
+  //Loader.load("Link");
+  //Loader.load("TestCube");
+  //Loader.load("fbxTest");
+ // Loader.load("handFbx");
+  //Loader.load("WolfSpider_Linked");
+  //Loader.load("Sphere");
   Loader.load("dagger");
   
   Loader.StartLoading();
   
   //Models.push(new Model("Brick_Block"));
 
-  TestModel = Loader.GetModel("Sphere");
-  CameraPos = [118, 12, 27];
+  TestModel = Loader.GetModel("dagger");
+  CameraPos = [-2, 9, 12];
 
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];

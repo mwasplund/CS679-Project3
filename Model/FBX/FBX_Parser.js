@@ -40,7 +40,7 @@ function FBX_Parser(i_File)
      }
      else
      {
-       //Debug.Trace("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
+       //Debug.error("FBX ERROR: Found Unknown Token: " + CurrentLine[0]);
        FBX_Parser_HandleUnknownToken(File);
      }
    }
@@ -48,12 +48,12 @@ function FBX_Parser(i_File)
    // Now that we have parsed the entire file make the connections between objects
    if(this.Objects == null)
    {
-   		Debug.Trace("FBX ERROR: The Model did not contain valid Objects.");
+   		Debug.error("FBX ERROR: The Model did not contain valid Objects.");
    		return null;
    }
    if(this.Connections == null)
    {
-   		Debug.Trace("FBX ERROR: The Model did not contain valid Connections.");
+   		Debug.error("FBX ERROR: The Model did not contain valid Connections.");
    		return null;
    }
 		
@@ -135,7 +135,7 @@ function FBX_Parser(i_File)
 							}
 							else
 							{
-								Debug.Trace("FBX ERROR: We do not know how to apply textures to " + Connection.Property);
+								Debug.error("FBX ERROR: We do not know how to apply textures to " + Connection.Property);
 							}
 						}
 					}
