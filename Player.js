@@ -1,5 +1,5 @@
 var player;
-function initializePlayer(i_Model) {
+function initializePlayer(i_Model, i_Scale) {
 	var stats = {
 		speed: getOptions().playerVelocity,
 	};
@@ -7,6 +7,7 @@ function initializePlayer(i_Model) {
 		stats: stats,
         position: [0, 0],
         direction: [0, 1],
+		scale: i_Scale,
 		rotation: 0,
         radius: 20,
         rotation: 0,

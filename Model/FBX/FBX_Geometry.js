@@ -105,60 +105,30 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
      	
      		var NumSides = i - Start + 1;
      		// We can handle triangles and Rectangles
-     		if(NumSides == 3)
+     		for(var k = 3; k <= NumSides; k++)
      		{
-     			// We found a triangle
-     			// Copy over the Triangle Indices
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1]);
-					NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+2] - 1);
-					
-					if(NewGeometry.TriangleUVIndices != null)
-					{
-						// Copy over the UV Indices
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
+     			// We found a polygon
+					var Offset = k - 3;
+					// Convert the rectangle to two triangles
+					if(k == NumSides)
+					{			
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1+Offset]);
+						NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+2+Offset] - 1);
 					}
-					
-					if(NewGeometry.TriangleNormals != null)
+					else
 					{
-						// Copy over the Normals
-						if(NewGeometry.LayerElementNormal.MappingInformationType == "ByPolygonVertex")
-						{
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
-						}
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1+Offset]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2+Offset]);
 					}
-       	}
-       	else if(NumSides == 4)
-       	{
-       		// Convert the rectangle to two triangles
-       		NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2]);
-					
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2]);
-					NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+3] - 1);
 					
 					if(NewGeometry.TriangleUVIndices != null)
 					{
 						// UV Indices
 						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
-	
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+3]);
+						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1+Offset]);
+						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2+Offset]);
 					}
 					
 					if(NewGeometry.TriangleNormals != null)
@@ -169,30 +139,15 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
-							
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+9]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+10]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+11]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8+3*Offset]);
 						}
 					}
-       	}
-       	else
-       	{
-       		Debug.error("FBX ERROR: This loader does not know how to parse " + NumSides + " sided polygons... Sorry.");
-       		return null;
-       	}
+			}
       }
     
       // We found the end of the geometry class

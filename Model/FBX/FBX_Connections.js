@@ -5,23 +5,37 @@ function FBX_Connection(i_Line)
 		throw "FBX ERROR: The Connection was not formated correctly.";
 		
 	if(i_Line[1][0] == "\"" && i_Line[1][i_Line[1].length - 1] == "\"")
-    this.Type = i_Line[1].substring(1, i_Line[1].length - 1);
-  else
-   	throw "FBX ERROR: There was an error parsing the Connection type.";
+		this.Type = i_Line[1].substring(1, i_Line[1].length - 1);
+	  else
+		throw "FBX ERROR: There was an error parsing the Connection type.";
    	
-	this.Destination = parseInt(i_Line[2], 10);
-	this.Origin = parseInt(i_Line[3], 10);
-	if(i_Line.length > 4)
+	if(this.Type == "PO")
 	{
-  	if(i_Line[4][0] == "\"" && i_Line[4][i_Line[4].length - 1] == "\"")
-      this.Property = i_Line[4].substring(1, i_Line[4].length - 1);
-    else
-     	throw "FBX ERROR: There was an error parsing the Connection value.";
+		if(i_Line[3][0] == "\"" && i_Line[3][i_Line[3].length - 1] == "\"")
+		  this.Destination = i_Line[3].substring(1, i_Line[3].length - 1);
+		else
+			throw "FBX ERROR: There was an error parsing the Connection value.";
+		this.Property = parseInt(i_Line[4], 10);
 	}
 	else
 	{
-		this.Property = null;
+		this.Origin = parseInt(i_Line[3], 10);
+		
+		if(i_Line.length > 4)
+		{
+			if(i_Line[4][0] == "\"" && i_Line[4][i_Line[4].length - 1] == "\"")
+			  this.Property = i_Line[4].substring(1, i_Line[4].length - 1);
+			else
+				throw "FBX ERROR: There was an error parsing the Connection value.";
+		}
+		else
+		{
+			this.Property = null;
+		}
 	}
+		
+	this.Destination = parseInt(i_Line[2], 10);
+	
 	
 	//Debug.Trace("Found Connection");
 }

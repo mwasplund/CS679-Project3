@@ -167,21 +167,21 @@ function InitializeModels()
   //Loader.load("fbxTest");
  // Loader.load("handFbx");
   //Loader.load("WolfSpider_Linked");
-  //Loader.load("Sphere");
-  Loader.load("goodGuy");
+  Loader.load("GyroStaff");
+  //Loader.load("goodGuy");
   
   Loader.StartLoading();
   
   //Models.push(new Model("Brick_Block"));
 
-  TestModel = Loader.GetModel("goodGuy");
-  CameraPos = [-2, 9, 12];
+  //TestModel = Loader.GetModel("goodGuy");
+  //CameraPos = [-2, 9, 12];
 
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
-	//TestModel = Loader.GetModel("Sphere");
-	//CameraPos = [0,0, -10];
+	TestModel = Loader.GetModel("GyroStaff");
+	CameraPos = [0,0, -10];
 
 	//TestModel = Loader.GetModel("bone_arm");
 	//CameraPos = [217, 79, 133];

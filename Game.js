@@ -55,7 +55,7 @@ $(window).load(function() {
 
 	initializeListeners();
 
-    initializePlayer(Loader.GetModel("WolfSpider_Linked"));
+    initializePlayer(Loader.GetModel("goodGuyWalk"), [2,2,2]);
 
 	displayTitle();
 
@@ -268,6 +268,7 @@ function InitializeModels()
   Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
+  Loader.load("goodGuyWalk");
   
   Loader.StartLoading();
 }

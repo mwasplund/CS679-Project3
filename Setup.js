@@ -1,6 +1,6 @@
 function setup() {
     for (var i = 0; i < 50; i++) {
-        pushEnemy(makeSimpleEnemy());
+        pushEnemy(makeSpiderEnemy());
     }
 
     setupWalls();

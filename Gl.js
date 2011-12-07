@@ -22,11 +22,10 @@ function tryGetContext(canvas, str) {
 	}
 }
 
-var scale = 0.1;
 function drawModel()
 {
 	// Move Toward the desired rotations
-	var DesiredRotation = Math.atan2(-this.direction[0], -this.direction[1]);
+	var DesiredRotation = Math.atan2(this.direction[0], this.direction[1]);
 	var Difference = this.rotation - DesiredRotation;
 	this.rotateDiff = Difference;
 	if(Difference > 2*Math.PI)
@@ -55,7 +54,7 @@ function drawModel()
 		
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	mat4.scale(mvMatrix, [scale, scale, scale]);
+	mat4.scale(mvMatrix, this.scale);
 	mat4.rotate(mvMatrix, this.rotation, [0, 1, 0]);
 
 	this.model.Draw();	
@@ -85,7 +84,7 @@ function InitializeWebGL(canvas)
   gl.clearColor(ClearColor[0], ClearColor[1], ClearColor[2] , 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LESS);
-  gl.enable(gl.BLEND);
+  //gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE); 
 
   mvMatrix = mat4.create();
