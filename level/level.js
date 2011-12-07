@@ -9,9 +9,9 @@ if (window.addEventListener) {
     var polyArray = [];
     var first = false;
     var player = false;
+    var end = false;
 
-
-    function undoPlayer() {
+     function undoPlayer() {
 	if(player) player = false;
 	var found = false;
 	imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height);
@@ -69,7 +69,22 @@ if (window.addEventListener) {
 		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
 		imageView.getContext('2d').fill();
 		imageView.getContext('2d').closePath();
+	    }else if (polyArray[i].id.toString() == "end"){
+
+		 imageView.getContext('2d').strokeStyle = "red";
+		     imageView.getContext('2d').beginPath();
+		     
+		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
+		      
+		    
+		    context.closePath();
+		     imageView.getContext('2d').strokeStyle = "black";
+
+
+
+
 	    }
+	     
 	     
 	     
 	       
@@ -134,7 +149,22 @@ if (window.addEventListener) {
 		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
 		imageView.getContext('2d').fill();
 		imageView.getContext('2d').closePath();
+	    }else if (polyArray[i].id.toString() == "end"){
+
+		 imageView.getContext('2d').strokeStyle = "red";
+		     imageView.getContext('2d').beginPath();
+		     
+		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
+		      
+		    
+		    context.closePath();
+		     imageView.getContext('2d').strokeStyle = "black";
+
+
+
+
 	    }
+	     
 	     
 	     
 	     
@@ -201,7 +231,22 @@ if (window.addEventListener) {
 		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
 		imageView.getContext('2d').fill();
 		imageView.getContext('2d').closePath();
+	    }else if (polyArray[i].id.toString() == "end"){
+
+		 imageView.getContext('2d').strokeStyle = "red";
+		     imageView.getContext('2d').beginPath();
+		     
+		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
+		      
+		    
+		    context.closePath();
+		     imageView.getContext('2d').strokeStyle = "black";
+
+
+
+
 	    }
+	     
 	     
 	     
 	     
@@ -238,6 +283,7 @@ if (window.addEventListener) {
 		   
 		   
 	    }//  end player 
+
 	    else if(polyArray[i].id == "enemy"){
 		   
 		var tempXloc = polyArray[i].xLoc.toString();
@@ -245,15 +291,31 @@ if (window.addEventListener) {
 		var tempColor = polyArray[i].color.toString();
 		var id = polyArray[i].id.toString();
 		var enemy = polyArray[i].enemy.toString();
-		   
-		newtext += "polyArray[polyArray.length] = { 'xLoc': " + tempXloc + ", 'yLoc': " + tempYloc + ", 'color': \"" + tempColor + "\" , 'id': \"" + id + "\", 'enemy': \"" +enemy + "\"}; \n";
-		   
-		   
+		var num = polyArray[i].num.toString();
+		newtext += "polyArray[polyArray.length] = { 'xLoc': " + tempXloc + ", 'yLoc': " + tempYloc + ", 'color': \"" + tempColor + "\" , 'id': \"" + id + "\", 'enemy': \"" +enemy + "\", 'num':" +num+ "}; \n";
 		   
 		   
-	    }// end enemy
+		   
+		   
+	    }// end enemey
+
+	    else if(polyArray[i].id == "end"){
+
+		var tempXloc = polyArray[i].xLoc.toString();
+		var tempYloc = polyArray[i].yLoc.toString();
+		var id = polyArray[i].id.toString();
+	
+	
+		newtext += "polyArray[polyArray.length] = { 'xLoc': " + tempXloc + ", 'yLoc': " + tempYloc + ", 'id': \"" + id + "\"}; \n";
+	
+
+
+
+
+
+	    }
 	}
-	newtext += " imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height); \n for (var i = 0; i < polyArray.length ; i++) \n{ \n if(polyArray[i].id.toString() == \"wall\"){ \n  imageView.getContext('2d').beginPath(); \n  imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart); \n imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish); \n  imageView.getContext('2d').stroke(); \n imageView.getContext('2d').closePath(); \n  } \n else   if(polyArray[i].id.toString() == \"player\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true);  \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n  imageView.getContext('2d').closePath(); \n //imageView.getContext('2d').closePath(); \n }else if( polyArray[i].id.toString() == \"enemy\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n imageView.getContext('2d').closePath(); \n } \n }\n ";
+	newtext += " imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height); \n for (var i = 0; i < polyArray.length ; i++) \n{ \n if(polyArray[i].id.toString() == \"wall\"){ \n  imageView.getContext('2d').beginPath(); \n  imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart); \n imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish); \n  imageView.getContext('2d').stroke(); \n imageView.getContext('2d').closePath(); \n  } \n else   if(polyArray[i].id.toString() == \"player\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true);  \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n  imageView.getContext('2d').closePath(); \n //imageView.getContext('2d').closePath(); \n }else if( polyArray[i].id.toString() == \"enemy\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n imageView.getContext('2d').closePath(); \n } \n else if ( polyArray[i].id.toString == \"end\"){ \n  imageView.getContext('2d').strokeStyle = \"red\"; \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); \n context.closePath(); \n  imageView.getContext('2d').strokeStyle = \"black\"; }\n ";
    
    
 	newtext += "\n } \n   </script>  </head> \n ";
@@ -268,6 +330,104 @@ if (window.addEventListener) {
    
  
     }
+
+
+
+
+ function undoEnd() {
+	if(end) end = false;
+	var found = false;
+	imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height);
+  
+  
+	//find last end type and get rid of it
+	if(!found){
+	    for(var i = polyArray.length -1 ; i >=0 ; i --){
+		  
+		if(polyArray[i].id.toString()  == "end" && !found)
+		    {
+			polyArray.splice(i,1);
+			found = true;
+			
+			
+		    }
+		  
+	    } 
+  
+	} // if found loop
+  
+	//re- draw loop
+	for (var i = 0; i < polyArray.length ; i++) {
+	      
+	      
+	      
+	      
+	    if(polyArray[i].id.toString() == "wall"){
+		imageView.getContext('2d').beginPath();
+		imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart);
+		imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish);
+		imageView.getContext('2d').stroke();
+		imageView.getContext('2d').closePath();
+	    }
+	      
+
+	    else   if(polyArray[i].id.toString() == "player"){
+		
+		  
+		    
+		imageView.getContext('2d').beginPath();
+		 
+		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); 
+		 
+		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
+		imageView.getContext('2d').fill();
+		imageView.getContext('2d').closePath();
+		//imageView.getContext('2d').closePath();
+
+	    }else if( polyArray[i].id.toString() == "enemy"){
+		imageView.getContext('2d').beginPath();
+		 
+		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); 
+		 
+		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
+		imageView.getContext('2d').fill();
+		imageView.getContext('2d').closePath();
+	    }else if (polyArray[i].id.toString() == "end"){
+
+		 imageView.getContext('2d').strokeStyle = "red";
+		     imageView.getContext('2d').beginPath();
+		     
+		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
+		      
+		    
+		    context.closePath();
+		     imageView.getContext('2d').strokeStyle = "black";
+
+
+
+
+	    }
+	     
+	     
+	       
+	}
+    }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     window.addEventListener('load', function () {
 	    var canvas, context, canvaso, contexto;
@@ -586,7 +746,7 @@ if (window.addEventListener) {
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
-		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "red", 'enemy': 1};
+		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "red", 'enemy': 1, 'num': 5};
 		      
 		      
 		      
@@ -631,7 +791,7 @@ if (window.addEventListener) {
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
-		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "yellow", 'enemy': 2};
+		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "yellow", 'enemy': 2, 'num': 5};
 		      
 		      
 		      
@@ -675,7 +835,7 @@ if (window.addEventListener) {
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
-		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "blue", 'enemy': 3};
+		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "blue", 'enemy': 3, 'num': 5};
 		      
 		      
 		      
@@ -719,7 +879,7 @@ if (window.addEventListener) {
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
-		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "green", 'enemy': 4};
+		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "green", 'enemy': 4, 'num': 5};
 		      
 		      
 		      
@@ -763,7 +923,7 @@ if (window.addEventListener) {
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
-		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "purple", 'enemy': 5};
+		    polyArray[polyArray.length] = { 'id': "enemy", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "purple", 'enemy': 5, 'num': 5};
 		      
 		      
 		      
@@ -773,6 +933,52 @@ if (window.addEventListener) {
 		};
 	    }
    
+	    tools.end = function () {
+		var tool = this;
+		this.started = false;
+		   
+		this.mousedown = function (ev) {
+		      
+		      
+		};
+		  
+		  
+		this.mousemove = function (ev) {
+		    if(!end){
+		      
+		    context.clearRect(0, 0, canvas.width, canvas.height);
+ 		    context.strokeStyle = "red";
+		    context.beginPath();
+		     
+		    context.strokeRect(ev._x, ev._y, 100,100); 
+		      
+		    
+		    context.closePath();
+		    //context.closePath();
+		    }
+		      
+		      
+		      
+		};
+
+		this.mouseup = function (ev) {
+		    if(!end){
+			end = true;
+		    tool.mousemove(ev);
+		    tool.started = false;
+		       
+		    polyArray[polyArray.length] = { 'id': "end", 'xLoc': ev._x, 'yLoc': ev._y };
+		      
+		    }
+
+		      
+
+		    img_update();
+  
+		};
+
+
+	    }
    
    
 	       
