@@ -168,13 +168,13 @@ function InitializeModels()
  // Loader.load("handFbx");
   //Loader.load("WolfSpider_Linked");
   //Loader.load("Sphere");
-  Loader.load("dagger");
+  Loader.load("goodGuy");
   
   Loader.StartLoading();
   
   //Models.push(new Model("Brick_Block"));
 
-  TestModel = Loader.GetModel("dagger");
+  TestModel = Loader.GetModel("goodGuy");
   CameraPos = [-2, 9, 12];
 
 	//TestModel = Loader.GetModel("handFbx");
