@@ -26,14 +26,33 @@ var scale = 0.1;
 function drawModel()
 {
 	// Move Toward the desired rotations
-	var DesiredRotation = Math.atan2(-this.direction[0], -this.direction[1])
-	if(this.rotation > DesiredRotation + 0.1)
-		this.rotation -= 0.1;
-	else if(this.rotation < DesiredRotation - 0.1)
-		this.rotation += 0.1;
+	var DesiredRotation = Math.atan2(-this.direction[0], -this.direction[1]);
+	var Difference = this.rotation - DesiredRotation;
+	this.rotateDiff = Difference;
+	if(Difference > 2*Math.PI)
+		Difference -= 2*Math.PI;
+	else if(Difference < -2*Math.PI)
+		Difference += 2*Math.PI;
+	
+	if(Difference >  0.1)
+	{
+		if((Difference - Math.PI) > 0.1)
+			this.rotation += 0.1;
+		else
+			this.rotation -= 0.1;
+	}
+	else if(Difference <  -0.1)
+	{
+		if((Difference + Math.PI) < -0.1)
+			this.rotation -= 0.1;
+		else
+			this.rotation += 0.1;
+	}
 	else
 		this.rotation = DesiredRotation;
 
+
+		
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
 	mat4.scale(mvMatrix, [scale, scale, scale]);

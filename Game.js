@@ -230,6 +230,7 @@ function gameLoop()
 
     addDebugValue("playerPosition", getLocalPlayer().getPosition().toString());
     addDebugValue("playerDirection", getLocalPlayer().direction.toString());
+	addDebugValue("RotateDiff", getLocalPlayer().rotateDiff);
     addDebugValue("numEnemies", getEnemies().length);
     draw();
     drawTick++;
