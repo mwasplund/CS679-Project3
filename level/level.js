@@ -8,9 +8,11 @@ if (window.addEventListener) {
     var lineArray = [];
     var polyArray = [];
     var first = false;
+    var player = false;
+
 
     function undoPlayer() {
-   
+	if(player) player = false;
 	var found = false;
 	imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height);
   
@@ -509,14 +511,14 @@ if (window.addEventListener) {
 		this.started = false;
 		   
 		this.mousedown = function (ev) {
-		      
-		      
+		    
+		    
 		};
 		  
 		  
 		this.mousemove = function (ev) {
 		       
-		      
+		    if(!player){ 
 		    context.clearRect(0, 0, canvas.width, canvas.height);
 		    context.fillStyle = "black";
 		    context.beginPath();
@@ -526,22 +528,24 @@ if (window.addEventListener) {
 		    context.fill();
 		    context.closePath();
 		    //context.closePath();
-		      
+		    }
 		      
 		      
 		      
 		};
 
 		this.mouseup = function (ev) {
-		       
+		    if(!player){
+		    player = true;
+
 		    tool.mousemove(ev);
 		    tool.started = false;
 		       
 		    polyArray[polyArray.length] = { 'id': "player", 'xLoc': ev._x, 'yLoc': ev._y, 'color' : "black"};
 		      
-		      
-		      
-
+		    }
+		    
+		    
 		    img_update();
   
 		};
