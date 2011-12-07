@@ -17,12 +17,13 @@ function enemyThink() {
 
 
 function makeSimpleEnemy(pos) {
-	if (!pos) {
+	while (!pos) {
 		pos = [(Math.random() - 0.5) * 300, (Math.random() - 0.5) * 300];
+        if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) pos = null;
 	}
 	return makeEnemy({
-			radius: 4,
-			speed: 0.6,
+			radius: 16,
+			speed: 2.5,
 		}, pos, Loader.GetModel("TestCube"));
 }
 
@@ -31,13 +32,15 @@ function makeEnemy(stats, position, i_Model) {
 
 	ret.stats = stats;
 	ret.think = enemyThink;
-	ret.move = basicMove;
+	ret.move = slidingMove;
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
 	ret.radius = stats.radius;
 	ret.fillStyle = "#111166";
 	ret.model = i_Model;
+	ret.rotation = 0;
 	ret.position = position.slice(0);
+	ret.direction = [0, 1];
 	ret.drawGL = drawModel;
 
 	return ret;

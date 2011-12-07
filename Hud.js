@@ -1,4 +1,4 @@
-function drawHealth() {
+function drawHealth(ctx) {
     var hpWidth = 0.3;
     var hp = getLocalPlayer().getHealth();
 
@@ -10,7 +10,6 @@ function drawHealth() {
 
 	var sc = [200, 10];
 
-	var ctx = hud.context;
 	ctx.save();
 
 	ctx.translate(x, y);
@@ -70,12 +69,41 @@ function drawHealth() {
 }
 
 function drawHud() {
+	var ctx = hud.context;
 // health, powerup stuff, minimap?
-  drawHealth();
-
-  hud.context.strokeStyle = "#000000";
-  //hud.context.strokeRect(1, 1, hud.width() - 2, hud.height() - 2);
+  drawHealth(ctx);
+  drawDebugData(ctx);
 }
+
+var debugDataOn = true;
+function shouldDrawDebug() {
+	return debugDataOn;
+}
+function toggleDebugData() {
+    debugDataOn = !debugDataOn;
+}
+
+var debugData = {};
+function drawDebugData(ctx) {
+	if (!shouldDrawDebug()) return;
+	var x = 20;
+	var y = 20;
+	for (v in debugData) {
+		ctx.fillStyle = "#FF0000";
+		ctx.fillText(v + ": " + debugData[v], x, y);
+		y += 14;
+	}
+	debugData = {};
+}
+
+function addDebugString(str) {
+	debugData[str] = "";
+}
+function addDebugValue(v, val) {
+	debugData[v] = "" + val;
+}
+
+
 
 function HudObject() {}
 HudObject.prototype.update = function() { }

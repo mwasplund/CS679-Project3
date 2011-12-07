@@ -76,12 +76,14 @@ function makeWall(pt0, pt1) {
         ctx.closePath();
         ctx.stroke();
     };
+	ret.normal = pt0[0] == pt1[0] ? [1, 0] : [0, 1];
+	ret.isWall = true;
     return ret;
 }
 
 function getOptions() {
     return {
-        playerVelocity: 0.8,
+        playerVelocity: 3.3,
         keyUpWaitMax: 30,
     };
 }

@@ -1,3 +1,28 @@
+/* Logging system
+ *
+ * When LoadjsFile is called, it will associate the loaded file with the logging subsystem
+ * given as the second argument. If no second argument is given, the file will inherit the
+ * subsystem of the file that that call to LoadjsFile appears in. Each of .error, .warn,
+ * .info, .debug allows you to explicitly state the subsystem, but if it isn't provided will
+ * simply get it from the file that the call appears in.
+ *
+ * When a message is sent to the logging system via one of the methods provided, it will be
+ * assigned a level. The lower the level, the more important message -- Level 0 is an error,
+ * 1 is warning, etc. To explicitly set the level of your message, use Debug.out, otherwise
+ * the message will get the natural level assigned to the relevant method (i.e. Debug.error()
+ * will have level 0, etc.).
+ *
+ * Example Usage:
+ *   Debug.info("info will appear at level: " + 2);
+ *   Debug.debug("Log to 'graphics2d' regardless of what file it is in", "graphics2d");
+ *   Debug.warn(obj); // this will log an object in a separate call from the prefix so that you can 
+ *       // explore it correctly in the console
+ *
+ *   Debug.out(message, null, 2); // This will log at level 2
+ *
+ *   Debug.raw(message); // This will simply call console.log(message) if you want to bypass the logging system
+ *
+ */
 var logLevels = {
 };
 var logFileMap = {
@@ -8,12 +33,12 @@ function initializeLogSystem(sys, lev) {
     logFileMap[sys] = [];
 }
 
-initializeLogSystem("general",    3);
+initializeLogSystem("general",    0);
 initializeLogSystem("graphics2d", 3);
-initializeLogSystem("graphics3d", 3);
+initializeLogSystem("interface", 0);
+initializeLogSystem("graphics3d", 0);
 initializeLogSystem("engine",     3);
 initializeLogSystem("log",        0);
-
 
 function getErrorObject(idx) {
     try { throw Error(""); }
@@ -36,11 +61,11 @@ function getErrorObject(idx) {
         return err; 
     }
 }
-function getPrefix(err, sys) {
+function getPrefix(err, sys, lvl) {
     var pad = "                    ";
     var file = (err.filename + pad).slice(0, 12);
 
-    return (pad + sys).slice(-10) + "::" + (err.filename + ":" + err.lineNumber + " " + pad).slice(0, 20) + "| ";
+    return (pad + sys + "(" + lvl + ")").slice(-15) + "::" + (err.filename + ":" + err.lineNumber + " " + pad).slice(0, 20) + "| ";
 }
 
 function getSystemFromFile(file) {
@@ -55,7 +80,7 @@ function logAttachFile(file, system) {
     var idx = file.lastIndexOf("/");
     var fileStrip = file.slice(idx + 1);
     if (!logFileMap[system]) {
-        initializeLogSystem(system, 3);
+        initializeLogSystem(system, 0);
     }
     logFileMap[system].push(fileStrip);
     Debug.debug("Added " + fileStrip + " to " + system, "log");
@@ -68,7 +93,8 @@ function shouldLog(system, level) {
 }
 
 var Debug = function() {};
-Debug.out = function(prefix, message, level)
+// Don't call this directly
+Debug.logInternal = function(prefix, message, level)
 {
     try
     {
@@ -105,15 +131,15 @@ Debug.once = function() {
 
 Debug.log = function(message, system, level) {
     var err;
-    if (!level) level = 0;
+    if (!level) level = -1; // should always appear, but not as error
     if (!system) {
         err = getErrorObject(5);
         system = getSystemFromFile(err.filename);
     }
     if (shouldLog(system, level)) {
         if (!err) err = getErrorObject(5);
-        var prefix = getPrefix(err, system);
-        this.out(prefix, message, level);
+        var prefix = getPrefix(err, system, level);
+        this.logInternal(prefix, message, level);
     }
 }
 Debug.error = function(message, system) {
@@ -141,5 +167,11 @@ Debug.debugOnce = function(message, system) {
     if (this.once()) this.log(message, system, 3);
 }
 Debug.Trace = function(message) {
-    this.log(message, false, -1);
+    this.log(message, null, 1);
+}
+Debug.out = function(message, system, level) {
+    this.log(message, system, level);
+}
+Debug.raw = function(message) {
+    console.log(message);
 }

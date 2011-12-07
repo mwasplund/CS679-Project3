@@ -5,7 +5,8 @@ var mvMatrixStack = [];1
 var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
 var CurrentShader;
-var CameraPos = [-5,6,9];
+var CameraPos = [0,0,0];
+var CameraOffset = [0, 500, 500];
 
 /******************************************************/
 /* InitializeWebGL
@@ -24,8 +25,28 @@ function tryGetContext(canvas, str) {
 function drawModel()
 {
 	mvPushMatrix();
-	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
+	//mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
+	//mat4.rotate(mvMatrix, degToRad(this.rotation), [0, 1, 0]);
+	var p = this.position;
+	var d = this.direction;
+
+	if (false) {
+		// Assumes model faces positive X
+		mat4.multiply(mvMatrix,
+			[d[0], 0, d[1], 0, 
+			 0, 1, 0, 0, 
+			 -d[1], 0, d[0], 0,
+			 p[0], 0, p[1], 1]);
+	} else {
+		// Assumes model faces negative Z
+		mat4.multiply(mvMatrix,
+			[-d[1], 0, d[0], 0, 
+			 0, 1, 0, 0, 
+			 -d[0], 0, -d[1], 0,
+			 p[0], 0, p[1], 1]);
+	}
+
+	//mat4.multiply(mvMatrix, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, p[0], 0, p[1], 1]);
 	this.model.Draw();	
 	mvPopMatrix();
 }
@@ -160,9 +181,8 @@ function PreDrawGL(currentTime)
 	
     var playerPos = getLocalPlayer().getPosition();
     playerPos = [playerPos[0], 0, playerPos[1]];
-    CameraPos = playerPos.slice(0);
-    CameraPos[2] += 200;
-    CameraPos[1] += 600;
+    vec3.set(playerPos, CameraPos);
+    vec3.add(CameraPos, CameraOffset);
 
     var scale = 0.02;
     vec3.scale(playerPos, scale);

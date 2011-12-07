@@ -5,23 +5,19 @@ function update() {
 }
 
 function movePhase() {
-    var enemies = getEnemies();
-    for (var i = 0; i < enemies.length; i++) {
-        var e = enemies[i];
-        e.think();
-        processEffects(e);
-        e.move();
-    }
-
-    var players = getPlayers();
-    for (var i = 0; i < players.length; i++) {
-        var pl = players[i];
-        pl.think();
-        processEffects(pl);
-        pl.move();
+    var entities = getEntities();
+    for (var i = 0; i < entities.length; i++) {
+        var ent = entities[i];
+        ent.think();
+        processEffects(ent);
+        ent.move();
     }
 
 	getCamera().move();
+}
+
+function getEntities() {
+    return getEnemies().concat(getPlayers());
 }
 
 function processEffects(ent) {
@@ -35,7 +31,7 @@ function cleanupPhase() {
 }
 
 // If an object on the path will intersect the line
-// then return [stopping point, line, stopping point's distance along the path]
+// then return [intersection point, intersection point's distance along the path]
 function intersectPathLine(path, line) {
 	if (line[0][0] == line[1][0]) {
 		return intersectPathVertLine(path, line);
@@ -55,7 +51,7 @@ function intersectPathHorzLine(path, line) {
 
 	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = [ret, line, dist2(ret, path[0])];
+		ret = [ret, dist2(ret, path[0])];
 	}
 	return ret;
 }
@@ -69,7 +65,7 @@ function intersectPathVertLine(path, line) {
 
 	var ret = intersectLineLine([path[0], path[1]], offLine);
 	if (ret) {
-		ret = [ret, line, dist2(ret, path[0])];
+		ret = [ret, dist2(ret, path[0])];
 	}
 	return ret;
 }
@@ -103,50 +99,137 @@ function intersectPathWalls(begin, end, radius) {
 		var walls = getWallBucket(buckets[i]);
 		for (var j = 0; j < walls.length; j++) {
 			var x = intersectPathLine([begin, end, radius], walls[j].pts);
-			if (x && (!hit || hit[2] > x[2])) {
-				hit = x;
+			if (x && (!hit || hit[1] > x[1])) {
+				hit = x.concat(walls[j]);
 			}
 		}
-	}
-
-	if (hit) {
-        if (dist2(hit, begin) < 0.01) {
-            return [begin, null];
+        if (hit) {
+            return hit;
         }
-        var h = add2(hit[0], scale2(0.01, normalize2(sub2(begin, end))));
-		return [h, hit[1]];
-	} else {
-		return [end, null];
 	}
+    return null;
+}
+
+function intersectLineCircle(line, circle) {
+    var x = [line[0][0], line[1][0], circle[0][0]];
+    var y = [line[0][1], line[1][1], circle[0][1]];
+
+    var un = ((x[2] - x[0]) * (x[1] - x[0]) + (y[2] - y[0]) * (y[1] - y[0]));
+    var ud = ((x[1] - x[0]) * (x[1] - x[0]) + (y[1] - y[0]) * (y[1] - y[0]));
+
+    // This assumes that the line doesn't begin inside the circle
+    if (un < 0) return null;
+
+    var p = add2(line[0], scale2(un / ud, sub2(line[1], line[0])));
+
+    // If the closest point on the line is outside the circle or too far past the end of the segment
+    if (dist2(p, circle[0]) > circle[1] || 
+            (un > ud && dist2(p, line[1]) > circle[1])) {
+        return null;
+    }
+
+    // a = ud
+    // b = -2 * un
+
+    var c = x[2] * x[2] + y[2] * y[2] + x[0] * x[0] + y[0] * y[0] +
+        -2 * (x[2] * x[0] + y[2] * y[0]) - circle[1] * circle[1];
+
+    var d = 4 * un * un - 4 * c * ud;
+
+    if (d < 0) return null;
+
+    // u = (-b - sqrt(d) ) / 2a
+    var u = (2 * un - Math.sqrt(d)) / (2 * ud);
+    if (u < 0 || u > 1) return null;
+
+    return add2(line[0], scale2(u, sub2(line[1], line[0])));
+}
+
+function intersectPathEntity(path, entity) {
+    var hit = intersectLineCircle([path[0], path[1]], [entity.position, entity.radius + path[2]]);
+    if (hit) {
+        return [hit, dist2(hit, path[0]), entity];
+    } else return null;
+}
+
+function getEntityBucket(idx) {
+    return getEntities();
+}
+
+function getEntityBucketsFromLine(begin, end) {
+    return [0];
 }
 
 function intersectPathEntities(begin, end, radius, self) {
 	var hit;
-	return [end, hit];
-}
 
-function closestTo(target, left, right) {
-	return left[0] == right[0] || dist2(left[0], target) < dist2(right[0], target) ? left : right;
+    var buckets = getEntityBucketsFromLine(begin, end);
+    for (var i = 0; i < buckets.length; i++) {
+        var entities = getEntityBucket(buckets[i]);
+        for (var j = 0; j < entities.length; j++) {
+			if (entities[j] == self) continue;
+            var  x = intersectPathEntity([begin, end, radius], entities[j]);
+            if (x && (!hit || hit[2] > x[2])) {
+                hit = x;
+            }
+        }
+        if (hit) {
+            return hit;
+        }
+    }
+    return null;
 }
 
 function tryMove(ent, begin, end) {
-	var wall = intersectPathWalls(begin, end, ent.radius);
-	var ent = intersectPathEntities(begin, end, ent.radius, ent);
-	var stop = closestTo(begin, wall, ent);
+    if (dist2(begin, end) < 0.0001) return [begin, null, null];
+	var wall = intersectPathWalls(begin, end, ent.radius) || [end, 1e20, null];
+	var ent = intersectPathEntities(begin, end, ent.radius, ent) || [end, 1e20, null];
+    var stop = wall[1] < ent[1] ? wall : ent;
 	return stop;
+}
+
+function slideMove(ent, begin, end) {
+	var mv = tryMove(ent, begin, end);
+	var hit = mv[2];
+	if (!hit) return mv;
+	var norm = hit.isWall ? hit.normal : normalize2(sub2(mv[0], hit.position));
+	var decomp = normalDecompose(sub2(end, mv[0]), norm);
+	return tryMove(ent, begin, add2(mv[0], decomp[2]));
 }
 
 function clipMove() {
 	this.position = add2(this.position, scale2(this.velocity, this.direction));
 }
 
+function collideMove(ent, begin, end, stop) {
+	var target = add2(stop[0], scale2(Math.min(0.1, stop[1]), normalize2(sub2(begin, end))));
+	if (dist2(target, begin) < 0.1) {
+		return begin;
+	}
+	var stop = tryMove(ent, begin, target);
+	if (stop[2]) {
+		return begin;
+	} else {
+		return stop[0];
+	}
+}
+
 function basicMove() {
 	var target = add2(this.position, scale2(this.velocity, this.direction));
 
-	// TODO(cjhopman): do collision detection...
-	
-	target = tryMove(this, this.position, target)[0];
+	var stop = tryMove(this, this.position, target);
+	target = stop[2] ? collideMove(this, this.position, target, stop) : stop[0];
 	
 	this.position = target;
 }
+
+function slidingMove() {
+	var target = add2(this.position, scale2(this.velocity, this.direction));
+
+	var stop = slideMove(this, this.position, target);
+	target = stop[2] ? collideMove(this, this.position, target, stop) : stop[0];
+	
+	this.position = target;
+}
+	
 

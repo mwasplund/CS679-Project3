@@ -169,6 +169,14 @@ function drawCircle() {
     ctx.arc(0, 0, this.radius, 0, Math.PI*2, true); 
     ctx.closePath();
     ctx.fill();
+	if (this.direction) {
+		ctx.beginPath();
+		ctx.moveTo(0, 0);
+		ctx.lineTo(this.direction[0] * this.radius, this.direction[1] * this.radius);
+		ctx.closePath();
+		ctx.strokeStyle = "#FFFFFF";
+		ctx.stroke();
+	}
 }
 
 function drawCircleSelected() {
