@@ -1,12 +1,12 @@
 function draw() {
-		preDraw();
-		drawEnemies();
-		drawEnvironment();
-		drawSelections();
-		drawSpecial();
-		drawPlayers();
-		drawHud();
-		postDraw();
+    preDraw();
+    drawEnemies();
+    drawEnvironment();
+    drawSelections();
+    drawSpecial();
+    drawPlayers();
+    drawHud();
+    postDraw();
 }
 
 function preDraw() {
@@ -62,10 +62,9 @@ function filterObjects(objs, filters) {
 	return ret;
 }
 
-
 function getFilteredEnemies(filter) {
 	var bounds = filter.getBounds();
-	var ret = getEnemiesInGrid(bounds[0], bounds[1]);
+	var ret = getEnemiesInRect(bounds[0], bounds[1]);
 	return filter.filters ? filterObjects(ret, filter.filters) : ret;
 }
 
@@ -100,15 +99,22 @@ function drawObject2d(o) {
 }
 
 function getViewDrawCircle() {
-	return [getLocalPlayer().getPosition(), 1000]
+	return [getLocalPlayer().position, 1000]
 }
 
-function getEnemiesInGrid(topLeft, bottomRight) {
-	return getEnemies();
+function getEnemiesInRect(topLeft, bottomRight) {
+    var idx = entityBuckets.getBucketsFromRect(topLeft, bottomRight);
+    var ret = [];
+    for (var i = 0; i < idx.length; i++) {
+        var bucket = entityBuckets.getBucket(idx[i]);
+        ret = ret.concat(bucket);
+    }
+
+    return ret.filter(function(e) { return !e.isPlayer; });
 }
 
 function getEnemiesInCircle(center, radius) {
-	var ret = getEnemiesInGrid(sub2(center, radius), add2(center, radius));
+	var ret = getEnemiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
     return ret.filter(function(obj) {
         return pointInCircle(obj.position, center, obj.radius + radius);
     });
@@ -117,7 +123,8 @@ function getEnemiesInCircle(center, radius) {
 function getEnemiesInArc(arc) {
     var center = arc.getCenter();
     var orientation = arc.getOrientation();
-	var ret = getEnemiesInGrid(sub2(center, arc.outerRadius), add2(center, arc.outerRadius));
+    var off = [arc.outerRadius, arc.outerRadius];
+	var ret = getEnemiesInRect(sub2(center, off), add2(center, off));
 	ret = ret.filter(function(obj) {
 		return pointInCircle(obj.position, center, arc.outerRadius + obj.radius);
 	});

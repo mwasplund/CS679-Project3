@@ -55,8 +55,6 @@ $(window).load(function() {
 
 	initializeListeners();
 
-    initializePlayer(Loader.GetModel("WolfSpider_Linked"));
-
 	displayTitle();
 
 	checkGLError();

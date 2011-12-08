@@ -11,13 +11,16 @@ function initializePlayer(i_Model) {
         rotation: 0,
         fillStyle: "#00FF44",
 		model: i_Model,
-        move: slidingMove,
+        move: entityMove(slidingMove),
         getHealth: function() { return 0.7; },
         draw: drawCircle,
 		drawGL: drawModel,
 		isPlayer: true,
     }
     initializeAttacks();
+
+    player.planAttack = function() {
+    }
 
     player.getPosition = function() {
         return this.position;
@@ -41,6 +44,7 @@ function initializePlayer(i_Model) {
             this.velocity = 0; 
         }
     }
+    entityBuckets.add(player);
 };
 
 function getPlayers() {

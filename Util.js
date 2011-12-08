@@ -93,6 +93,28 @@ Function.prototype.curry = function() {
 	}
 }
 
+Array.prototype.unique = function(equal) {
+    equal = equal || function(left, right) {
+        return left === right;
+    };
+    var i = 1, j = 0;
+
+    while (true) {
+        while (i < this.length && equal(this[j], this[i])) i++;
+        if (i == this.length) break;
+        this[++j] = this[i++];
+    }
+
+    this.length = j + 1;
+}
+
+function arrayEquals(left, right) {
+    return left && right && !(left < right) && !(right < left);
+}
+Array.prototype.equals = function(other) {
+    return arrayEquals(this, other);
+}
+
 Array.prototype.toString = function(old) {
 	return function() { return "[" + old.apply(this) + "]"; };
 }(Array.prototype.toString);

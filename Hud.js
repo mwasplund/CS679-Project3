@@ -93,7 +93,7 @@ function drawDebugData(ctx) {
 		ctx.fillText(v + ": " + debugData[v], x, y);
 		y += 14;
 	}
-	debugData = {};
+	//debugData = {};
 }
 
 function addDebugString(str) {
