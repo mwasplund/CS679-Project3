@@ -151,7 +151,7 @@ function Mesh(i_Model, i_Parent)
 { 
   // Attach Functions
   this.Parent = i_Parent;
-  this.Draw = Mesh_Draw;
+
   this.TSR = Mesh_TSR;
   this.Update = Mesh_Update;
   Debug.Trace("Initialize Mesh");  
@@ -169,95 +169,55 @@ function Mesh(i_Model, i_Parent)
   {
     this.HasGeometry = true;
     
-    // Bind the GL Arrays
     // Vertices
     // Convert the Indexed Triangles to array of vertices
-    var Vertices = new Array();
-    
+    this.Vertices = new Array();
     for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
     {
   	
-  	 	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 0] );
-      	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 1] );
-      	Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 2] );
+  	 	this.Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 0] );
+      	this.Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 1] );
+      	this.Vertices.push(i_Model.Geometry.Vertices[i_Model.Geometry.TriangleIndices[i] * 3 + 2] );
   	  
    }
     
-    this.VertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Vertices), gl.STATIC_DRAW);
-    this.VertexPositionBuffer.itemSize = 3;
-    this.VertexPositionBuffer.numItems = Vertices.length / 3;
-    
-    //Debug.Trace("NumVertices: " + this.VertexPositionBuffer.numItems);
-    
-    if(i_Model.Geometry.TriangleNormals != null)
-    {
-		var Normals;
-		if(i_Model.Geometry.TriangleNormals.length == i_Model.Geometry.Vertices.length)
+	this.Normals = new Array();
+	if(i_Model.Geometry.TriangleNormals.length == i_Model.Geometry.Vertices.length)
+	{
+		for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
 		{
-			Normals = new Array();
-		    for(var i = 0; i < i_Model.Geometry.TriangleIndices.length; i++)
-			{
-				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 0]);
-				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 1]);
-				Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 2]);
-			  
-		   }
-		}
-		else
-		{
-			Normals = i_Model.Geometry.TriangleNormals;
-		}		
-	
-	
-  	  this.VertexNormalBuffer = gl.createBuffer();
-  	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
-  	  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Normals), gl.STATIC_DRAW);
-  	  this.VertexNormalBuffer.itemSize = 3;
-  	  this.VertexNormalBuffer.numItems = Normals.length/3;
-  	  //Debug.Trace("NumNormals: " + this.VertexNormalBuffer.numItems);
-    }
+			this.Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 0]);
+			this.Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 1]);
+			this.Normals.push(i_Model.Geometry.TriangleNormals[i_Model.Geometry.TriangleIndices[i] * 3 + 2]);
+		  
+	   }
+	}
+	else
+	{
+		this.Normals = i_Model.Geometry.TriangleNormals;
+	}
     
+	this.UV = null;
     if(i_Model.Geometry.TriangleUVIndices != null)
     {
-      //bind the UV buffers
-  	var TextureCoords = new Array();
-  	var LayerElementUV = i_Model.Geometry.LayerElementUV;
-  	for(var i = 0; i <  i_Model.Geometry.TriangleUVIndices.length; i++)
-  	{
-  	  var Index = i_Model.Geometry.TriangleUVIndices[i];
-  	  TextureCoords.push(LayerElementUV.UV[2*Index]);
-  	  TextureCoords.push(LayerElementUV.UV[2*Index+1]);
-  	  
-  	  //Debug.Trace("UV: " + i + " Index: " + Index + "( " +  LayerElementUV.UV[2*Index] + ", " + LayerElementUV.UV[2*Index+1] + ")");
-  	}
-  	
-  	this.VertexTextureCoordBuffer = gl.createBuffer();
-     gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
-     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TextureCoords), gl.STATIC_DRAW);
-     this.VertexTextureCoordBuffer.itemSize = 2;
-     this.VertexTextureCoordBuffer.numItems = TextureCoords.length/2;
-     //Debug.Trace("NumUV: " + this.VertexTextureCoordBuffer.numItems);
+		this.UV = new Array();
+		var LayerElementUV = i_Model.Geometry.LayerElementUV;
+		for(var i = 0; i <  i_Model.Geometry.TriangleUVIndices.length; i++)
+		{
+		  var Index = i_Model.Geometry.TriangleUVIndices[i];
+		  this.UV.push(LayerElementUV.UV[2*Index]);
+		  this.UV.push(LayerElementUV.UV[2*Index+1]);
+		}	
     }
-    
-    // Indices
-    /*this.VertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(i_Model.Geometry.Indices), gl.STATIC_DRAW);
-    this.VertexIndexBuffer.itemSize = 1;
-    this.VertexIndexBuffer.numItems = i_Model.Geometry.Indices.length;
-    
-    Debug.Trace("NumIndices: " + this.VertexIndexBuffer.numItems);
-    */
   }
   
   // Check if model has predefined rotaion, translation, scale... etc
   this.Scale     = vec3.create([1, 1, 1]);
   this.Translate = vec3.create([0, 0, 0]);
-	this.Rotate    = vec3.create([0, 0, 0]);
+  this.Rotate    = vec3.create([0, 0, 0]);
   this.PreRotate = vec3.create([0, 0, 0]);
-	//Debug.Trace("Properties.length = " + i_Model.Properties.length);
+	
+  //Debug.Trace("Properties.length = " + i_Model.Properties.length);
   for(var i = 0; i < i_Model.Properties.length; i++)
   {
   	var Property = i_Model.Properties[i];
@@ -300,7 +260,6 @@ function Mesh(i_Model, i_Parent)
   this.DiffuseColor = [0.8, 0.8, 0.8];
   this.SpecularColor = [0.8, 0.8, 0.8];
   this.Shininess = 30.0;
-
   if(i_Model.Material != null)
   {
   	if(i_Model.Material.DiffuseColorTexture != null)
@@ -345,25 +304,15 @@ function Mesh(i_Model, i_Parent)
   	}
   }
   
-  
-  checkGLError();
-  
   // Check for children
-  for(var i = 0; i < i_Model.Children.length; i++)
+  /*for(var i = 0; i < i_Model.Children.length; i++)
   {
     var CurrentModel = i_Model.Children[i];
   	if(CurrentModel != null)
   	{
       	this.Children.push(new Mesh(CurrentModel, this));		  
   	}
-  }
-  
-  // MWA - threw this in to make it work,
-  // Should actually try to fake threading by allowing the main program to run so 
-  // it can check if models are loaded, but this hack works for now
-  AreModelsLoaded();
-  
-  Debug.info("Model loaded");
+  }*/
 }
 
 function Mesh_HandleLoadedTexture(i_Texture) 
@@ -377,7 +326,7 @@ function Mesh_HandleLoadedTexture(i_Texture)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
   gl.generateMipmap(gl.TEXTURE_2D);
-	checkGLError();
+  checkGLError();
   gl.bindTexture(gl.TEXTURE_2D, null);
   Debug.Trace("Image Loaded: " + i_Texture.image.src);
   checkGLError();
@@ -390,79 +339,10 @@ function Mesh_TSR()
 	mat4.translate(mvMatrix, this.Translate);
 
 	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);
-  mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
+    mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
 	mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
 	
 	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] ), [0, 0, 1]);
 	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] ), [0, 1, 0]);
 	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] ), [1, 0, 0]);
-}
-
-function Mesh_Draw()
-{
-	mvPushMatrix();
-	
-	this.TSR();
-	
-	if(this.HasGeometry)
-	{
-  	// Bind the Color
-  	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
-  	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
-    gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
-    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
-  	
-  	// Bind the texture UV
-  	var HasDiffuseColorTexture = this.DiffuseColorTexture != null;
-  	gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Enabled_Uniform, HasDiffuseColorTexture);
-  	if(HasDiffuseColorTexture)
-  	{
-  		gl.activeTexture(gl.TEXTURE0);
-  	  gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
-  	  gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Uniform, 0);
-  	}
-  	
-  	var HasTransparentColorTexture = this.TransparentColorTexture != null;
-  	gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Enabled_Uniform, HasTransparentColorTexture);
-  	if(HasTransparentColorTexture)
-  	{
-  		gl.activeTexture(gl.TEXTURE0);
-  	  gl.bindTexture(gl.TEXTURE_2D, this.TransparentColorTexture);
-  	  gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Uniform, 0);
-  	}
-
-  	if(this.VertexTextureCoordBuffer != null)
-  	{
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexTextureCoordBuffer);
-      gl.vertexAttribPointer(CurrentShader.Program.textureCoordAttribute, this.VertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  	}
-   	
-  		
-    //Debug.Trace("Draw Mesh: "+ this.VertexPositionBuffer.numItems + " " +  this.VertexColorBuffer.numItems + " " + this.VertexIndexBuffer.numItems );
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexPositionBuffer);
-    gl.vertexAttribPointer(CurrentShader.Program.vertexPositionAttribute, this.VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  
-    if(this.VertexNormalBuffer != null)
-    {
-      // Bind the Normal buffer
-   	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
-    	gl.vertexAttribPointer(CurrentShader.Program.vertexNormalAttribute, this.VertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    }
-  
-    setMatrixUniforms();
-    
-    gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
-    checkGLError();
-  }
- 
-   
-  // Draw the children
-  for(var i = 0; i < this.Children.length; i++)
-  {
-    this.Children[i].Draw(); 
-  }
-  
-   mvPopMatrix();
-
- 
 }
