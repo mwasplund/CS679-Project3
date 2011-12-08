@@ -167,7 +167,7 @@ function InitializeModels()
   //Loader.load("fbxTest");
  // Loader.load("handFbx");
   //Loader.load("WolfSpider_Linked");
-  Loader.load("TestCube");
+  Loader.load("GyroStaff");
   //Loader.load("goodGuy");
   
   Loader.StartLoading();
@@ -180,7 +180,7 @@ function InitializeModels()
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
-	TestModel = Loader.GetModel("TestCube");
+	TestModel = Loader.GetModel("GyroStaff");
 	CameraPos = [0,0, -10];
 
 	//TestModel = Loader.GetModel("bone_arm");
@@ -247,7 +247,8 @@ function DrawTestModel() {
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
 	if (GameState != GAME_STATE.LOADING) {
+	mvPushMatrix();	
 		TestModel.Draw();
-		Loader.DrawModels();
+		mvPopMatrix();	
 	}
 }

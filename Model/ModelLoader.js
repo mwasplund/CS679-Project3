@@ -11,8 +11,6 @@ function ModelLoader_File(i_Text, i_Model)
 
 function ModelLoader()
 {
-  this.Optimization_DrawGrouping = false;
-
   this.load = ModelLoader_load;
   this.LoadLoop = ModelLoader_LoadLoop;
   this.Models = new Array();
@@ -24,7 +22,6 @@ function ModelLoader()
   this.StartLoading = ModelLoader_StartLoading;
   this.StopLoading = ModelLoader_StopLoading;
   this.GetModel = ModelLoader_GetModel;
-  this.DrawModels = ModelLoader_DrawModels;
   
   this.getPercentLoaded = function()
   {
@@ -33,23 +30,6 @@ function ModelLoader()
       return 0;
     return 50 * (this.FilesLoaded / Total)  + 50 * ((this.Files.length + this.FilesLoaded) / Total);
   }
-}
-
-function ModelRef()
-{
-	this.Time = 0;
-	this.Position = [0,0,0];
-	this.DoDraw = false;
-	
-	this.Draw = function()
-	{
-		this.DoDraw = true;
-	}
-	
-	this.Update = function(i_DeltaMili)
-	{
-		this.Time += i_DeltaMili;
-	}
 }
 
 /******************************************************/
@@ -62,11 +42,7 @@ function ModelLoader_GetModel(i_ModelName)
 	for(var i = 0; i < this.Models.length; i++)
 	{
 		if(this.Models[i].Name == i_ModelName)
-		{
-			var Ref = new ModelRef();
-			this.Models[i].Refs.push(Ref);
-			return Ref;
-		}
+			return this.Models[i];
 	}
 	
 	// Could not find the Model
@@ -74,27 +50,11 @@ function ModelLoader_GetModel(i_ModelName)
 	return null;
 }
 
-function ModelLoader_DrawModels()
-{
-	if(this.Optimization_DrawGrouping)
-	{
-	}
-	else
-	{
-		for(var i = 0; i < this.Models.length; i++)
-		{
-			this.Models[i].PreDraw();
-			this.Models[i].Draw();
-			this.Models[i].PostDraw();
-		}
-	}
-}
 
 function ModelLoader_load(i_FileName)
 {
   // Load the file
   var NewModel = new Model(i_FileName);
-  NewModel.Refs = new Array();
   this.Models.push(NewModel);
   
   var Loader = this;
