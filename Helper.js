@@ -228,6 +228,7 @@ function degToRad(degrees)
 /* A function that checks for an error in gl
 /******************************************************/
 var PrevError = -1;
+var ErrorCount = 0;
 function checkGLError() 
 {
  var error = gl.getError();
@@ -235,9 +236,19 @@ function checkGLError()
  {
 	 if(error != PrevError)
 	 {
+		ErrorCount = 0;
 		   var str = "GL Error: " + error;
 		   Debug.error(str);
 		   PrevError = error;
+	 }
+	 else
+	 {
+		ErrorCount++;
+		if(ErrorCount < 100)
+		{
+			var str = "GL Error: " + error;
+			Debug.error(str);
+		}
 	 }
  }
 }

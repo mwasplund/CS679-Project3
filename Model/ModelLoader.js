@@ -11,6 +11,8 @@ function ModelLoader_File(i_Text, i_Model)
 
 function ModelLoader()
 {
+	this.Optimization_GroupModelRefs = false;
+
   this.load = ModelLoader_load;
   this.LoadLoop = ModelLoader_LoadLoop;
   this.Models = new Array();
@@ -22,6 +24,31 @@ function ModelLoader()
   this.StartLoading = ModelLoader_StartLoading;
   this.StopLoading = ModelLoader_StopLoading;
   this.GetModel = ModelLoader_GetModel;
+  this.DrawModels = function()
+  {
+	if(this.Optimization_GroupModelRefs)
+	{
+	
+	}
+	else
+	{
+		for(var i = 0; i < this.Models.length; i++)
+		{
+			for(var k = 0; k < this.Models[i].Refs.length; k++)
+			{
+				mvPushMatrix();
+				mat4.translate(mvMatrix, this.Models[i].Refs[k].Position);
+				mat4.scale(mvMatrix, this.Models[i].Refs[k].Scale);
+				mat4.rotateZ(mvMatrix, this.Models[i].Refs[k].Rotate[2]);
+				mat4.rotateY(mvMatrix, this.Models[i].Refs[k].Rotate[1]);
+				mat4.rotateX(mvMatrix, this.Models[i].Refs[k].Rotate[1]);
+				this.Models[i].Draw();
+				mvPopMatrix();
+			}
+		}
+	}
+  }
+  
   
   this.getPercentLoaded = function()
   {
@@ -30,6 +57,25 @@ function ModelLoader()
       return 0;
     return 50 * (this.FilesLoaded / Total)  + 50 * ((this.Files.length + this.FilesLoaded) / Total);
   }
+}
+
+function ModelRef()
+{
+	this.DoDraw = false;
+	this.Position = [0,0,0];
+	this.Rotate = [0,0,0];
+	this.Scale = [1.0,1.0,1.0];
+	this.Time = 0;
+	
+	this.Draw = function()
+	{
+		this.DoDraw = true;
+	}
+	
+	this.Update = function(i_DeltaMili)
+	{
+		this.Time += i_DeltaMili;
+	}
 }
 
 /******************************************************/
@@ -42,7 +88,11 @@ function ModelLoader_GetModel(i_ModelName)
 	for(var i = 0; i < this.Models.length; i++)
 	{
 		if(this.Models[i].Name == i_ModelName)
-			return this.Models[i];
+		{
+			var Ref = new ModelRef();
+			this.Models[i].Refs.push(Ref);
+			return Ref;
+		}
 	}
 	
 	// Could not find the Model

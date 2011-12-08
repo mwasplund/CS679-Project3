@@ -6,6 +6,8 @@ function Model(i_FileName)
   // Functions
   this.ParseFile = Model_ParseFile;
   this.Draw = Model_Draw;
+  this.Refs = new Array();
+  
   this.Update = function(i_DeltaMilisec)
   {
 	  if(this.Ready)
@@ -68,5 +70,22 @@ function Model_Draw()
     {
       this.Meshes[i].Draw();
     }
+  }
+}
+
+function Model_SmartDraw()
+{
+  if(this.Ready)
+  {
+	var RefMatrix = new Array();
+	for(var k = 0; k < this.Refs.length; k ++)
+	{
+		
+	}
+	
+	for(var i = 0; i < this.Meshes.length; i++)
+	{
+		this.Meshes[i].Draw();
+	}
   }
 }

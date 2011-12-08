@@ -151,7 +151,9 @@ function Mesh(i_Model, i_Parent)
 { 
   // Attach Functions
   this.Parent = i_Parent;
+  this.PreDraw = Mesh_PreDraw;
   this.Draw = Mesh_Draw;
+  this.PostDraw = Mesh_PostDraw;
   this.TSR = Mesh_TSR;
   this.Update = Mesh_Update;
   Debug.Trace("Initialize Mesh");  
@@ -240,16 +242,6 @@ function Mesh(i_Model, i_Parent)
      this.VertexTextureCoordBuffer.numItems = TextureCoords.length/2;
      //Debug.Trace("NumUV: " + this.VertexTextureCoordBuffer.numItems);
     }
-    
-    // Indices
-    /*this.VertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(i_Model.Geometry.Indices), gl.STATIC_DRAW);
-    this.VertexIndexBuffer.itemSize = 1;
-    this.VertexIndexBuffer.numItems = i_Model.Geometry.Indices.length;
-    
-    Debug.Trace("NumIndices: " + this.VertexIndexBuffer.numItems);
-    */
   }
   
   // Check if model has predefined rotaion, translation, scale... etc
@@ -398,15 +390,12 @@ function Mesh_TSR()
 	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] ), [1, 0, 0]);
 }
 
-function Mesh_Draw()
+function Mesh_PreDraw()
 {
-	mvPushMatrix();
-	
-	this.TSR();
-	
-	if(this.HasGeometry)
-	{
-  	// Bind the Color
+	if(!this.HasGeometry)
+		return;
+
+	// Bind the Color
   	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
   	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
     gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
@@ -448,21 +437,49 @@ function Mesh_Draw()
    	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
     	gl.vertexAttribPointer(CurrentShader.Program.vertexNormalAttribute, this.VertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
     }
-  
-    setMatrixUniforms();
-    
-    gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
-    checkGLError();
-  }
- 
+}
+
+function Mesh_SmartDraw()
+{
+	mvPushMatrix();
+	this.TSR();
+	
+	if(this.HasGeometry)
+	{
+		setMatrixUniforms();
+		gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+	}
    
   // Draw the children
   for(var i = 0; i < this.Children.length; i++)
   {
     this.Children[i].Draw(); 
   }
-  
-   mvPopMatrix();
-
- 
+   mvPopMatrix(); 
 }
+
+function Mesh_PostDraw()
+{
+	
+}
+
+function Mesh_Draw()
+{
+	this.PreDraw();
+	
+	mvPushMatrix();
+	this.TSR();
+	if(this.HasGeometry)
+	{
+		setMatrixUniforms();
+		gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+	}
+   
+  // Draw the children
+  for(var i = 0; i < this.Children.length; i++)
+  {
+    this.Children[i].Draw(); 
+  }
+   mvPopMatrix(); 
+}
+
