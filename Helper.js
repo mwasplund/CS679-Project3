@@ -236,24 +236,19 @@ function checkGLError()
  {
 	 if(error != PrevError)
 	 {
-			ErrorCount = 0;
+		ErrorCount = 0;
 		   var str = "GL Error: " + error;
 		   Debug.error(str);
 		   PrevError = error;
 	 }
-	 else 
+	 else
 	 {
 		ErrorCount++;
 		if(ErrorCount < 100)
 		{
-		    var str = "GL Error: " + error;
-		   Debug.error(str);
+			var str = "GL Error: " + error;
+			Debug.error(str);
 		}
 	 }
  }
-}
-
-function clearGLError()
-{
-	gl.getError();
 }

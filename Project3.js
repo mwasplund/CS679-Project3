@@ -167,7 +167,7 @@ function InitializeModels()
   //Loader.load("fbxTest");
  // Loader.load("handFbx");
   //Loader.load("WolfSpider_Linked");
-  Loader.load("TestCube");
+  Loader.load("GyroStaff");
   //Loader.load("goodGuy");
   
   Loader.StartLoading();
@@ -180,7 +180,7 @@ function InitializeModels()
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
-	TestModel = Loader.GetModel("TestCube");
+	TestModel = Loader.GetModel("GyroStaff");
 	CameraPos = [0,0, -10];
 
 	//TestModel = Loader.GetModel("bone_arm");
