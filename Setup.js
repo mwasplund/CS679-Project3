@@ -2,12 +2,12 @@ function setup() {
     initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
     initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
     for (var i = 0; i < 200; i++) {
-        addEnemy(makeSimpleEnemy());
+        addEnemy(makeSpiderEnemy());
     }
 
     setupWalls();
 
-    initializePlayer(Loader.GetModel("WolfSpider_Linked"));
+    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2]);
 }
 
 var walls;

@@ -21,7 +21,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     var FirstLine = i_FileContainer.GetNextLine();
     if(FirstLine.length != 5 || FirstLine[0] != "Geometry:")
     {
-      Debug.Trace("FBX ERROR: Geometry First line not formatted correctly");
+      Debug.error("FBX ERROR: Geometry First line not formatted correctly");
       return null;
     }
     
@@ -29,7 +29,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     NewGeometry.Number = parseInt(FirstLine[1], 10);
     if(isNaN(NewGeometry.Number))
     {
-      Debug.Trace("FBX ERROR: The Geometry reference number was NaN");
+      Debug.error("FBX ERROR: The Geometry reference number was NaN");
       return null;
     }
     // Parse the Geometry Name
@@ -39,7 +39,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     }
     else
     {
-      Debug.Trace("FBX ERROR: Geometry Name was formatted incorrectly");
+      Debug.error("FBX ERROR: Geometry Name was formatted incorrectly");
       return null;
     }
     // Parse the Geometry Type
@@ -49,13 +49,13 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     }
     else
     {
-      Debug.Trace("FBX ERROR: Geometry Type not formatted correctly");
+      Debug.error("FBX ERROR: Geometry Type not formatted correctly");
       return null;
     }
     // Verify that there is a right curly bracket
     if(FirstLine[4] != "{")
     {
-      Debug.Trace("FBX ERROR: Did not see a beginning bracket for the Geometry:");
+      Debug.error("FBX ERROR: Did not see a beginning bracket for the Geometry:");
       return null;
     }
   }
@@ -70,13 +70,13 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
      	// handle triangles as of now... so fail if we dont have a triangle
 		if(NewGeometry.PolygonVertexIndex == null)
 		{
-			Debug.Trace("FBX ERROR: There was no PolygonVertexIndex in the Geometry");
+			Debug.error("FBX ERROR: There was no PolygonVertexIndex in the Geometry");
 			return NewGeometry;	
 		}
 		
      	if(NewGeometry.LayerElementUV == null || NewGeometry.PolygonVertexIndex.length != NewGeometry.LayerElementUV.UVIndex.length)
 		{
-			Debug.Trace("FBX ERROR: There was either no LayerElementUV or its length was invalid, did not initialize triangle UV");
+			Debug.error("FBX ERROR: There was either no LayerElementUV or its length was invalid, did not initialize triangle UV");
 			//alert("There was either no LayerElementUV or its length was invalid, did not initialize triangle UV");	
 		}
 		else
@@ -86,10 +86,13 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 		
 		  if(NewGeometry.LayerElementNormal == null )
  		  {
- 		 		Debug.Trace("FBX ERROR: There was either no LayerEementNormal or its length was invalid, did not initialize the triangle Normals");
+ 		 		Debug.error("FBX ERROR: There was either no LayerEementNormal or its length was invalid, did not initialize the triangle Normals");
  		  }
 		  else
 		  {
+			if(NewGeometry.LayerElementNormal.MappingInformationType == "ByVertice")
+				NewGeometry.TriangleNormals = NewGeometry.LayerElementNormal.Normals;
+			else
 			  NewGeometry.TriangleNormals = new Array();
 		  }
  		  
@@ -102,66 +105,30 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
      	
      		var NumSides = i - Start + 1;
      		// We can handle triangles and Rectangles
-     		if(NumSides == 3)
+     		for(var k = 3; k <= NumSides; k++)
      		{
-     			// We found a triangle
-     			// Copy over the Triangle Indices
-        	NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1]);
-					NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+2] - 1);
-					
-					if(NewGeometry.TriangleUVIndices != null)
-					{
-						// Copy over the UV Indices
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
+     			// We found a polygon
+					var Offset = k - 3;
+					// Convert the rectangle to two triangles
+					if(k == NumSides)
+					{			
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1+Offset]);
+						NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+2+Offset] - 1);
 					}
-					
-					if(NewGeometry.TriangleNormals != null)
+					else
 					{
-						// Copy over the Normals
-						if(NewGeometry.LayerElementNormal.MappingInformationType == "ByPolygonVertex")
-						{
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
-						}
-						else if(NewGeometry.LayerElementNormal.MappingInformationType == "ByVertice")
-						{
-					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
-						}
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1+Offset]);
+						NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2+Offset]);
 					}
-       	}
-       	else if(NumSides == 4)
-       	{
-       		// Convert the rectangle to two triangles
-       		NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+1]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2]);
-					
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+0]);
-					NewGeometry.TriangleIndices.push( NewGeometry.PolygonVertexIndex[Start+2]);
-					NewGeometry.TriangleIndices.push(-NewGeometry.PolygonVertexIndex[Start+3] - 1);
 					
 					if(NewGeometry.TriangleUVIndices != null)
 					{
 						// UV Indices
 						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
-	
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+0]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2]);
-						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+3]);
+						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+1+Offset]);
+						NewGeometry.TriangleUVIndices.push(NewGeometry.LayerElementUV.UVIndex[Start+2+Offset]);
 					}
 					
 					if(NewGeometry.TriangleNormals != null)
@@ -172,40 +139,15 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
 							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8]);
-							
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+9]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+10]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+11]);
-						}
-						else if(NewGeometry.LayerElementNormal.MappingInformationType == "ByVertice")
-						{
-					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+1]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
-							
-					 		NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+0]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+2]);
-							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start+3]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+3+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+4+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+5+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+6+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+7+3*Offset]);
+							NewGeometry.TriangleNormals.push(NewGeometry.LayerElementNormal.Normals[Start*3+8+3*Offset]);
 						}
 					}
-       	}
-       	else
-       	{
-       		Debug.Trace("FBX ERROR: This loader does not know how to parse " + NumSides + " sided polygons... Sorry.");
-       		return null;
-       	}
+			}
       }
     
       // We found the end of the geometry class
@@ -224,7 +166,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
       NewGeometry.Vertices = FBX_Parser_ParseVertices(i_FileContainer);
       if(NewGeometry.Vertices == null)
       {
-        Debug.Trace("FBX ERROR: There was an error parsing the Vertices");
+        Debug.error("FBX ERROR: There was an error parsing the Vertices");
         return null;
       }
     }
@@ -235,7 +177,7 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
       NewGeometry.PolygonVertexIndex = FBX_Parser_ParsePolygonVertexIndex(i_FileContainer);
       if(NewGeometry.PolygonVertexIndex == null)
       {
-        Debug.Trace("FBX ERROR: There was an error parsing the PolygonVertexIndex");
+        Debug.error("FBX ERROR: There was an error parsing the PolygonVertexIndex");
         return null;
       }
     }
@@ -271,12 +213,12 @@ function FBX_Parser_ParseGeometry(i_FileContainer)
     }
     else
     {
-      Debug.Trace("FBX ERROR: Found Unknown Token in Geometry: " + CurrentLine[0]);
+      Debug.error("FBX ERROR: Found Unknown Token in Geometry: " + CurrentLine[0]);
       //return null;
     }
   }
   
-  Debug.Trace("FBX ERROR: Never saw the end bracket for Geometry:");
+  Debug.error("FBX ERROR: Never saw the end bracket for Geometry:");
   return null;
 }
 
@@ -291,14 +233,14 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
       
     if(FirstLine.length != 3 || FirstLine[0] != "PolygonVertexIndex:" || FirstLine[1][0] != "*" || FirstLine[2] != "{")
     {
-      Debug.Trace("FBX ERROR: PolygonVertexIndex: not formatted correctly");
+      Debug.error("FBX ERROR: PolygonVertexIndex: not formatted correctly");
       return null;
     }
     
     Count = parseInt(FirstLine[1].substring(1));
     if(isNaN(Count))
     {
-      Debug.Trace("FBX ERROR: The PolygonVertexIndex: count was NaN");
+      Debug.error("FBX ERROR: The PolygonVertexIndex: count was NaN");
       return null;
     }
   }
@@ -309,7 +251,7 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
     var SecondLine = i_FileContainer.GetNextLine();
     if(SecondLine[0] != "a:")
     {
-      Debug.Trace("FBX ERROR: Triangles not formatted correctly");
+      Debug.error("FBX ERROR: Triangles not formatted correctly");
       return null;
     }
     
@@ -321,7 +263,7 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
       // handle triangles as of now... so fail if we dont have a triangle
       if(isNaN(Index))
       {
-        Debug.Trace("FBX ERROR: A triangle indice was " + Index);
+        Debug.error("FBX ERROR: A triangle indice was " + Index);
         return null;
       }
       PolygonVertexIndex.push(Index);
@@ -336,7 +278,7 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
     {
 			if(PolygonVertexIndex.length != Count)
 			{
-				Debug.Trace("FBX ERROR: Expected " + Count + " Indices but found " + PolygonVertexIndex.length);
+				Debug.error("FBX ERROR: Expected " + Count + " Indices but found " + PolygonVertexIndex.length);
 				return null;
 			}
       else
@@ -351,7 +293,7 @@ function FBX_Parser_ParsePolygonVertexIndex(i_FileContainer)
       var Index = parseInt(CurrentLine[i]);
       if(isNaN(Index))
       {
-        Debug.Trace("FBX ERROR: A triangle index was " + Index);
+        Debug.error("FBX ERROR: A triangle index was " + Index);
         return null;
       }
       PolygonVertexIndex.push(Index);
@@ -367,20 +309,20 @@ function FBX_Parser_ParseVertices(i_FileContainer)
     var FirstLine = i_FileContainer.GetNextLine();
     if(FirstLine.length != 3 || FirstLine[0] != "Vertices:" || FirstLine[1][0] != "*" || FirstLine[2] != "{")
     {
-      Debug.Trace("FBX ERROR: Vertices: not formatted correctly");
+      Debug.error("FBX ERROR: Vertices: not formatted correctly");
       return null;
     }
     
     Count = parseInt(FirstLine[1].substring(1));
     if(isNaN(Count))
     {
-      Debug.Trace("FBX ERROR: The Vertices: count was NaN");
+      Debug.error("FBX ERROR: The Vertices: count was NaN");
       return null;
     }
     if((Count % 3) != 0)
     {
       // There was an invalid number of numbers
-      Debug.Trace("FBX ERROR: The Vertices: count was not a multiple of three.");
+      Debug.error("FBX ERROR: The Vertices: count was not a multiple of three.");
       return null;
     }
   }
@@ -391,7 +333,7 @@ function FBX_Parser_ParseVertices(i_FileContainer)
     var SecondLine = i_FileContainer.GetNextLine();
     if(SecondLine[0] != "a:")
     {
-      Debug.Trace("FBX ERROR: Vertices not formatted correctly");
+      Debug.error("FBX ERROR: Vertices not formatted correctly");
       return null;
     }
     
@@ -400,7 +342,7 @@ function FBX_Parser_ParseVertices(i_FileContainer)
       var Vertex = parseFloat(SecondLine[i]);
       if(isNaN(Vertex))
       {
-        Debug.Trace("FBX ERROR: A vertex was " + Vertex);
+        Debug.error("FBX ERROR: A vertex was " + Vertex);
         return null;
       }
       Vertices.push(Vertex);
@@ -415,7 +357,7 @@ function FBX_Parser_ParseVertices(i_FileContainer)
     {
     	if(Vertices.length != Count)
     	{
-    		Debug.Trace("FBX ERROR: Expected " + Count + " Vertices but found " + Vertices.length);
+    		Debug.error("FBX ERROR: Expected " + Count + " Vertices but found " + Vertices.length);
     		return null;
     	}
     	else
@@ -430,14 +372,14 @@ function FBX_Parser_ParseVertices(i_FileContainer)
       var Vertex = parseFloat(CurrentLine[i]);
       if(isNaN(Vertex))
       {
-        Debug.Trace("FBX ERROR: A vertex was " + Vertex);
+        Debug.error("FBX ERROR: A vertex was " + Vertex);
         return null;
       }
       Vertices.push(Vertex);
     }
   }
   
-   Debug.Trace("FBX ERROR: Never saw the end bracket for Vertices:");
+   Debug.error("FBX ERROR: Never saw the end bracket for Vertices:");
    return null;
 }
 

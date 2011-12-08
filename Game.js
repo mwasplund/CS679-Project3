@@ -228,6 +228,7 @@ function gameLoop()
 
     addDebugValue("playerPosition", getLocalPlayer().getPosition().toString());
     addDebugValue("playerDirection", getLocalPlayer().direction.toString());
+	addDebugValue("RotateDiff", getLocalPlayer().rotateDiff);
     addDebugValue("numEnemies", getEnemies().length);
     draw();
     drawTick++;
@@ -265,6 +266,7 @@ function InitializeModels()
   Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
+  Loader.load("goodGuyWalk");
   
   Loader.StartLoading();
 }

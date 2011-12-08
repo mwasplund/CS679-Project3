@@ -16,7 +16,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
     var FirstLine = i_FileContainer.GetNextLine();
     if(FirstLine.length != 2 || FirstLine[0] != "Objects:" || FirstLine[1] != "{")
     {
-      Debug.Trace("FBX ERROR: Objects not formatted correctly. Objects: {");
+      Debug.error("FBX ERROR: Objects not formatted correctly. Objects: {");
       return null;
     }
   }
@@ -40,7 +40,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing a Geometry in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing a Geometry in the Objects:");
         return null;
       }
     }
@@ -54,7 +54,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing a Model in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing a Model in the Objects:");
         return null;
       }
     }
@@ -68,7 +68,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing a Texture in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing a Texture in the Objects:");
         return null;
       }
     }
@@ -82,7 +82,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing a Material in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing a Material in the Objects:");
         return null;
       }
     }
@@ -96,7 +96,7 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing an AnimationCurve in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing an AnimationCurve in the Objects:");
         return null;
       }
     }
@@ -110,17 +110,17 @@ function FBX_Parser_ParseObjects(i_FileContainer)
       }
       else
       {
-        Debug.Trace("FBX ERROR: There was an error parsing an AnimationCurveNode in the Objects:");
+        Debug.error("FBX ERROR: There was an error parsing an AnimationCurveNode in the Objects:");
         return null;
       }
     }
     else
     {
-      //Debug.Trace("FBX ERROR: Found Unknown Token in Objects: " + CurrentLine[0]);
+      //Debug.error("FBX ERROR: Found Unknown Token in Objects: " + CurrentLine[0]);
       FBX_Parser_HandleUnknownToken(i_FileContainer);
     }
   }
   
-  Debug.Trace("FBX ERROR: Never saw the end bracket for Objects:");
+  Debug.error("FBX ERROR: Never saw the end bracket for Objects:");
   return null;
 }

@@ -1,12 +1,12 @@
 var gl;
 var mvMatrix;
 var pMatrix;
-var mvMatrixStack = [];1
+var mvMatrixStack = [];
 var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
 var CurrentShader;
 var CameraPos = [0,0,0];
-var CameraOffset = [0, 500, 500];
+var CameraOffset = [0, 100, 150];
 
 /******************************************************/
 /* InitializeWebGL
@@ -24,29 +24,37 @@ function tryGetContext(canvas, str) {
 
 function drawModel()
 {
-	mvPushMatrix();
-	//mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	//mat4.rotate(mvMatrix, degToRad(this.rotation), [0, 1, 0]);
-	var p = this.position;
-	var d = this.direction;
-
-	if (false) {
-		// Assumes model faces positive X
-		mat4.multiply(mvMatrix,
-			[d[0], 0, d[1], 0, 
-			 0, 1, 0, 0, 
-			 -d[1], 0, d[0], 0,
-			 p[0], 0, p[1], 1]);
-	} else {
-		// Assumes model faces negative Z
-		mat4.multiply(mvMatrix,
-			[-d[1], 0, d[0], 0, 
-			 0, 1, 0, 0, 
-			 -d[0], 0, -d[1], 0,
-			 p[0], 0, p[1], 1]);
+	// Move Toward the desired rotations
+	var DesiredRotation = Math.atan2(this.direction[0], this.direction[1]);
+	var Difference = this.rotation - DesiredRotation;
+	this.rotateDiff = Difference;
+	if(Difference > 2*Math.PI)
+		Difference -= 2*Math.PI;
+	else if(Difference < -2*Math.PI)
+		Difference += 2*Math.PI;
+	
+	if(Difference >  0.1)
+	{
+		if((Difference - Math.PI) > 0.1)
+			this.rotation += 0.1;
+		else
+			this.rotation -= 0.1;
 	}
+	else if(Difference <  -0.1)
+	{
+		if((Difference + Math.PI) < -0.1)
+			this.rotation -= 0.1;
+		else
+			this.rotation += 0.1;
+	}
+	else
+		this.rotation = DesiredRotation;
+		
+	mvPushMatrix();
+	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
+	mat4.scale(mvMatrix, this.scale);
+	mat4.rotate(mvMatrix, this.rotation, [0, 1, 0]);
 
-	//mat4.multiply(mvMatrix, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, p[0], 0, p[1], 1]);
 	this.model.Draw();	
 	mvPopMatrix();
 }
@@ -184,11 +192,11 @@ function PreDrawGL(currentTime)
     vec3.set(playerPos, CameraPos);
     vec3.add(CameraPos, CameraOffset);
 
-    var scale = 0.02;
-    vec3.scale(playerPos, scale);
-    vec3.scale(CameraPos, scale);
+  //  var scale = 0.02;
+   // vec3.scale(playerPos, scale);
+   // vec3.scale(CameraPos, scale);
 	
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, playerPos, Up, mvMatrix);	
-	mat4.scale(mvMatrix, [scale, scale, scale]);
+	//mat4.scale(mvMatrix, [scale, scale, scale]);
 }
