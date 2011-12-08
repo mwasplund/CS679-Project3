@@ -22,7 +22,49 @@ function preDraw() {
 }
 
 function postDraw() {
+    var fog = calcFog();
+    if (in2dWorld) {
+        fog.draw2d();
+    } else {
+        Loader.DrawModels();
+    }
 }
+
+function calcFog() {
+    return calcFogSingle(getLocalPlayer());
+}
+
+function initializeFog(ent) {
+    return {
+        radius: ent.stats.sight,
+        position: ent.position,
+        intersect: function(line) {
+        },
+        draw2d: function() {
+            var ctx = target.context;
+            ctx.save();
+            ctx.strokeStyle = "#88888888";
+            ctx.translate(this.position[0], this.position[1]);
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI*2, true); 
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        },
+    };
+}
+
+function calcFogSingle(p) {
+    var fog = initializeFog(p);
+    var off = [p.stats.sight, p.stats.sight];
+    var walls = getWallsInRect(sub2(p.position, off), add2(p.position, off));
+
+    for (var i = 0; i < walls.length; i++) {
+        fog.intersect(walls[i].pts);
+    }
+    return fog;
+}
+
 
 function drawSelections() {
     var arc = getLocalAttack();
@@ -73,7 +115,10 @@ function drawEnemies() {
 	var objs = getEnemiesInCircle(view[0], view[1]);
 
 	for (var i = 0; i < objs.length; i++) {
-        drawObject(objs[i]);
+        var e = objs[i];
+        if (entityCanSee(getLocalPlayer(), e)) {
+            drawObject(objs[i]);
+        }
 	}
 }
 

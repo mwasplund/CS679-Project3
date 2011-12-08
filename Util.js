@@ -54,6 +54,10 @@ function dist2(left, right) {
 	return Math.sqrt((left[0] - right[0]) * (left[0] - right[0]) + (left[1] - right[1]) * (left[1] - right[1]));
 }
 
+function manhattan2(left, right) {
+    return Math.abs(left[0] - right[0]) + Math.abs(left[1] - right[1]);
+}
+
 function normalize2(vec) {
 	var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 	return [vec[0] / len, vec[1] / len];

@@ -125,6 +125,10 @@ function intersectPathWalls(begin, end, radius) {
     return null;
 }
 
+function getWallsInRect(pt0, pt1) {
+    return [];
+}
+
 function intersectLineCircle(line, circle) {
     var x = [line[0][0], line[1][0], circle[0][0]];
     var y = [line[0][1], line[1][1], circle[0][1]];
@@ -234,6 +238,7 @@ function basicMove() {
 }
 
 function slidingMove() {
+    if (this.velocity < 0.001) return;
 	var target = add2(this.position, scale2(this.velocity, this.direction));
 
 	var stop = slideMove(this, this.position, target);

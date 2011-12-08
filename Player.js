@@ -2,6 +2,7 @@ var player;
 function initializePlayer(i_Model, i_Scale) {
 	var stats = {
 		speed: getOptions().playerVelocity,
+        sight: 300,
 	};
     player = {
 		stats: stats,

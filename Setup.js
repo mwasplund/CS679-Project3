@@ -1,7 +1,7 @@
 function setup() {
     initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
     initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
-    for (var i = 0; i < 200; i++) {
+    for (var i = 0; i < 100; i++) {
         addEnemy(makeSpiderEnemy());
     }
 
