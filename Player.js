@@ -17,6 +17,7 @@ function initializePlayer(i_Model, i_Scale) {
         getHealth: function() { return 0.7; },
         draw: drawCircle,
 		drawGL: drawModel,
+		updateModel: updateModel,
 		isPlayer: true,
     }
     initializeAttacks();
@@ -42,6 +43,8 @@ function initializePlayer(i_Model, i_Scale) {
             this.direction = this.direction;
             this.velocity = 0; 
         }
+		
+		this.updateModel()
     }
 };
 

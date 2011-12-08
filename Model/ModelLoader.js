@@ -9,9 +9,15 @@ function ModelLoader_File(i_Text, i_Model)
   this.Model = i_Model;
 }
 
+function SetSmartDraw(i_Value)
+{
+	Debug.error("Optimization_GroupModelRefs = " + i_Value);
+	Loader.Optimization_GroupModelRefs = i_Value;
+}
+
 function ModelLoader()
 {
-	this.Optimization_GroupModelRefs = false;
+	this.Optimization_GroupModelRefs = true;
 
   this.load = ModelLoader_load;
   this.LoadLoop = ModelLoader_LoadLoop;
@@ -28,27 +34,19 @@ function ModelLoader()
   {
 	if(this.Optimization_GroupModelRefs)
 	{
-	
+		for(var i = 0; i < this.Models.length; i++)
+		{
+			this.Models[i].SmartDraw();
+		}
 	}
 	else
 	{
 		for(var i = 0; i < this.Models.length; i++)
 		{
-			for(var k = 0; k < this.Models[i].Refs.length; k++)
-			{
-				mvPushMatrix();
-				mat4.translate(mvMatrix, this.Models[i].Refs[k].Position);
-				mat4.scale(mvMatrix, this.Models[i].Refs[k].Scale);
-				mat4.rotateZ(mvMatrix, this.Models[i].Refs[k].Rotate[2]);
-				mat4.rotateY(mvMatrix, this.Models[i].Refs[k].Rotate[1]);
-				mat4.rotateX(mvMatrix, this.Models[i].Refs[k].Rotate[1]);
-				this.Models[i].Draw();
-				mvPopMatrix();
-			}
+			this.Models[i].Draw();
 		}
 	}
   }
-  
   
   this.getPercentLoaded = function()
   {

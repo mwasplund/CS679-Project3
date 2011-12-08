@@ -1,5 +1,5 @@
 function setup() {
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 250; i++) {
         pushEnemy(makeSpiderEnemy());
     }
 

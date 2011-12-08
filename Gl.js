@@ -22,7 +22,7 @@ function tryGetContext(canvas, str) {
 	}
 }
 
-function drawModel()
+function updateModel()
 {
 	// Move Toward the desired rotations
 	var DesiredRotation = Math.atan2(this.direction[0], this.direction[1]);
@@ -50,15 +50,14 @@ function drawModel()
 	else
 		this.rotation = DesiredRotation;
 
+	this.model.Position = [this.position[0], 0, this.position[1]];
+	this.model.Scale = this.scale;
+	this.model.Rotate = [0, this.rotation, 0];
+}
 
-		
-	mvPushMatrix();
-	mat4.translate(mvMatrix, [this.position[0], 0, this.position[1]]);
-	mat4.scale(mvMatrix, this.scale);
-	mat4.rotate(mvMatrix, this.rotation, [0, 1, 0]);
-
+function drawModel()
+{
 	this.model.Draw();	
-	mvPopMatrix();
 }
 
 function InitializeWebGL(canvas)
@@ -134,12 +133,17 @@ function GetShader(i_ShaderName)
 function setMatrixUniforms() 
 {
   gl.uniformMatrix4fv(CurrentShader.Program.pMatrixUniform, false, pMatrix);
-  gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, mvMatrix);
+  
     
   var normalMatrix = mat3.create();
   mat4.toInverseMat3(mvMatrix, normalMatrix);
   mat3.transpose(normalMatrix);
   gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
+}
+
+function setmvMatrixUniform(i_mvMatrix)
+{
+	gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, i_mvMatrix);
 }
 
 /******************************************************/
@@ -193,12 +197,9 @@ function PreDrawGL(currentTime)
     playerPos = [playerPos[0], 0, playerPos[1]];
     vec3.set(playerPos, CameraPos);
     vec3.add(CameraPos, CameraOffset);
-
-  //  var scale = 0.02;
-   // vec3.scale(playerPos, scale);
-   // vec3.scale(CameraPos, scale);
 	
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, playerPos, Up, mvMatrix);	
-	//mat4.scale(mvMatrix, [scale, scale, scale]);
+	
+	setMatrixUniforms();
 }

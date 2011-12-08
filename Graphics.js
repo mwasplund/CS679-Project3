@@ -22,6 +22,7 @@ function preDraw() {
 }
 
 function postDraw() {
+	Loader.DrawModels();
 }
 
 function drawSelections() {

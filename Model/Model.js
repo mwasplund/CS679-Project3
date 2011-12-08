@@ -6,6 +6,7 @@ function Model(i_FileName)
   // Functions
   this.ParseFile = Model_ParseFile;
   this.Draw = Model_Draw;
+  this.SmartDraw = Model_SmartDraw;
   this.Refs = new Array();
   
   this.Update = function(i_DeltaMilisec)
@@ -66,10 +67,21 @@ function Model_Draw()
 {
   if(this.Ready)
   {
-    for(var i = 0; i < this.Meshes.length; i++)
-    {
-      this.Meshes[i].Draw();
-    }
+  	for(var k = 0; k < this.Refs.length; k++)
+	{
+		mvPushMatrix();
+		mat4.translate(mvMatrix, this.Refs[k].Position);
+		mat4.scale(mvMatrix, this.Refs[k].Scale);
+		mat4.rotateZ(mvMatrix, this.Refs[k].Rotate[2]);
+		mat4.rotateY(mvMatrix, this.Refs[k].Rotate[1]);
+		mat4.rotateX(mvMatrix, this.Refs[k].Rotate[0]);
+		
+		for(var i = 0; i < this.Meshes.length; i++)
+		{
+			this.Meshes[i].Draw();
+		}
+		mvPopMatrix();
+	}
   }
 }
 
@@ -80,12 +92,22 @@ function Model_SmartDraw()
 	var RefMatrix = new Array();
 	for(var k = 0; k < this.Refs.length; k ++)
 	{
-		
+		if(this.Refs[k].DoDraw)
+		{
+			this.Refs[k].DoDraw = false;
+			var Matrix = mat4.create(mvMatrix);
+			mat4.translate(Matrix, this.Refs[k].Position);
+			mat4.scale(Matrix, this.Refs[k].Scale);
+			mat4.rotateZ(Matrix, this.Refs[k].Rotate[2]);
+			mat4.rotateY(Matrix, this.Refs[k].Rotate[1]);
+			mat4.rotateX(Matrix, this.Refs[k].Rotate[0]);
+			RefMatrix.push(Matrix);
+		}
 	}
 	
 	for(var i = 0; i < this.Meshes.length; i++)
 	{
-		this.Meshes[i].Draw();
+		this.Meshes[i].SmartDraw(RefMatrix);
 	}
   }
 }

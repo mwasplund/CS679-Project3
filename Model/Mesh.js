@@ -153,6 +153,7 @@ function Mesh(i_Model, i_Parent)
   this.Parent = i_Parent;
   this.PreDraw = Mesh_PreDraw;
   this.Draw = Mesh_Draw;
+  this.SmartDraw = Mesh_SmartDraw;
   this.PostDraw = Mesh_PostDraw;
   this.TSR = Mesh_TSR;
   this.Update = Mesh_Update;
@@ -375,19 +376,19 @@ function Mesh_HandleLoadedTexture(i_Texture)
   checkGLError();
 }
 
-function Mesh_TSR()
+function Mesh_TSR(i_Matrix)
 {
-	mat4.scale(mvMatrix, this.Scale);
+	mat4.scale(i_Matrix, this.Scale);
 
-	mat4.translate(mvMatrix, this.Translate);
+	mat4.translate(i_Matrix, this.Translate);
 
-	mat4.rotate(mvMatrix, degToRad(this.PreRotate[2]), [0, 0, 1]);
-  mat4.rotate(mvMatrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
+	mat4.rotate(i_Matrix, degToRad(this.PreRotate[2]), [0, 0, 1]);
+  mat4.rotate(i_Matrix, degToRad(this.PreRotate[1]), [0, 1, 0]);
+	mat4.rotate(i_Matrix, degToRad(this.PreRotate[0]), [1, 0, 0]);
 	
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[2] ), [0, 0, 1]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[1] ), [0, 1, 0]);
-	mat4.rotate(mvMatrix, degToRad(this.Rotate[0] ), [1, 0, 0]);
+	mat4.rotate(i_Matrix, degToRad(this.Rotate[2] ), [0, 0, 1]);
+	mat4.rotate(i_Matrix, degToRad(this.Rotate[1] ), [0, 1, 0]);
+	mat4.rotate(i_Matrix, degToRad(this.Rotate[0] ), [1, 0, 0]);
 }
 
 function Mesh_PreDraw()
@@ -439,23 +440,33 @@ function Mesh_PreDraw()
     }
 }
 
-function Mesh_SmartDraw()
+
+
+function Mesh_SmartDraw(i_MatrixRefs)
 {
-	mvPushMatrix();
-	this.TSR();
+	this.PreDraw();
+	var Copy = new Array();
+	for(var i = 0; i < i_MatrixRefs.length; i++)
+		Copy.push(mat4.create(i_MatrixRefs[i]));
 	
-	if(this.HasGeometry)
+	for(var i = 0; i < Copy.length; i++)
 	{
-		setMatrixUniforms();
-		gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+
+			//mat4.multiply(mvMatrix, i_MatrixRefs);
+			this.TSR(Copy[i]);
+			
+			if(this.HasGeometry)
+			{
+				setmvMatrixUniform(Copy[i]);
+				gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+			} 
 	}
-   
-  // Draw the children
-  for(var i = 0; i < this.Children.length; i++)
-  {
-    this.Children[i].Draw(); 
-  }
-   mvPopMatrix(); 
+
+	  // Draw the children
+	  for(var i = 0; i < this.Children.length; i++)
+	  {
+		this.Children[i].SmartDraw(Copy); 
+	  }
 }
 
 function Mesh_PostDraw()
@@ -468,10 +479,10 @@ function Mesh_Draw()
 	this.PreDraw();
 	
 	mvPushMatrix();
-	this.TSR();
+	this.TSR(mvMatrix);
 	if(this.HasGeometry)
 	{
-		setMatrixUniforms();
+		setmvMatrixUniform(mvMatrix);
 		gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
 	}
    

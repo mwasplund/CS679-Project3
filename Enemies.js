@@ -13,6 +13,8 @@ function enemyThink() {
 	}
 	this.velocity = this.stats.speed;
 	this.direction = normalize2(sub2(this.goal, this.position));
+	
+	this.updateModel()
 }
 
 
@@ -43,6 +45,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 
 	ret.stats = stats;
 	ret.think = enemyThink;
+	ret.updateModel = updateModel;
 	ret.move = slidingMove;
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;

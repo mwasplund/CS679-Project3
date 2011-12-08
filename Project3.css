@@ -3,7 +3,7 @@
  background-color:#FFFFFF;
  overflow:hidden;
 }
-canvas#CanvasOne 
+canvas#Canvas3D 
 {
 	position:absolute;
 	top:0px;
@@ -12,14 +12,11 @@ canvas#CanvasOne
 
 div#Menu_Debug 
 {
-	/*background-color:#FFFFFF;
-	width:200px;
-	height:50px;*/
+	color:#AAAAAA;
 	display: none;
   position: absolute;
 	bottom: 0px;
 	left: 0px;
-	color: #FFFFFF;
 	width: 315px;
 }
 

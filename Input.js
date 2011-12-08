@@ -14,7 +14,7 @@ var keyId = {
     down: 83,
     nextAttack: 82,
 };
-
+  var KEY_1 = 49;
 
 var keyState = [];
 var lastKeyDownTick = 0;
@@ -36,7 +36,9 @@ function keydown(event){
 		default:
 			// If the keyCode doesn't explicitly appear here, we ignore it
 			return true;
-
+        case KEY_1 :
+          SetDebugState(!DEBUG);             
+          break;   
         case 220: // \
             toggleDebugData();
             break;

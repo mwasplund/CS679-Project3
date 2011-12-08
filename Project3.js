@@ -246,6 +246,9 @@ function DrawTestModel() {
   } 
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
+	
+	setMatrixUniforms();
+	
 	if (GameState != GAME_STATE.LOADING) {
 		TestModel.Draw();
 		Loader.DrawModels();

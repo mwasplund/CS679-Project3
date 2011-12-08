@@ -33,6 +33,8 @@ function SelectModel(i_ModelName)
 		TestModel = Model;
 }
 
+
+
 /******************************************************/
 /* SetClearColor_Red
 /*
