@@ -3,7 +3,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 	var stats = {
 		speed: getOptions().playerVelocity,
         sight: 300,
-		health: 1000,
+		health: 200,
 	};
     player = {
 		stats: stats,
