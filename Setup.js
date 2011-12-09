@@ -64,6 +64,79 @@ function makePolyWall(poly) {
 
 function makeWall(pt0, pt1) {
     var ret = {};
+    
+    // Make a 3d version of this wall
+    var Dir = vec3.normalize([pt0[0] - pt1[0], 0, pt0[1] - pt1[1]]);
+    var Right = vec3.normalize(vec3.cross(Dir, [0,1,0]));
+    var Height = 10;
+    var Indices = [1,0,4,1,5,4,
+                   1,0,2,1,2,3,
+                   3,2,6,3,6,7,
+                   7,6,4,7,4,5,
+                   1,5,7,1,7,3];
+    
+    var Vertices = [pt0[0]+Right[0], 0,      pt0[1]+Right[2],
+                    pt0[0]+Right[0], Height, pt0[1]+Right[2],
+                    pt0[0]-Right[0], 0,      pt0[1]-Right[2],
+                    pt0[0]-Right[0], Height, pt0[1]-Right[2],
+ 
+                    pt1[0]+Right[0], 0,      pt1[1]+Right[2],
+                    pt1[0]+Right[0], Height, pt1[1]+Right[2],
+                    pt1[0]-Right[0], 0,      pt1[1]-Right[2],
+                    pt1[0]-Right[0], Height, pt1[1]-Right[2]
+                   ];
+                   
+   var Normals   = [Right[0],0,Right[2],
+                    Right[0],0,Right[2],
+                    Right[0],0,Right[2],
+                    Right[0],0,Right[2],
+                    Right[0],0,Right[2],
+                    Right[0],0,Right[2],
+
+                    -Dir[0],0,-Dir[2],
+                    -Dir[0],0,-Dir[2],
+                    -Dir[0],0,-Dir[2],
+                    -Dir[0],0,-Dir[2],
+                    -Dir[0],0,-Dir[2],
+                    -Dir[0],0,-Dir[2],
+
+                    -Right[0],0,-Right[2],
+                    -Right[0],0,-Right[2],
+                    -Right[0],0,-Right[2],
+                    -Right[0],0,-Right[2],
+                    -Right[0],0,-Right[2],
+                    -Right[0],0,-Right[2],
+
+                     Dir[0],0,Dir[2],
+                     Dir[0],0,Dir[2],
+                     Dir[0],0,Dir[2],
+                     Dir[0],0,Dir[2],
+                     Dir[0],0,Dir[2],
+                     Dir[0],0,Dir[2],
+
+                     0,1,0,
+                     0,1,0,
+                     0,1,0,
+                     0,1,0,
+                     0,1,0,
+                     0,1,0
+                   ];
+                   
+    var Geometry = {TriangleIndices: Indices,
+                    Vertices: Vertices,
+                    TriangleNormals: Normals
+                    };
+                    
+    var FakeModel = {Geometry: Geometry,
+                    Properties: new Array(),
+                    Children: new Array()};
+                    
+    ret.mesh = new Mesh(FakeModel ,null);
+    ret.drawGL = function()
+    {
+      this.mesh.Draw();
+    };
+    
     ret.pts = [pt0.slice(0), pt1.slice(0)];
     ret.draw = function() {
         var ctx = target.context;
