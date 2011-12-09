@@ -265,7 +265,7 @@ function clearDraw() {
 	clearCanvas(hud);
 }
 
-var in2dWorld = true;
+var in2dWorld = false;
 
 function swapWorld() {
 	var d2 = document.getElementById("2dDiv");

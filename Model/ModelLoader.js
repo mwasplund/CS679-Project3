@@ -17,7 +17,7 @@ function SetSmartDraw(i_Value)
 
 function ModelLoader()
 {
-	this.Optimization_GroupModelRefs = false;
+	this.Optimization_GroupModelRefs = true;
 
   this.load = ModelLoader_load;
   this.LoadLoop = ModelLoader_LoadLoop;

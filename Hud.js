@@ -75,7 +75,7 @@ function drawHud() {
   drawDebugData(ctx);
 }
 
-var debugDataOn = true;
+var debugDataOn = false;
 function shouldDrawDebug() {
 	return debugDataOn;
 }

@@ -57,6 +57,19 @@ function createProjectile(position, target, spd, radius, range, accept, apply) {
 	proj.draw = drawCircle;
 	proj.fillStyle = "#FF0000";
 	proj.continues = false;
+    proj.offset = [0, 10, 0];
+    proj.drawGL = drawModel;
+
+    radius = 1;
+    var scale = vec3.create([radius, radius, 3 * radius]);
+    vec3.scale(scale, 0.01);
+    
+    proj.model = Loader.GetModel("Sphere");
+    proj.scale = scale;
+    proj.rotation = 0;
+	proj.preRotate = 0;
+    proj.updateModel = updateModel;
+    proj.updateModel();
 
 	addProjectile(proj);
 }
@@ -75,6 +88,7 @@ function projectileMove() {
 		this.apply(e);
 		if (!this.continues) {
 			this.dead = true;
+            this.updateModel();
 			return;
 		}
 	}
@@ -90,6 +104,7 @@ function projectileMove() {
 		this.position = stop[0];
 	}
 	if (dist2(this.position, this.home) > this.range) this.dead = true;
+    this.updateModel();
 }
 
 function getEntityAtPoint(pt) {

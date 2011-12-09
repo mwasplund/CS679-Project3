@@ -78,6 +78,7 @@ function Model_Draw(i_CurTime)
 			mat4.rotateY(mvMatrix, this.Refs[k].Rotate[1]);
 			mat4.rotateX(mvMatrix, this.Refs[k].Rotate[0]);
 			
+			this.Refs[k].DoDraw = false;
 			this.Refs[k].Time = i_CurTime;
 			this.Update(this.Refs[k]);
 			for(var i = 0; i < this.Meshes.length; i++)

@@ -190,18 +190,20 @@ function PreDrawGL(currentTime)
 	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
 
 	gl.uniform1i(CurrentShader.Program.Light0_Enabled_Uniform, Light0_Enabled);
-  if (Light0_Enabled) 
-  {
-    gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [5, 50, -5]);
-    gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
-  }
-
-	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
 
     var playerPos = getLocalPlayer().getPosition();
     playerPos = [playerPos[0], 0, playerPos[1]];
     vec3.set(playerPos, CameraPos);
     vec3.add(CameraPos, CameraOffset);
+
+  if (Light0_Enabled) 
+  {
+    gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [CameraPos[0], CameraPos[1] + 100, CameraPos[2]]);
+    gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
+  }
+
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
+
 
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, playerPos, Up, vMatrix);	

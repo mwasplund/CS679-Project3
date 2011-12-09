@@ -36,9 +36,9 @@ function keydown(event){
 			// If the keyCode doesn't explicitly appear here, we ignore it
 			return true;
         case KEY_1 :
-          SetDebugState(!DEBUG);             
           break;   
         case 220: // \
+              SetDebugState(!DEBUG);             
             toggleDebugData();
             break;
 
