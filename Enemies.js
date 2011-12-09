@@ -108,7 +108,7 @@ function entityMove(func) {
 
 function makeSpiderEnemy(pos) {
 	while (!pos) {
-		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 2000];
+		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 1900];
         if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
 		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) { pos = null; continue; }
 
@@ -173,6 +173,7 @@ function entityDamage(dmg) {
 }
 
 function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
+    var isRanged = Math.random() < 0.7;
 	var ret = {};
 
 	ret.inAttackRange = inAttackRange;
@@ -186,14 +187,14 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.move = entityMove(slidingMove);
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
-	ret.radius = stats.radius;
+	ret.radius = isRanged ? stats.radius : stats.radius * 0.7;
 	ret.fillStyle = "#111166";
 	ret.model = i_Model;
 	ret.rotation = 0;
 	ret.position = position.slice(0);
     ret.home = position.slice(0);
 	ret.direction = [0, 1];
-	ret.scale = i_Scale;
+	ret.scale = isRanged ? i_Scale : [i_Scale[0] * 0.5, i_Scale[1] * 0.5, i_Scale[2] * 0.5];
 	ret.rotation = 0;
 	ret.offset = i_Offset;
 	ret.preRotate = i_PreRotate;
@@ -201,9 +202,11 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
     ret.lastEvent = -1e12;
 	ret.updateTarget = enemyUpdateTarget;
 	ret.isEnemy = true;
+    if (!isRanged) ret.health *= 0.5;
+    if (!isRanged) ret.stats.speed = getLocalPlayer().stats.speed - 0.1;
 
-	//ret.attack = simpleDirectAttack();
-	ret.attack = simpleProjectileAttack();
+	if (isRanged) ret.attack = simpleProjectileAttack();
+    else ret.attack = simpleDirectAttack();
 
     ret.hasTarget = function() {
         return this.target;

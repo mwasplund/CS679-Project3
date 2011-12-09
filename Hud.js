@@ -1,3 +1,50 @@
+function drawAttacks(ctx) {
+    var left = 0.02;
+    var right = 0.32;
+
+    var sc = [500, 150];
+    var w = hud.width() * (right - left);
+    var h = w * sc[1] / sc[0];
+    var x = hud.width() * left;
+    var y = hud.height() - h - 10;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(w / sc[0], h / sc[1]);
+
+    ctx.strokeRect(0, 0, sc[0], sc[1]);
+    ctx.font = "24px sans-serif";
+    ctx.fillStyle = "#0000DD";
+    ctx.fillText("Melee Attack", 10, 24);
+
+    drawAttacksVec(player.meleeAttacks);
+
+    ctx.restore();
+    
+
+    left = 0.68;
+    right = 0.98
+    sc = [500, 150];
+    w = hud.width() * (right - left);
+    h = w * sc[1] / sc[0];
+    x = hud.width() * left;
+    y = hud.height() - h - 10;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(w / sc[0], h / sc[1]);
+    ctx.strokeRect(0, 0, sc[0], sc[1]);
+    ctx.font = "24px sans-serif";
+    ctx.fillStyle = "#00DD00";
+    ctx.fillText("Ranged Attack", 10, 24);
+
+    drawAttacksVec(player.specialAttacks);
+
+    ctx.restore();
+}
+function drawAttacksVec(atks) {
+
+}
 function drawHealth(ctx) {
     var hpWidth = 0.3;
     var hp = getLocalPlayer().getHealth();
@@ -73,6 +120,7 @@ function drawHud() {
 // health, powerup stuff, minimap?
   drawHealth(ctx);
   drawDebugData(ctx);
+  drawAttacks(ctx);
 }
 
 var debugDataOn = false;

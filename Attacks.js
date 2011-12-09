@@ -45,7 +45,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(src.position, tgt, 8, 2, 300, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+            createProjectile(src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
         }
         return ret;
     };
@@ -59,7 +59,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(src.position, tgt, 2, 14, 200, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+            createProjectile(src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
         }
         return ret;
     };

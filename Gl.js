@@ -7,7 +7,7 @@ var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
 var CurrentShader;
 var CameraPos = [0,0,0];
-var CameraOffset = [0, 300, 150];
+var CameraOffset = [0, 200, 120];
 var SceneModels = new Array();
 
 /******************************************************/
