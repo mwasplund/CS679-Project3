@@ -42,7 +42,7 @@ function projectilePhase() {
 	projectiles.length = j;
 }
 
-function createProjectile(position, target, spd, radius, range, accept, apply, continues) {
+function createProjectile(i_Model, position, target, spd, radius, range, accept, apply, continues) {
 	var proj = {};
 	proj.position = position.slice(0);
 	proj.direction = normalize2(sub2(target, position));
@@ -63,7 +63,7 @@ function createProjectile(position, target, spd, radius, range, accept, apply, c
     var scale = vec3.create([radius, radius, 3 * radius]);
     vec3.scale(scale, 0.01);
     
-    proj.model = Loader.GetModel("Sphere");
+    proj.model = i_Model;
     proj.scale = scale;
     proj.rotation = 0;
 	proj.preRotate = 0;

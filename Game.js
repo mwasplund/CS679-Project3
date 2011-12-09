@@ -262,7 +262,7 @@ function InitializeModels()
   
   Loader.load("skeleton");
   Loader.load("Fancy_Bounce_Ball");
-  Loader.load("BoneArm");
+  Loader.load("bolder");
   Loader.load("Link");
   Loader.load("TestCube");
   Loader.load("fbxTest");

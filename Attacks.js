@@ -45,7 +45,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
         }
         return ret;
     };
@@ -59,7 +59,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+            createProjectile(Loader.GetModel("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
         }
         return ret;
     };
@@ -73,7 +73,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, true);
+            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, true);
         }
         return ret;
     };
