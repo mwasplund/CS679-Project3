@@ -74,6 +74,7 @@ function keydown(event){
             break;
 
         case 82: // r
+            return;
             break;
 
 		case 192: // ~
