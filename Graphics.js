@@ -6,6 +6,12 @@ function draw() {
     drawSpecial();
     drawPlayers();
     drawHud();
+	
+	if (!in2dWorld) {
+		for(var i = 0; i < SceneModels.length; i++)
+			SceneModels[i].Draw();
+	}
+	
     postDraw();
 }
 

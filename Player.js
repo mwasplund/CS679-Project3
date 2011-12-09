@@ -1,5 +1,5 @@
 var player;
-function initializePlayer(i_Model, i_Scale) {
+function initializePlayer(i_Model, i_Scale, i_PreRotate) {
 	var stats = {
 		speed: getOptions().playerVelocity,
         sight: 300,
@@ -11,6 +11,7 @@ function initializePlayer(i_Model, i_Scale) {
         direction: [0, 1],
 		scale: i_Scale,
 		rotation: 0,
+		preRotate: i_PreRotate,
         radius: 20,
         rotation: 0,
         fillStyle: "#00FF44",

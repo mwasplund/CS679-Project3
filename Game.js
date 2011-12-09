@@ -267,6 +267,7 @@ function InitializeModels()
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
   Loader.load("goodGuyWalk");
+  Loader.load("Ground");
   
   Loader.StartLoading();
 }

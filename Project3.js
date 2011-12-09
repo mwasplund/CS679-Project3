@@ -168,7 +168,7 @@ function InitializeModels()
  // Loader.load("handFbx");
   //Loader.load("WolfSpider_Linked");
   //Loader.load("GyroStaff");
-  Loader.load("goodGuy");
+  Loader.load("Ground");
   
   Loader.StartLoading();
   
@@ -180,7 +180,7 @@ function InitializeModels()
 	//TestModel = Loader.GetModel("handFbx");
 	//CameraPos = [344, 6, 353];
 	
-	TestModel = Loader.GetModel("goodGuy");
+	TestModel = Loader.GetModel("Ground");
 	CameraPos = [0,0, -30];
 
 	//TestModel = Loader.GetModel("bone_arm");
@@ -245,7 +245,8 @@ function DrawTestModel() {
     gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [10, 10, 10]);
   } 
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
-	mat4.lookAt(CameraPos, [0,0,0], Up, mvMatrix);
+	mat4.lookAt(CameraPos, [0,0,0], Up, vMatrix);
+	mat4.identity(mvMatrix);
 	
 	setMatrixUniforms();
 	

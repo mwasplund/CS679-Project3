@@ -147,9 +147,14 @@ var mouse = {
     },
 };
 
-function unProject(wx, wy, wz, mvMatrix, pMatrix, viewport) {
-	mvMatrix = mvMatrix || getMvMatrix();
-	pMatrix = pMatrix || getProjMatrix();
+function getViewport() {
+ return [0, 0, gl.viewportWidth, gl.viewportHeight];
+}
+
+function unProject(wx, wy, wz, viewport) {
+	// MWA - what is the point of this?
+	//mvMatrix = mvMatrix || getMvMatrix();
+	//pMatrix = pMatrix || getProjMatrix();
 	viewport = viewport || getViewport();
 	var inp = [
 		(wx - viewport[0]) * 2 / viewport[2] - 1,
@@ -157,11 +162,11 @@ function unProject(wx, wy, wz, mvMatrix, pMatrix, viewport) {
 		wz * 2 - 1,
 		1.0
 			];
+	var EditMatrix = mat4.create();
+	mat4.multiply(pMatrix, vMatrix, EditMatrix);
+	mat4.inverse(EditMatrix);
 
-	mat4.multiply(pMatrix, mvMatrix);
-	mat4.inverse(pMatrix);
-
-	mat4.multiplyVec4(pMatrix, inp);
+	mat4.multiplyVec4(EditMatrix, inp);
 	if (inp[3] === 0.0) return null;
 
 	return [inp[0] / inp[3], inp[1] / inp[3], inp[2] / inp[3]];

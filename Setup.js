@@ -8,7 +8,11 @@ function setup() {
 
     setupWalls();
 
-    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2]);
+    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0);
+	
+	
+	// Add 3d Models to sceen
+	SceneModels.push(Loader.GetModel("Ground"));
 }
 
 var walls;
