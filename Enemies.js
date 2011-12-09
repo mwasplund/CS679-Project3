@@ -13,6 +13,9 @@ function removeEnemy(i) {
     entityBuckets.remove(e);
     enemies[i] = enemies[enemies.length - 1];
     enemies.pop();
+	e.removed = true;
+	e.position = [-1e12, -1e12];
+	e.updateModel();
 }
 
 function randomPos() {
@@ -207,7 +210,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
     }
 
     ret.isActive = function() {
-        return !this.atHome() || this.target;
+        return !this.removed && (!this.atHome() || this.target);
     }
 
     ret.atHome = function() {

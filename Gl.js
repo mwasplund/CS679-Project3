@@ -1,6 +1,7 @@
 var gl;
-var mvMatrix;
+var mMatrix;
 var pMatrix;
+var vMatrix;
 var mvMatrixStack = [];
 var ClearColor = [0.0, 0.0, 0.0];
 var Shaders = new Array();
@@ -88,6 +89,7 @@ function InitializeWebGL(canvas)
 
   mvMatrix = mat4.create();
   pMatrix = mat4.create();
+  vMatrix = mat4.create();
   
   InitializeShaders();
 }
@@ -103,7 +105,7 @@ function InitializeShaders()
   Shaders.push(LoadShader("PerFragmentLighting"));
   Shaders.push(LoadShader("PerVertexLighting"));
   Shaders.push(LoadShader("TimeTest"));
-  CurrentShader = GetShader("PerVertexLighting");
+  CurrentShader = GetShader("PerFragmentLighting");
 
 }
 
@@ -133,17 +135,19 @@ function GetShader(i_ShaderName)
 function setMatrixUniforms() 
 {
   gl.uniformMatrix4fv(CurrentShader.Program.pMatrixUniform, false, pMatrix);
-  
-    
-  var normalMatrix = mat3.create();
-  mat4.toInverseMat3(mvMatrix, normalMatrix);
-  mat3.transpose(normalMatrix);
-  gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
+  gl.uniformMatrix4fv(CurrentShader.Program.vMatrixUniform, false, vMatrix);
+
 }
 
 function setmvMatrixUniform(i_mvMatrix)
 {
 	gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, i_mvMatrix);
+	    
+  var normalMatrix = mat3.create();
+  mat4.toInverseMat3(mvMatrix, normalMatrix);
+  mat3.transpose(normalMatrix);
+  gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
+
 }
 
 /******************************************************/

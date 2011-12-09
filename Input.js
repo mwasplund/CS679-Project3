@@ -109,7 +109,6 @@ function getTargetFromMouse() {
 		var pos = getMouse().getWorldPosition();
 		var ent = getEntityAtPoint(pos);
 		if (!ent) ent = pos;
-		Debug.info(ent);
 		return ent;
 	} else {
 		// TODO(cjhopman) get this working
@@ -173,7 +172,6 @@ function getMouse() {
 }
 function mousemove(event) {
 	getMouse().position = [event.clientX, event.clientY];
-	Debug.info(getMouse().getWorldPosition().toString());
 	return false;
 }
 

@@ -105,6 +105,8 @@ function initializePlayer(i_Model, i_Scale) {
 			this.direction = normalize2(d);
 		}
 
+		addDebugValue("Player targeting Enemy:", this.target && this.target.entity ? "yes" : "no");
+
 		this.updateModel()
     }
     entityBuckets.add(player);
