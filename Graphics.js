@@ -16,8 +16,7 @@ function preDraw() {
 
     ctx.translate(target.width() / 2, target.height() / 2);
     getCamera().preDraw(ctx);
-	
-	
+
 	PreDrawGL();
 }
 
@@ -26,7 +25,7 @@ function postDraw() {
     if (in2dWorld) {
         fog.draw2d();
     } else {
-        Loader.DrawModels();
+        Loader.DrawModels(new Date().getTime());
     }
 }
 
