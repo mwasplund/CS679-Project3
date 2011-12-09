@@ -112,31 +112,68 @@ function getTargetFromMouse() {
 		Debug.info(ent);
 		return ent;
 	} else {
-		throw 0;
 		// TODO(cjhopman) get this working
-		var pos = getMouse().getWorldPosition3d();
-		var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
+		var pos = getMouse().getWorldPosition();
+		//var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
+		var ent = getEntityAtPoint(pos);
 		if (!ent) ent = pos;
 		return ent;
 	}
 }
+
+function getEntityAtLine3d() { 
+	return null;
+}
+
 var mouse = {
 	position: [0, 0],
     getWorldPosition: function() {
-        var cameraPos = getCamera().getPosition();
+		if (in2dWorld) {
+			var cameraPos = getCamera().getPosition();
 
-        var ret = [this.position[0] - target.width() / 2, this.position[1] - target.height() / 2];
-        ret = [ret[0] + cameraPos[0], ret[1] + cameraPos[1]];
+			var ret = [this.position[0] - target.width() / 2, this.position[1] - target.height() / 2];
+			ret = [ret[0] + cameraPos[0], ret[1] + cameraPos[1]];
 
-        return ret;
+			return ret;
+		} else {
+			var p0 = CameraPos; // <-- note this is glCameraPos
+			var p1 = unProject(this.position[0], this.position[1], 0.9);
+			var t = p1[1] / (p0[1] - p1[1]);
+			var p2 = [
+				p1[0] - t * (p0[0] - p1[0]), 
+				p1[2] - t * (p0[2] - p1[2])
+					];
+			return p2;
+		}
     },
 };
+
+function unProject(wx, wy, wz, mvMatrix, pMatrix, viewport) {
+	mvMatrix = mvMatrix || getMvMatrix();
+	pMatrix = pMatrix || getProjMatrix();
+	viewport = viewport || getViewport();
+	var inp = [
+		(wx - viewport[0]) * 2 / viewport[2] - 1,
+		1 - (wy - viewport[1]) * 2 / viewport[3],
+		wz * 2 - 1,
+		1.0
+			];
+
+	mat4.multiply(pMatrix, mvMatrix);
+	mat4.inverse(pMatrix);
+
+	mat4.multiplyVec4(pMatrix, inp);
+	if (inp[3] === 0.0) return null;
+
+	return [inp[0] / inp[3], inp[1] / inp[3], inp[2] / inp[3]];
+}
 
 function getMouse() {
 	return mouse;
 }
 function mousemove(event) {
 	getMouse().position = [event.clientX, event.clientY];
+	Debug.info(getMouse().getWorldPosition().toString());
 	return false;
 }
 

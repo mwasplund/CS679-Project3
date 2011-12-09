@@ -192,14 +192,25 @@ function PreDrawGL(currentTime)
   }
 		
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
+	mvMatrix = mat4.create(getMvMatrix());
+	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	
+	setMatrixUniforms();
+}
+
+function getViewport() {
+	return [0, 0, gl.viewportWidth, gl.viewportHeight];
+}
+function getMvMatrix() {
+	var ret = mat4.create();
     var playerPos = getLocalPlayer().getPosition();
     playerPos = [playerPos[0], 0, playerPos[1]];
     vec3.set(playerPos, CameraPos);
     vec3.add(CameraPos, CameraOffset);
 	
-	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
-	mat4.lookAt(CameraPos, playerPos, Up, mvMatrix);	
-	
-	setMatrixUniforms();
+	mat4.lookAt(CameraPos, playerPos, Up, ret);	
+	return ret;
+}
+function getProjMatrix() {
+	return mat4.create(pMatrix);
 }
