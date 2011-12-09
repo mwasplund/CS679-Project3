@@ -13,7 +13,19 @@ var keyId = {
     down: 83,
     nextAttack: 82,
 };
-  var KEY_1 = 49;
+
+var NUMPAD_0 = 96;
+var NUMPAD_5 = 101;
+var KEY_0 = 48;
+var KEY_1 = 49;
+var KEY_2 = 50;
+var KEY_3 = 51;
+var KEY_4 = 52;
+var KEY_5 = 53;
+var KEY_6 = 54;
+var KEY_7 = 55;
+var KEY_8 = 56;
+var KEY_9 = 57;
 
 var keyState = [];
 var lastKeyDownTick = 0;
@@ -29,6 +41,7 @@ function getKeyState(id) {
     return keyState[id] ? keyState[id] : 0;
 }
 
+var swapMouseKeys = false;
 function keydown(event){
     Debug.debug("keydown: " + event.keyCode + " " + tick);
     switch(event.keyCode) {
@@ -36,7 +49,25 @@ function keydown(event){
 			// If the keyCode doesn't explicitly appear here, we ignore it
 			return true;
         case KEY_1 :
-          break;   
+        case KEY_2 :
+        case KEY_3 :
+            getLocalPlayer().setMeleeAttack(event.keyCode - KEY_1);
+            break;   
+
+        case KEY_4 :
+        case KEY_5 :
+        case KEY_6 :
+        case KEY_7 :
+        case KEY_8 :
+            getLocalPlayer().setSpecialAttack(event.keyCode - KEY_4);
+            break;   
+
+        case NUMPAD_0 :
+            swapMouseKeys = !swapMouseKeys;
+            break;
+        case NUMPAD_5 :
+            shouldReset = true;
+            break;
         case 220: // \
               SetDebugState(!DEBUG);             
             toggleDebugData();
@@ -87,14 +118,22 @@ function keydown(event){
 function mousedown(event) {
 	switch (event.button) {
 		case 0: // left
+            if (swapMouseKeys) {
+                getLocalPlayer().setTarget(getTargetFromMouse());
+            } else {
+                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
+            }
 
 			break;
 		case 1: // middle
 
 			break;
 		case 2: // right
-			getLocalPlayer().setTarget(getTargetFromMouse());
-
+            if (!swapMouseKeys) {
+                getLocalPlayer().setTarget(getTargetFromMouse());
+            } else {
+                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
+            }
 			break;
 		default:
 	}

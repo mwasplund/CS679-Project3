@@ -35,6 +35,16 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 		},
     }
 
+    player.setSpecialTarget = function(tgt) {
+		if (!tgt) {
+			this.specialTarget = null;
+		} else {
+			this.specialTarget = {
+				position: tgt.position || tgt,
+				entity: tgt.position ? tgt : null,
+			}
+		}
+	}
 	player.setTarget = function(tgt) {
 		if (!tgt) {
 			this.target = null;
@@ -49,12 +59,30 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
     initializeAttacks();
 	getAttacks(player);
 
-	player.currentMeleeAttack = 0;
-	player.currentSpecialAttack = 0;
-
 	player.getCurrentMeleeAttack = function() {
 		return this.meleeAttacks[this.currentMeleeAttack];
 	}
+	player.getCurrentSpecialAttack = function() {
+		return this.specialAttacks[this.currentSpecialAttack];
+	}
+
+	player.currentMeleeAttack = 0;
+	player.currentSpecialAttack = 0;
+
+    player.setMeleeAttack = function(i) {
+        this.getCurrentMeleeAttack().isSelected = false;
+        this.currentMeleeAttack = i;
+        this.getCurrentMeleeAttack().isSelected = true;
+    }
+    player.setSpecialAttack = function(i) {
+        this.getCurrentSpecialAttack().isSelected = false;
+        this.currentSpecialAttack = i;
+        this.getCurrentSpecialAttack().isSelected = true;
+    }
+
+    player.setMeleeAttack(0);
+    player.setSpecialAttack(0);
+
 
 	player.inAttackRange = inAttackRange;
     player.getPosition = function() {
@@ -66,6 +94,12 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
     };
 
 	player.thinkAttack = function() {
+        if (this.specialTarget) {
+            var atk = this.getCurrentSpecialAttack();
+            var ret = atk.attack(this, this.specialTarget);
+            this.setSpecialTarget(null);
+            return ret;
+        }
 		if (this.target && this.target.entity && this.inAttackRange() && this.getCurrentMeleeAttack().ready <= 0) {
 			var atk = this.getCurrentMeleeAttack();
 			var hit = getEnemiesInArc(atk);

@@ -207,6 +207,9 @@ function prepareGame() {
 /******************************************************/
 function gameLoop()
 {
+    if (shouldReset || getLocalPlayer().health <= 0) {
+        setup();
+    }
     var maxSteps = 8; // 1000 / timeStep / maxSteps ~= min framerate
 	var beginTime = new Date().getTime();
 	var lastTime = beginTime;

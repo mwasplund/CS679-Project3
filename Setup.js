@@ -1,15 +1,15 @@
+var shouldReset;
 function setup() {
 	clear();
     initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
     initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
+
+    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0]);
     for (var i = 0; i < 50; i++) {
         addEnemy(makeSpiderEnemy());
     }
 
     setupWalls();
-
-    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0]);
-	
 	
 	// Add 3d Models to sceen
 	SceneModels.push(Loader.GetModel("Ground"));
@@ -32,6 +32,7 @@ function clearEntities() {
 }
 	
 function clear() {
+    shouldReset = false;
 	clearWalls();
 	clearEntities();
 }

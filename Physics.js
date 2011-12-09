@@ -42,7 +42,7 @@ function projectilePhase() {
 	projectiles.length = j;
 }
 
-function createProjectile(position, target, spd, radius, range, accept, apply) {
+function createProjectile(position, target, spd, radius, range, accept, apply, continues) {
 	var proj = {};
 	proj.position = position.slice(0);
 	proj.direction = normalize2(sub2(target, position));
@@ -56,11 +56,10 @@ function createProjectile(position, target, spd, radius, range, accept, apply) {
 	proj.home = position.slice(0);
 	proj.draw = drawCircle;
 	proj.fillStyle = "#FF0000";
-	proj.continues = false;
+	proj.continues = continues || false;
     proj.offset = [0, 10, 0];
     proj.drawGL = drawModel;
 
-    radius = 1;
     var scale = vec3.create([radius, radius, 3 * radius]);
     vec3.scale(scale, 0.01);
     

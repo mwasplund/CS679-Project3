@@ -34,30 +34,69 @@ function initializeAttacks() {
 			old.apply(this, [src, tgt]);
 		}
 	};
-    var ringAttack = function (player) {
+
+    var bowAttack = function (player) {
         var ret = new Attack(player);
-        ret.getCenter = ret.getPlayerPosition;
-        ret.outerRadius = 300;
-        ret.innerRadius = 250;
-        ret.arcAngle = Math.PI;
+        ret.damage = 4;
+        ret.cooldown = msToTicks(1000);
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            var dmg = this.damage;
+            createProjectile(src.position, tgt, 8, 2, 300, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+        }
         return ret;
     };
-
-    var circleAttack = function (player) {
+    var earthAttack = function (player) {
         var ret = new Attack(player);
-        ret.getCenter = ret.getMousePosition;
-        ret.outerRadius = 300;
-        ret.innerRadius = 250;
-        ret.arcAngle = Math.PI;
+        ret.damage = 40;
+        ret.cooldown = msToTicks(20000);
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            var dmg = this.damage;
+            createProjectile(src.position, tgt, 2, 14, 200, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+        }
         return ret;
     };
-
-    var arcAttack = function (player) {
+    var lightningAttack = function (player) {
         var ret = new Attack(player);
-        ret.getCenter = ret.getMousePosition;
-        ret.outerRadius = 150;
-        ret.innerRadius = 80;
-        ret.arcAngle = Math.PI / 2;
+        ret.damage = 10;
+        ret.cooldown = msToTicks(15000);
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            var dmg = this.damage;
+            createProjectile(src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, true);
+        }
+        return ret;
+    };
+    var fireAttack = function (player) {
+        var ret = new Attack(player);
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            Debug.debug("fire");
+        }
+        return ret;
+    };
+    var iceAttack = function (player) {
+        var ret = new Attack(player);
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            Debug.debug("ice");
+        }
         return ret;
     };
 
@@ -80,7 +119,7 @@ function initializeAttacks() {
         ret.innerRadius = 0;
 		ret.range = rng;
         ret.arcAngle = Math.PI / 4;
-		ret.cooldown = msToTicks(500);
+		ret.cooldown = msToTicks(300);
 		ret.damage = 4;
 		ret.ready = 0;
 		ret.apply = meleeApply(ret.apply);
@@ -88,7 +127,7 @@ function initializeAttacks() {
     };
 
     var axeAttack = function(player) {
-		var rng = 25;
+		var rng = 15;
         var ret = new Attack(player);
         ret.getCenter = ret.getPlayerPosition;
 
@@ -96,7 +135,7 @@ function initializeAttacks() {
         ret.innerRadius = 0;
 		ret.range = rng;
         ret.arcAngle = Math.PI / 4;
-		ret.cooldown = msToTicks(1500);
+		ret.cooldown = msToTicks(1800);
 		ret.damage = 24;
 		ret.ready = 0;
 		ret.apply = meleeApply(ret.apply);
@@ -104,7 +143,7 @@ function initializeAttacks() {
     };
 
     var saberAttack = function(player) {
-		var rng = 35;
+		var rng = 30;
         var ret = new Attack(player);
         ret.getCenter = ret.getPlayerPosition;
 
@@ -120,7 +159,7 @@ function initializeAttacks() {
     };
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
-    specialAttacks = [ringAttack, circleAttack, arcAttack];
+    specialAttacks = [bowAttack, earthAttack, lightningAttack, fireAttack, iceAttack];
 
 	attacksInitialized = true;
 }

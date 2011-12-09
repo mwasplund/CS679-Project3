@@ -16,6 +16,8 @@ function removeEnemy(i) {
 	e.removed = true;
 	e.position = [-1e12, -1e12];
 	e.updateModel();
+
+    //addEnemy(makeSpiderEnemy());
 }
 
 function randomPos() {
@@ -108,7 +110,11 @@ function makeSpiderEnemy(pos) {
 	while (!pos) {
 		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 2000];
         if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
-		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) pos = null;
+		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) { pos = null; continue; }
+
+        if (dist2(pos, getLocalPlayer().position) < 300) { 
+            pos = null; continue;
+        }
 	}
 	return makeEnemy({
 			radius: 16,
@@ -155,7 +161,7 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 	ret.ready = 0;
 
 	ret.apply = function(src, tgt) {
-		createProjectile(src.position, tgt.position, spd, 4, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
+		createProjectile(src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
 		this.ready = this.cooldown;
 	};
 	return ret;
