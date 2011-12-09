@@ -17,17 +17,45 @@ function removeEnemy(e) {
     enemies.pop();
 }
 
+function randomPos() {
+	return [(Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2];
+}
+
+function enemyUpdateTarget() {
+	if (this.isActive()) {
+		if (tick - this.target.tick > (this.memory || this.stats.memory)) {
+			Debug.raw((tick - this.target.tick) + " " + this.stats.memory);
+			if (this.target.entity) {
+				this.setTarget(this.position);
+			} else {
+				this.setTarget(this.home);
+			}
+		} else if (this.target.entity) {
+			if (entityCanSee(this, this.target.entity)) {
+				this.setTarget(this.target.entity);
+			} else {
+				this.setTarget(this.target.position);
+			}
+		} else if (this.target.entity) {
+		} else {
+			if (dist2(this.position, this.target.position) < 2 * this.stats.speed) {
+				this.setTarget(add2(this.target.position, scale2(this.stats.speed * 20, randomPos())), this.target.tick);
+			}
+		}
+	}
+}
+
 function enemyLook() {
+	this.updateTarget();
+	if (this.target && this.target.entity) {
+		return;
+	}
     var players = getPlayers();
-    this.canSee = [];
     for (var i = 0; i < players.length; i++) {
         var p = players[i];
         if (entityCanSee(this, p)) {
-            this.canSee.push(p);
+			this.setTarget(p);
         }
-    }
-    if (this.canSee.length > 0 && !this.hasTarget()) {
-        this.setTarget(this.canSee[0]);
     }
 }
 
@@ -48,25 +76,16 @@ function enemyThinkAttack() {
     if (!this.isActive()) {
         return false;
     }
+	if (!this.target.entity) {
+		return false;
+	}
     if (this.attack.ready > 0) {
         return false;
     }
     if (dist2(this.position, this.target.position) > this.attack.range + this.radius + this.target.radius) {
         return false;
     }
-    return [this.attack, this.target];
-}
-
-
-function makeSimpleEnemy(pos) {
-	while (!pos) {
-		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 2000];
-        if (Math.abs(pos[0]) < 50 && Math.abs(pos[1]) < 50) pos = null;
-	}
-	return makeEnemy({
-			radius: 16,
-			speed: 2.5,
-		}, pos, Loader.GetModel("TestCube"), [0.1,0.1,0.1]);
+    return [this.attack, this.target.entity];
 }
 
 function entityMove(func) {
@@ -85,9 +104,11 @@ function makeSpiderEnemy(pos) {
 	}
 	return makeEnemy({
 			radius: 16,
-			speed: 2.5,
+			speed: 2.2,
             sight: 200,
-            memory: Math.ceil(3000 / timeStep),
+            memory: Math.ceil(5000 / timeStep),
+			health: 100,
+			regen: 0.01
 		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1]);
 }
 
@@ -113,6 +134,24 @@ function simpleDirectAttack(dmg, cd, rng) {
 	};
 	return ret;
 }
+
+function simpleProjectileAttack(dmg, cd, rng, spd) {
+	if (!dmg) dmg = 10;
+	if (!cd) cd = 1000 / timeStep;
+	if (!rng) rng = 8;
+	var ret = {};
+	ret.damage = dmg;
+	ret.cooldown = cd;
+	ret.range = rng;
+	ret.ready = 0;
+
+	ret.apply = function (v) {
+		createProjectile(v.pos, v.target, spd, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
+		this.ready = this.cooldown;
+	};
+	return ret;
+}
+
 
 function entityDamage(dmg) {
 	this.health -= dmg;
@@ -141,6 +180,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 	ret.rotation = 0;
 	ret.drawGL = drawModel;
     ret.lastEvent = -1e12;
+	ret.updateTarget = enemyUpdateTarget;
 
 	ret.attack = simpleDirectAttack();
 
@@ -148,8 +188,12 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
         return this.target;
     }
 
-    ret.setTarget = function(tgt) {
-        this.target = tgt;
+    ret.setTarget = function(tgt, tk) {
+		this.target = {
+			position: tgt.position || tgt,
+			tick: tk || tick,
+			entity: tgt.position ? tgt : null,
+		}
     }
 
     ret.isActive = function() {
@@ -157,7 +201,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
     }
 
     ret.atHome = function() {
-        return manhattan2(this.position, this.home) < this.stats.speed;
+        return manhattan2(this.position, this.home) < this.stats.speed * 2;
     }
 
     ret.thinkAttack = enemyThinkAttack;

@@ -35,7 +35,7 @@ function initializeLogSystem(sys, lev) {
 
 initializeLogSystem("general",    0);
 initializeLogSystem("graphics2d", 3);
-initializeLogSystem("interface", 3);
+initializeLogSystem("interface", 0);
 initializeLogSystem("graphics3d", 0);
 initializeLogSystem("engine",     3);
 initializeLogSystem("log",        0);

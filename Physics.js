@@ -49,6 +49,7 @@ function attackPhase() {
 		ent.cooldown();
         var atk = ent.thinkAttack();
         if (atk) {
+			Debug.debug(atk);
             atk[0].apply(atk[1]);
         }
     }
@@ -116,13 +117,14 @@ function intersectLineLine(left, right) {
 }
 
 
-function intersectPathWalls(begin, end, radius) {
+function intersectPathWalls(begin, end, radius, accept) {
 	var hit;
 
 	var buckets = wallBuckets.getBucketsFromLine(begin, end);
 	for (var i = 0; i < buckets.length; i++) {
 		var walls = wallBuckets.getBucket(buckets[i]);
 		for (var j = 0; j < walls.length; j++) {
+			if (accept && !accept(walls[j])) continue;
 			var x = intersectPathLine([begin, end, radius], walls[j].pts);
 			if (x && (!hit || hit[1] > x[1])) {
 				hit = x.concat(walls[j]);
@@ -181,7 +183,7 @@ function intersectPathEntity(path, entity) {
 
 var entIntersectCount = 0;
 var entIntersectEntities = 0;
-function intersectPathEntities(begin, end, radius, self) {
+function intersectPathEntities(begin, end, radius, self, accept) {
 	var hit;
 
     var buckets = entityBuckets.getBucketsFromLine(begin, end);
@@ -191,6 +193,7 @@ function intersectPathEntities(begin, end, radius, self) {
         for (var j = 0; j < entities.length; j++) {
             ++c;
 			if (entities[j] == self) continue;
+			if (accept && !accept(entities[j])) continue;
             var  x = intersectPathEntity([begin, end, radius], entities[j]);
             if (x && (!hit || hit[1] > x[1])) {
                 hit = x;
@@ -202,10 +205,10 @@ function intersectPathEntities(begin, end, radius, self) {
     return hit;
 }
 
-function tryMove(ent, begin, end) {
+function tryMove(ent, begin, end, accept) {
     if (dist2(begin, end) < 0.0001) return [begin, null, null];
-	var wall = intersectPathWalls(begin, end, ent.radius) || [end, 1e20, null];
-	var ent = intersectPathEntities(begin, wall[0], ent.radius, ent) || [end, 1e20, null];
+	var wall = intersectPathWalls(begin, end, ent.radius, accept) || [end, 1e20, null];
+	var ent = intersectPathEntities(begin, wall[0], ent.radius, ent, accept) || [end, 1e20, null];
     var stop = wall[1] < ent[1] ? wall : ent;
 	return stop;
 }
