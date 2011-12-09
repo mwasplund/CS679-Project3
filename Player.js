@@ -2,6 +2,7 @@ var player;
 function initializePlayer(i_Model, i_Scale) {
 	var stats = {
 		speed: getOptions().playerVelocity,
+        sight: 300,
 	};
     player = {
 		stats: stats,
@@ -13,7 +14,7 @@ function initializePlayer(i_Model, i_Scale) {
         rotation: 0,
         fillStyle: "#00FF44",
 		model: i_Model,
-        move: slidingMove,
+        move: entityMove(slidingMove),
         getHealth: function() { return 0.7; },
         draw: drawCircle,
 		drawGL: drawModel,
@@ -21,6 +22,9 @@ function initializePlayer(i_Model, i_Scale) {
 		isPlayer: true,
     }
     initializeAttacks();
+
+    player.planAttack = function() {
+    }
 
     player.getPosition = function() {
         return this.position;
@@ -46,6 +50,7 @@ function initializePlayer(i_Model, i_Scale) {
 		
 		this.updateModel()
     }
+    entityBuckets.add(player);
 };
 
 function getPlayers() {

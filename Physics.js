@@ -1,7 +1,18 @@
 function update() {
+    entIntersectCount = 0;
+    entIntersectEntities = 0;
+
 	movePhase();
-	actionPhase();
+	attackPhase();
+    processEffects();
 	cleanupPhase();
+
+    addDebugValue("intersectE/C", entIntersectEntities / entIntersectCount);
+}
+
+function processEffects() {
+
+
 }
 
 function movePhase() {
@@ -9,7 +20,6 @@ function movePhase() {
     for (var i = 0; i < entities.length; i++) {
         var ent = entities[i];
         ent.think();
-        processEffects(ent);
         ent.move();
     }
 
@@ -20,14 +30,19 @@ function getEntities() {
     return getEnemies().concat(getPlayers());
 }
 
-function processEffects(ent) {
-
-}
-
-function actionPhase() {
+function attackPhase() {
+    var entities = getEntities();
+    for (var i = 0; i < entities.length; i++) {
+        var ent = entities[i];
+        var atk = ent.planAttack();
+        if (atk) {
+            atk.apply();
+        }
+    }
 }
 
 function cleanupPhase() {
+    cleanupDeadEnemies();
 }
 
 // If an object on the path will intersect the line
@@ -94,20 +109,24 @@ function intersectLineLine(left, right) {
 function intersectPathWalls(begin, end, radius) {
 	var hit;
 
-	var buckets = getWallBucketsFromLine(begin, end);
+	var buckets = wallBuckets.getBucketsFromLine(begin, end);
 	for (var i = 0; i < buckets.length; i++) {
-		var walls = getWallBucket(buckets[i]);
+		var walls = wallBuckets.getBucket(buckets[i]);
 		for (var j = 0; j < walls.length; j++) {
 			var x = intersectPathLine([begin, end, radius], walls[j].pts);
 			if (x && (!hit || hit[1] > x[1])) {
 				hit = x.concat(walls[j]);
 			}
 		}
-        if (hit) {
-            return hit;
-        }
 	}
+    if (hit) {
+        return hit;
+    }
     return null;
+}
+
+function getWallsInRect(pt0, pt1) {
+    return [];
 }
 
 function intersectLineCircle(line, circle) {
@@ -152,32 +171,27 @@ function intersectPathEntity(path, entity) {
     } else return null;
 }
 
-function getEntityBucket(idx) {
-    return getEntities();
-}
-
-function getEntityBucketsFromLine(begin, end) {
-    return [0];
-}
-
+var entIntersectCount = 0;
+var entIntersectEntities = 0;
 function intersectPathEntities(begin, end, radius, self) {
 	var hit;
 
-    var buckets = getEntityBucketsFromLine(begin, end);
+    var buckets = entityBuckets.getBucketsFromLine(begin, end);
+    var c = 0;
     for (var i = 0; i < buckets.length; i++) {
-        var entities = getEntityBucket(buckets[i]);
+        var entities = entityBuckets.getBucket(buckets[i]);
         for (var j = 0; j < entities.length; j++) {
+            ++c;
 			if (entities[j] == self) continue;
             var  x = intersectPathEntity([begin, end, radius], entities[j]);
             if (x && (!hit || hit[2] > x[2])) {
                 hit = x;
             }
         }
-        if (hit) {
-            return hit;
-        }
     }
-    return null;
+    entIntersectCount++;
+    entIntersectEntities += c;
+    return hit;
 }
 
 function tryMove(ent, begin, end) {
@@ -224,6 +238,7 @@ function basicMove() {
 }
 
 function slidingMove() {
+    if (this.velocity < 0.001) return;
 	var target = add2(this.position, scale2(this.velocity, this.direction));
 
 	var stop = slideMove(this, this.position, target);

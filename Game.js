@@ -55,8 +55,6 @@ $(window).load(function() {
 
 	initializeListeners();
 
-    initializePlayer(Loader.GetModel("goodGuyWalk"), [2,2,2]);
-
 	displayTitle();
 
 	checkGLError();

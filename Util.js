@@ -54,6 +54,10 @@ function dist2(left, right) {
 	return Math.sqrt((left[0] - right[0]) * (left[0] - right[0]) + (left[1] - right[1]) * (left[1] - right[1]));
 }
 
+function manhattan2(left, right) {
+    return Math.abs(left[0] - right[0]) + Math.abs(left[1] - right[1]);
+}
+
 function normalize2(vec) {
 	var len = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
 	return [vec[0] / len, vec[1] / len];
@@ -91,6 +95,28 @@ Function.prototype.curry = function() {
 	return function() {
 		return __method.apply(this, args.concat(toArray(arguments)));
 	}
+}
+
+Array.prototype.unique = function(equal) {
+    equal = equal || function(left, right) {
+        return left === right;
+    };
+    var i = 1, j = 0;
+
+    while (true) {
+        while (i < this.length && equal(this[j], this[i])) i++;
+        if (i == this.length) break;
+        this[++j] = this[i++];
+    }
+
+    this.length = j + 1;
+}
+
+function arrayEquals(left, right) {
+    return left && right && !(left < right) && !(right < left);
+}
+Array.prototype.equals = function(other) {
+    return arrayEquals(this, other);
 }
 
 Array.prototype.toString = function(old) {

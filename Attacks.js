@@ -10,6 +10,11 @@ function Attack(player) {
         return normalize2(sub2(this.getMousePosition(), this.getPlayerPosition()));
     };
     this.draw = drawArc;
+    this.effect = [];
+}
+
+function damageNow(dmg) {
+    return {};
 }
 
 function initializeAttacks() {
@@ -19,6 +24,7 @@ function initializeAttacks() {
         ret.outerRadius = 300;
         ret.innerRadius = 250;
         ret.arcAngle = Math.PI;
+        ret.effect.push(damageNow(10));
         return ret;
     };
 
@@ -28,6 +34,7 @@ function initializeAttacks() {
         ret.outerRadius = 300;
         ret.innerRadius = 250;
         ret.arcAngle = Math.PI;
+        ret.effect.push(damageNow(10));
         return ret;
     };
 
@@ -37,6 +44,7 @@ function initializeAttacks() {
         ret.outerRadius = 150;
         ret.innerRadius = 80;
         ret.arcAngle = Math.PI / 2;
+        ret.effect.push(damageNow(10));
         return ret;
     };
 
@@ -46,6 +54,7 @@ function initializeAttacks() {
         ret.outerRadius = 80;
         ret.innerRadius = 0;
         ret.arcAngle = Math.PI / 4;
+        ret.effect.push(damageNow(10));
         return ret;
     };
 

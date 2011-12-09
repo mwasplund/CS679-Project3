@@ -1,12 +1,12 @@
 function draw() {
-		preDraw();
-		drawEnemies();
-		drawEnvironment();
-		drawSelections();
-		drawSpecial();
-		drawPlayers();
-		drawHud();
-		postDraw();
+    preDraw();
+    drawEnemies();
+    drawEnvironment();
+    drawSelections();
+    drawSpecial();
+    drawPlayers();
+    drawHud();
+    postDraw();
 }
 
 function preDraw() {
@@ -22,8 +22,49 @@ function preDraw() {
 }
 
 function postDraw() {
-	Loader.DrawModels();
+    var fog = calcFog();
+    if (in2dWorld) {
+        fog.draw2d();
+    } else {
+        Loader.DrawModels();
+    }
 }
+
+function calcFog() {
+    return calcFogSingle(getLocalPlayer());
+}
+
+function initializeFog(ent) {
+    return {
+        radius: ent.stats.sight,
+        position: ent.position,
+        intersect: function(line) {
+        },
+        draw2d: function() {
+            var ctx = target.context;
+            ctx.save();
+            ctx.strokeStyle = "#88888888";
+            ctx.translate(this.position[0], this.position[1]);
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI*2, true); 
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        },
+    };
+}
+
+function calcFogSingle(p) {
+    var fog = initializeFog(p);
+    var off = [p.stats.sight, p.stats.sight];
+    var walls = getWallsInRect(sub2(p.position, off), add2(p.position, off));
+
+    for (var i = 0; i < walls.length; i++) {
+        fog.intersect(walls[i].pts);
+    }
+    return fog;
+}
+
 
 function drawSelections() {
     var arc = getLocalAttack();
@@ -63,10 +104,9 @@ function filterObjects(objs, filters) {
 	return ret;
 }
 
-
 function getFilteredEnemies(filter) {
 	var bounds = filter.getBounds();
-	var ret = getEnemiesInGrid(bounds[0], bounds[1]);
+	var ret = getEnemiesInRect(bounds[0], bounds[1]);
 	return filter.filters ? filterObjects(ret, filter.filters) : ret;
 }
 
@@ -75,7 +115,10 @@ function drawEnemies() {
 	var objs = getEnemiesInCircle(view[0], view[1]);
 
 	for (var i = 0; i < objs.length; i++) {
-        drawObject(objs[i]);
+        var e = objs[i];
+        if (entityCanSee(getLocalPlayer(), e)) {
+            drawObject(objs[i]);
+        }
 	}
 }
 
@@ -101,15 +144,22 @@ function drawObject2d(o) {
 }
 
 function getViewDrawCircle() {
-	return [getLocalPlayer().getPosition(), 1000]
+	return [getLocalPlayer().position, 1000]
 }
 
-function getEnemiesInGrid(topLeft, bottomRight) {
-	return getEnemies();
+function getEnemiesInRect(topLeft, bottomRight) {
+    var idx = entityBuckets.getBucketsFromRect(topLeft, bottomRight);
+    var ret = [];
+    for (var i = 0; i < idx.length; i++) {
+        var bucket = entityBuckets.getBucket(idx[i]);
+        ret = ret.concat(bucket);
+    }
+
+    return ret.filter(function(e) { return !e.isPlayer; });
 }
 
 function getEnemiesInCircle(center, radius) {
-	var ret = getEnemiesInGrid(sub2(center, radius), add2(center, radius));
+	var ret = getEnemiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
     return ret.filter(function(obj) {
         return pointInCircle(obj.position, center, obj.radius + radius);
     });
@@ -118,7 +168,8 @@ function getEnemiesInCircle(center, radius) {
 function getEnemiesInArc(arc) {
     var center = arc.getCenter();
     var orientation = arc.getOrientation();
-	var ret = getEnemiesInGrid(sub2(center, arc.outerRadius), add2(center, arc.outerRadius));
+    var off = [arc.outerRadius, arc.outerRadius];
+	var ret = getEnemiesInRect(sub2(center, off), add2(center, off));
 	ret = ret.filter(function(obj) {
 		return pointInCircle(obj.position, center, arc.outerRadius + obj.radius);
 	});
