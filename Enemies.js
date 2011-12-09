@@ -162,6 +162,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 
     ret.thinkAttack = enemyThinkAttack;
 
+	ret.updateModel();
 	return ret;
 }
 

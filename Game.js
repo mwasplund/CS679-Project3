@@ -331,8 +331,8 @@ function Update(i_DeltaMiliSec)
   {		    
     player.model.Update(i_DeltaMiliSec);
     
-    //for(var i = 0; i < enemies.length; i ++)
-      enemies[0].model.Update(i_DeltaMiliSec);
+    for(var i = 0; i < enemies.length; i ++)
+      enemies[i].model.Update(i_DeltaMiliSec);
   }
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {
