@@ -10,7 +10,7 @@ function draw() {
 }
 
 function preDraw() {
-    clear();
+    clearDraw();
 
     var ctx = target.context;
 
@@ -247,7 +247,7 @@ function clearCanvas(tgt) {
 	tgt.context.clearRect(0, 0, tgt.width(), tgt.height());
 }
 
-function clear() {
+function clearDraw() {
 	clearCanvas(target);
 	clearCanvas(hud);
 }

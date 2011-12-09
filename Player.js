@@ -3,6 +3,7 @@ function initializePlayer(i_Model, i_Scale) {
 	var stats = {
 		speed: getOptions().playerVelocity,
         sight: 300,
+		health: 1000,
 	};
     player = {
 		stats: stats,
@@ -15,16 +16,20 @@ function initializePlayer(i_Model, i_Scale) {
         fillStyle: "#00FF44",
 		model: i_Model,
         move: entityMove(slidingMove),
-        getHealth: function() { return 0.7; },
+        getHealth: function() { return Math.min(1, Math.max(0, this.health / this.stats.health)); },
         draw: drawCircle,
 		drawGL: drawModel,
 		updateModel: updateModel,
 		isPlayer: true,
+		health: stats.health,
+		damage: entityDamage,
+		cooldown: function() { },
     }
-    initializeAttacks();
 
-    player.planAttack = function() {
-    }
+	player.setTarget = function(tgt) {
+		this.target = tgt;
+	}
+    initializeAttacks();
 
     player.getPosition = function() {
         return this.position;
@@ -34,14 +39,30 @@ function initializePlayer(i_Model, i_Scale) {
         return getMouse().getWorldPosition();
     };
 
-    player.think = function() {
-        var sqrt2inv = 0.7071067811865;
-        var d = [shouldMoveX(), shouldMoveY()];
+	player.thinkAttack = function() {
+	}
+    player.thinkMove = function() {
+		var d;
+
+		var tgt = this.target;
+		if (tgt) {
+			if (tgt.isPoint) {
+				if (dist2(tgt.position, this.position) < this.radius) {
+					this.setTarget(null);
+				}
+			} else if (tgt.isEnemy) {
+				if (tgt.isDead) {
+					this.setTarget(null);
+				}
+			}
+		}
+		if (this.target) { 
+			d = sub2(this.target.position, this.position);
+		} else {
+        	d = [shouldMoveX(), shouldMoveY()];
+		}
         if (d[0] != 0 || d[1] != 0) {
-            if (d[0] != 0 && d[1] != 0) {
-                d = scale2(sqrt2inv, d);
-            }
-            this.direction = d;
+            this.direction = normalize2(d);
             this.velocity = this.stats.speed;
         } else {
             this.direction = this.direction;

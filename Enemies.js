@@ -31,7 +31,7 @@ function enemyLook() {
     }
 }
 
-function enemyThink() {
+function enemyThinkMove() {
     this.look();
     if (!this.isActive()) {
         this.velocity = 0;
@@ -40,9 +40,21 @@ function enemyThink() {
 
 	this.velocity = this.stats.speed;
 
-
 	this.direction = normalize2(sub2(this.target.position, this.position));
-	this.updateModel()
+	this.updateModel();
+}
+
+function enemyThinkAttack() {
+    if (!this.isActive()) {
+        return false;
+    }
+    if (this.attack.ready > 0) {
+        return false;
+    }
+    if (dist2(this.position, this.target.position) > this.attack.range + this.radius + this.target.radius) {
+        return false;
+    }
+    return [this.attack, this.target];
 }
 
 
@@ -68,7 +80,8 @@ function entityMove(func) {
 function makeSpiderEnemy(pos) {
 	while (!pos) {
 		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 2000];
-        if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) pos = null;
+        if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
+		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) pos = null;
 	}
 	return makeEnemy({
 			radius: 16,
@@ -85,11 +98,33 @@ function entityCanSee(ent, target) {
     return true;
 }
 
+function simpleDirectAttack(dmg, cd, rng) {
+	if (!dmg) dmg = 10;
+	if (!cd) cd = 1000 / timeStep;
+	if (!rng) rng = 8;
+	var ret = {};
+	ret.damage = dmg;
+	ret.cooldown = cd;
+	ret.range = rng;
+	ret.ready = 0;
+	ret.apply = function (ent) {
+		ent.damage(this.damage, "direct");
+		this.ready = this.cooldown;
+	};
+	return ret;
+}
+
+function entityDamage(dmg) {
+	this.health -= dmg;
+}
+
 function makeEnemy(stats, position, i_Model, i_Scale) {
 	var ret = {};
 
+	ret.damage = entityDamage;
+	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
-	ret.think = enemyThink;
+	ret.thinkMove = enemyThinkMove;
 	ret.updateModel = updateModel;
 	ret.look = enemyLook;
 	ret.move = entityMove(slidingMove);
@@ -107,6 +142,8 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 	ret.drawGL = drawModel;
     ret.lastEvent = -1e12;
 
+	ret.attack = simpleDirectAttack();
+
     ret.hasTarget = function() {
         return this.target;
     }
@@ -123,8 +160,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
         return manhattan2(this.position, this.home) < this.stats.speed;
     }
 
-    ret.planAttack = function() {
-    }
+    ret.thinkAttack = enemyThinkAttack;
 
 	return ret;
 }
