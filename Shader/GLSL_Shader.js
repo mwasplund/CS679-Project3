@@ -81,7 +81,8 @@ function GLSL_AttachShaderProgram(i_Shader)
     i_Shader.Program.pMatrixUniform  = gl.getUniformLocation(i_Shader.Program, "uPMatrix");
     i_Shader.Program.mvMatrixUniform = gl.getUniformLocation(i_Shader.Program, "uMVMatrix");
     i_Shader.Program.nMatrixUniform  = gl.getUniformLocation(i_Shader.Program, "uNMatrix");
-    
+    i_Shader.Program.vMatrixUniform  = gl.getUniformLocation(i_Shader.Program, "uVMatrix");
+
     i_Shader.Program.Time_Uniform    = gl.getUniformLocation(i_Shader.Program, "uTime");
     
     i_Shader.Program.TransparentColorTexture_Uniform         = gl.getUniformLocation(i_Shader.Program, "uTransparentColorTexture"); 

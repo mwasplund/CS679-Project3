@@ -3,7 +3,7 @@ precision highp float;
 #endif
 
 varying vec2 vTextureCoord;
-varying vec3 vTransformedNormal;
+varying vec3 vNormal;
 varying vec4 vPosition;
 
 uniform bool uLight0_Enabled;
@@ -30,7 +30,7 @@ void main(void)
 
   if (uLight0_Enabled) 
   {
-    vec3 Normal = normalize(vTransformedNormal);
+    vec3 Normal = normalize(vNormal);
     vec3 Light0_Direction = normalize(uLight0_Position - vPosition.xyz);
     vec3 Camera_Direction = normalize(uCameraPosition  - vPosition.xyz);
     vec3 ReflectionDirection     = reflect(-Light0_Direction, Normal);
@@ -42,7 +42,7 @@ void main(void)
   
   if (uLight1_Enabled) 
   {
-    vec3 Normal = normalize(vTransformedNormal);
+    vec3 Normal = normalize(vNormal);
     vec3 Light1_Direction = normalize(uLight1_Position - vPosition.xyz);
     vec3 Camera_Direction = normalize(uCameraPosition  - vPosition.xyz);
     vec3 ReflectionDirection     = reflect(-Light1_Direction, Normal);
