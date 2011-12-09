@@ -5,6 +5,9 @@ function update() {
 	movePhase();
 	attackPhase();
     processEffects();
+
+	projectilePhase();
+
 	cleanupPhase();
 
     addDebugValue("intersectE/C", entIntersectEntities / entIntersectCount);
@@ -24,6 +27,70 @@ function movePhase() {
     }
 
 	getCamera().move();
+}
+
+var projectiles = [];
+function addProjectile(p) {
+	projectiles.push(p);
+}
+
+function projectilePhase() {
+	var j = 0;
+	for (var i = 0; i < projectiles.length; i++) {
+		projectiles[i].move();
+		if (!projectiles[i].dead) projectiles[j++] = projectiles[i];
+	}
+	projectiles.length = j;
+}
+
+function createProjectile(position, target, spd, radius, range, accept, apply) {
+	var proj = {};
+	proj.position = position.slice(0);
+	proj.direction = normalize2(sub2(target, position));
+	proj.velocity = spd;
+	proj.accept = accept;
+	proj.apply = apply;
+	proj.move = projectileMove;
+	proj.dead = false;
+	proj.radius = radius;
+	proj.range = range;
+	proj.home = position.slice(0);
+	proj.draw = drawCircle;
+	proj.fillStyle = "#FF0000";
+	proj.continues = false;
+
+	addProjectile(proj);
+}
+
+function tryMove(ent, begin, end, accept) {
+    if (dist2(begin, end) < 0.0001) return [begin, null, null];
+	var wall = intersectPathWalls(begin, end, ent.radius, accept) || [end, 1e20, null];
+	var ent = intersectPathEntities(begin, wall[0], ent.radius, ent, accept) || [end, 1e20, null];
+    var stop = wall[1] < ent[1] ? wall : ent;
+	return stop;
+}
+
+function projectileMove() {
+	var e = getEntityAtPoint(this.position);
+	if (e && this.accept(e)) {
+		this.apply(e);
+		if (!this.continues) {
+			this.dead = true;
+			return;
+		}
+	}
+	var stop = tryMove(this, this.position, add2(this.position, scale2(this.velocity, this.direction)), this.accept);
+	if (stop[2]) {
+		if (stop[2].isWall) {
+			this.dead = true;
+		} else {
+			this.apply(stop[2]);
+			this.dead = !this.continues;
+		}
+	} else {
+		this.position = stop[0];
+	}
+	if (dist2(this.position, this.home) > this.range) this.dead = true;
 }
 
 function getEntityAtPoint(pt) {
@@ -49,8 +116,7 @@ function attackPhase() {
 		ent.cooldown();
         var atk = ent.thinkAttack();
         if (atk) {
-			Debug.debug(atk);
-            atk[0].apply(atk[1]);
+            atk[0].apply(atk[1], atk[2]);
         }
     }
 }

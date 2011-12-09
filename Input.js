@@ -110,6 +110,7 @@ function getTargetFromMouse() {
 		var pos = getMouse().getWorldPosition();
 		var ent = getEntityAtPoint(pos);
 		if (!ent) ent = { isPoint: true, position: pos, };
+		Debug.info(ent);
 		return ent;
 	} else {
 		throw 0;

@@ -208,13 +208,21 @@ function drawEnvironment() {
 }
 
 function drawSpecial() {
+	drawProjectiles();
 	// draw selection indicator? other stuff?
 	drawObject(getLocalAttack());
 }
 
+function drawProjectiles() {
+	var projs = projectiles;
+	for (var i = 0; i < projs.length; i++) {
+		drawObject(projs[i]);
+	}
+}
+
 function drawCircle() {
     var ctx = target.context;
-    ctx.fillStyle = this.fillStyle;
+    ctx.fillStyle = this.fillStyle || "#FFFFFF";
     ctx.translate(this.position[0], this.position[1]);
     ctx.beginPath();
     ctx.arc(0, 0, this.radius, 0, Math.PI*2, true); 

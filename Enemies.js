@@ -24,7 +24,6 @@ function randomPos() {
 function enemyUpdateTarget() {
 	if (this.isActive()) {
 		if (tick - this.target.tick > (this.memory || this.stats.memory)) {
-			Debug.raw((tick - this.target.tick) + " " + this.stats.memory);
 			if (this.target.entity) {
 				this.setTarget(this.position);
 			} else {
@@ -67,9 +66,16 @@ function enemyThinkMove() {
     }
 
 	this.velocity = this.stats.speed;
+	if (this.inAttackRange()) this.velocity = 0;
 
 	this.direction = normalize2(sub2(this.target.position, this.position));
+
 	this.updateModel();
+}
+
+function inAttackRange() {
+	return this.target.entity && 
+		(dist2(this.position, this.target.position) < this.attack.range + this.radius + this.target.entity.radius);
 }
 
 function enemyThinkAttack() {
@@ -82,10 +88,10 @@ function enemyThinkAttack() {
     if (this.attack.ready > 0) {
         return false;
     }
-    if (dist2(this.position, this.target.position) > this.attack.range + this.radius + this.target.radius) {
+	if (!this.inAttackRange()) {
         return false;
     }
-    return [this.attack, this.target.entity];
+    return [this.attack, this, this.target.entity];
 }
 
 function entityMove(func) {
@@ -128,30 +134,30 @@ function simpleDirectAttack(dmg, cd, rng) {
 	ret.cooldown = cd;
 	ret.range = rng;
 	ret.ready = 0;
-	ret.apply = function (ent) {
-		ent.damage(this.damage, "direct");
+	ret.apply = function(src, tgt) {
+		tgt.damage(this.damage, "direct");
 		this.ready = this.cooldown;
 	};
 	return ret;
 }
 
 function simpleProjectileAttack(dmg, cd, rng, spd) {
-	if (!dmg) dmg = 10;
-	if (!cd) cd = 1000 / timeStep;
-	if (!rng) rng = 8;
+	if (!dmg) dmg = 4;
+	if (!cd) cd = 3000 / timeStep;
+	if (!rng) rng = 150;
+	if (!spd) spd = 4.0;
 	var ret = {};
 	ret.damage = dmg;
 	ret.cooldown = cd;
 	ret.range = rng;
 	ret.ready = 0;
 
-	ret.apply = function (v) {
-		createProjectile(v.pos, v.target, spd, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
+	ret.apply = function(src, tgt) {
+		createProjectile(src.position, tgt.position, spd, 4, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
 		this.ready = this.cooldown;
 	};
 	return ret;
 }
-
 
 function entityDamage(dmg) {
 	this.health -= dmg;
@@ -160,6 +166,7 @@ function entityDamage(dmg) {
 function makeEnemy(stats, position, i_Model, i_Scale) {
 	var ret = {};
 
+	ret.inAttackRange = inAttackRange;
 	ret.damage = entityDamage;
 	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
@@ -181,8 +188,10 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 	ret.drawGL = drawModel;
     ret.lastEvent = -1e12;
 	ret.updateTarget = enemyUpdateTarget;
+	ret.isEnemy = true;
 
-	ret.attack = simpleDirectAttack();
+	//ret.attack = simpleDirectAttack();
+	ret.attack = simpleProjectileAttack();
 
     ret.hasTarget = function() {
         return this.target;
