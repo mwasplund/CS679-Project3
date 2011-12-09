@@ -86,12 +86,40 @@ function keydown(event){
 }
 
 function mousedown(event) {
-    return false;
+	switch (event.button) {
+		case 0: // left
+
+			break;
+		case 1: // middle
+
+			break;
+		case 2: // right
+			getLocalPlayer().setTarget(getTargetFromMouse());
+
+			break;
+		default:
+	}
+	return false;
 }
 function mouseup(event) {
     return false;
 }
 
+function getTargetFromMouse() {
+	if (in2dWorld) {
+		var pos = getMouse().getWorldPosition();
+		var ent = getEntityAtPoint(pos);
+		if (!ent) ent = { isPoint: true, position: pos, };
+		return ent;
+	} else {
+		throw 0;
+		// TODO(cjhopman) get this working
+		var pos = getMouse().getWorldPosition3d();
+		var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
+		if (!ent) ent = { isPoint: true, position: pos, };
+		return ent;
+	}
+}
 var mouse = {
 	position: [0, 0],
     getWorldPosition: function() {

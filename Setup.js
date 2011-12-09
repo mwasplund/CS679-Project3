@@ -1,4 +1,5 @@
 function setup() {
+	clear();
     initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
     initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
     for (var i = 0; i < 50; i++) {
@@ -15,11 +16,22 @@ function getWalls() {
     return walls;
 }
 function clearWalls() {
+	wallBuckets = null;
     walls = [];
 }
 
+
+function clearEntities() {
+	enemies = [];
+	player = null;
+	entityBuckets = null;
+}
+	
+function clear() {
+	clearWalls();
+	clearEntities();
+}
 function setupWalls() {
-    clearWalls();
 
     var poly = [];
     poly.push([-1000, -1000]);
@@ -173,6 +185,10 @@ function getBucketsFromRectOff(p0, p1) {
     return ret;
 }
 
+function getBucketsFromPoint(pt) {
+	var off = [1, 1];
+	return getBucketsFromRectOff(sub2(this.bucketIdx(pt), off), add2(this.bucketIdx(pt), off));
+}
 function getBucketsFromRect(p0, p1) {
     return getBucketsFromRectOff(this.bucketIdx(p0), this.bucketIdx(p1));
 }
@@ -200,6 +216,7 @@ function initializeWallBuckets(bounds, width, height) {
 
     wallBuckets.getBucketsFromLine = getBucketsFromLine;
     wallBuckets.getBucketsFromRect = getBucketsFromRect;
+    wallBuckets.getBucketsFromPoint = getBucketsFromPoint;
 
     wallBuckets.bucketIdxOff = bucketIdxOff;
     wallBuckets.getBucket = getBucket;
@@ -256,6 +273,7 @@ function initializeEntityBuckets(bounds, width, height) {
 
     entityBuckets.getBucketsFromLine = getBucketsFromLine;
     entityBuckets.getBucketsFromRect = getBucketsFromRect;
+    entityBuckets.getBucketsFromPoint = getBucketsFromPoint;
 
     entityBuckets.width = Math.ceil((bounds[1][0] - bounds[0][0]) / width);
     entityBuckets.height = Math.ceil((bounds[1][1] - bounds[0][1]) / height);

@@ -19,11 +19,23 @@ function movePhase() {
     var entities = getEntities();
     for (var i = 0; i < entities.length; i++) {
         var ent = entities[i];
-        ent.think();
+        ent.thinkMove();
         ent.move();
     }
 
 	getCamera().move();
+}
+
+function getEntityAtPoint(pt) {
+	var idx = entityBuckets.getBucketsFromPoint(pt);
+	for (var i = 0; i < idx.length; i++) {
+		var bucket = entityBuckets.getBucket(idx[i]);
+		for (var j = 0; j < bucket.length; j++) {
+			var ent = bucket[j];
+			if (dist2(ent.position, pt) < ent.radius) return ent;
+		}
+	}
+	return null;
 }
 
 function getEntities() {
@@ -34,9 +46,10 @@ function attackPhase() {
     var entities = getEntities();
     for (var i = 0; i < entities.length; i++) {
         var ent = entities[i];
-        var atk = ent.planAttack();
+		ent.cooldown();
+        var atk = ent.thinkAttack();
         if (atk) {
-            atk.apply();
+            atk[0].apply(atk[1]);
         }
     }
 }
@@ -58,7 +71,6 @@ function intersectPathLine(path, line) {
 }
 
 function intersectPathHorzLine(path, line) {
-	//if (path[0][0] == path[1][0]) return null;
 	var left = path[0][1] < line[0][1];
 	var offy = left ? -path[2] : path[2];
     var offx = line[0][0] < line[1][0] ? -path[2] : path[2];
@@ -71,8 +83,6 @@ function intersectPathHorzLine(path, line) {
 	return ret;
 }
 function intersectPathVertLine(path, line) {
-	//if (path[0][1] == path[1][1]) return null;
-
 	var left = path[0][0] < line[0][0];
 	var offx = left ? -path[2] : path[2];
     var offy = line[0][1] < line[1][1] ? -path[2] : path[2];
@@ -119,13 +129,11 @@ function intersectPathWalls(begin, end, radius) {
 			}
 		}
 	}
-    if (hit) {
-        return hit;
-    }
-    return null;
+	return hit;
 }
 
 function getWallsInRect(pt0, pt1) {
+	// TODO(cjhopman): used for fog
     return [];
 }
 
@@ -184,7 +192,7 @@ function intersectPathEntities(begin, end, radius, self) {
             ++c;
 			if (entities[j] == self) continue;
             var  x = intersectPathEntity([begin, end, radius], entities[j]);
-            if (x && (!hit || hit[2] > x[2])) {
+            if (x && (!hit || hit[1] > x[1])) {
                 hit = x;
             }
         }
@@ -197,7 +205,7 @@ function intersectPathEntities(begin, end, radius, self) {
 function tryMove(ent, begin, end) {
     if (dist2(begin, end) < 0.0001) return [begin, null, null];
 	var wall = intersectPathWalls(begin, end, ent.radius) || [end, 1e20, null];
-	var ent = intersectPathEntities(begin, end, ent.radius, ent) || [end, 1e20, null];
+	var ent = intersectPathEntities(begin, wall[0], ent.radius, ent) || [end, 1e20, null];
     var stop = wall[1] < ent[1] ? wall : ent;
 	return stop;
 }
@@ -216,10 +224,8 @@ function clipMove() {
 }
 
 function collideMove(ent, begin, end, stop) {
-	var target = add2(stop[0], scale2(Math.min(0.1, stop[1]), normalize2(sub2(begin, end))));
-	if (dist2(target, begin) < 0.1) {
-		return begin;
-	}
+	if (stop[1] < 1) return begin;
+	var target = add2(stop[0], scale2(0.1, normalize2(sub2(begin, end))));
 	var stop = tryMove(ent, begin, target);
 	if (stop[2]) {
 		return begin;

@@ -141,7 +141,7 @@ function initializeListeners() {
     document.onkeyup = function(ev) { return keyuphandler(ev); };
     document.onkeypress = function () { };
 	$(document).mousemove(mousemove);
-	$(document).mousedown(mousedown);
+	document.onmousedown = mousedown;
 	$(document).mouseup(mouseup);
 	
 	/*
