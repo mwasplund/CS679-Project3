@@ -117,7 +117,7 @@ function makeSpiderEnemy(pos) {
             memory: Math.ceil(5000 / timeStep),
 			health: 14,
 			regen: 0.01
-		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI);
+		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
 }
 
 function entityCanSee(ent, target) {
@@ -166,7 +166,7 @@ function entityDamage(dmg) {
 	this.isDead = this.health <= 0;
 }
 
-function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate) {
+function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	var ret = {};
 
 	ret.inAttackRange = inAttackRange;
@@ -189,6 +189,7 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate) {
 	ret.direction = [0, 1];
 	ret.scale = i_Scale;
 	ret.rotation = 0;
+	ret.offset = i_Offset;
 	ret.preRotate = i_PreRotate;
 	ret.drawGL = drawModel;
     ret.lastEvent = -1e12;
