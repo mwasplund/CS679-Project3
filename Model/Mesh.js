@@ -9,14 +9,14 @@
 }
 
 
-function Mesh_Update(i_DeltaMilisec)
-{
-	this.DeltaMilisec += i_DeltaMilisec;
+function Mesh_Update(i_Ref)
+{	
+	var DeltaMilisec = i_Ref.Time - i_Ref.StartTime;
 	
-	  var RDM_NUM = 1539538600;
+  var RDM_NUM = 1539538600;
   var FPS = 24;
   var TimeToFrames = RDM_NUM / ((1/FPS) * 1000);
-  var Time = this.DeltaMilisec * TimeToFrames;
+  var Time = DeltaMilisec * TimeToFrames;
   for(var i = 0; i < this.Animations.length; i++)
   {
 	var AnimationNode = this.Animations[i];
@@ -56,7 +56,7 @@ function Mesh_Update(i_DeltaMilisec)
 				}
 			}
 			else if(TimeFrame == AnimCurve.KeyTime.length)
-				this.DeltaMilisec = 0;
+				i_Ref.StartTime = i_Ref.Time;
 		}
 	}
 	else if(AnimationNode.Name == "AnimCurveNode::S")
@@ -95,7 +95,7 @@ function Mesh_Update(i_DeltaMilisec)
 				}
 			}
 			else if(TimeFrame == AnimCurve.KeyTime.length)
-				this.DeltaMilisec = 0;
+				i_Ref.StartTime = i_Ref.Time;
 		}
 	}
 	
@@ -135,7 +135,7 @@ function Mesh_Update(i_DeltaMilisec)
 				}
 			}
 			else if(TimeFrame == AnimCurve.KeyTime.length)
-				this.DeltaMilisec = 0;
+				i_Ref.StartTime = i_Ref.Time;
 		}
 	}
   }
@@ -143,7 +143,7 @@ function Mesh_Update(i_DeltaMilisec)
   // Update the children
   for(var i = 0; i < this.Children.length; i++)
   {
-    this.Children[i].Update(i_DeltaMilisec); 
+    this.Children[i].Update(i_Ref); 
   }
 }
 
@@ -161,7 +161,7 @@ function Mesh(i_Model, i_Parent)
   
   // Copy over the animations
   this.Animations = i_Model.Animations;
-  this.DeltaMilisec = 0;
+  this.AnimationStartTime = 0;
   this.Children = new Array();
   
   if(i_Model.Geometry == null)
@@ -442,7 +442,7 @@ function Mesh_PreDraw()
 
 
 
-function Mesh_SmartDraw(i_MatrixRefs)
+function Mesh_SmartDraw(i_MatrixRefs, i_Refs)
 {
 	this.PreDraw();
 	var Copy = new Array();
@@ -453,6 +453,7 @@ function Mesh_SmartDraw(i_MatrixRefs)
 	{
 
 			//mat4.multiply(mvMatrix, i_MatrixRefs);
+			this.Update(i_Refs[i]);
 			this.TSR(Copy[i]);
 			
 			if(this.HasGeometry)
@@ -465,7 +466,7 @@ function Mesh_SmartDraw(i_MatrixRefs)
 	  // Draw the children
 	  for(var i = 0; i < this.Children.length; i++)
 	  {
-		this.Children[i].SmartDraw(Copy); 
+		this.Children[i].SmartDraw(Copy, i_Refs); 
 	  }
 }
 

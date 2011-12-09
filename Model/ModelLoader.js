@@ -30,20 +30,20 @@ function ModelLoader()
   this.StartLoading = ModelLoader_StartLoading;
   this.StopLoading = ModelLoader_StopLoading;
   this.GetModel = ModelLoader_GetModel;
-  this.DrawModels = function()
+  this.DrawModels = function(i_CurTime)
   {
 	if(this.Optimization_GroupModelRefs)
 	{
 		for(var i = 0; i < this.Models.length; i++)
 		{
-			this.Models[i].SmartDraw();
+			this.Models[i].SmartDraw(i_CurTime);
 		}
 	}
 	else
 	{
 		for(var i = 0; i < this.Models.length; i++)
 		{
-			this.Models[i].Draw();
+			this.Models[i].Draw(i_CurTime);
 		}
 	}
   }
@@ -64,6 +64,7 @@ function ModelRef()
 	this.Rotate = [0,0,0];
 	this.Scale = [1.0,1.0,1.0];
 	this.Time = 0;
+	this.StartTime = Math.random() * 1000;
 	
 	this.Draw = function()
 	{
