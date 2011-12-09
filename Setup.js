@@ -173,8 +173,8 @@ function getOptions() {
 }
 
 function getBucketsFromRectOff(p0, p1) {
-    var lo = [Math.min(p0[0], p1[0]), Math.min(p0[1], p1[1])];
-    var hi = [Math.max(p0[0], p1[0]), Math.max(p0[1], p1[1])];
+    var lo = [Math.min(p0[0], p1[0]) - 1, Math.min(p0[1], p1[1]) - 1];
+    var hi = [Math.max(p0[0], p1[0]) + 1, Math.max(p0[1], p1[1]) + 1];
 
     var ret = [];
     for (var x = lo[0]; x <= hi[0]; x++) {
@@ -186,8 +186,7 @@ function getBucketsFromRectOff(p0, p1) {
 }
 
 function getBucketsFromPoint(pt) {
-	var off = [1, 1];
-	return getBucketsFromRectOff(sub2(this.bucketIdx(pt), off), add2(this.bucketIdx(pt), off));
+	return getBucketsFromRectOff(this.bucketIdx(pt), this.bucketIdx(pt));
 }
 function getBucketsFromRect(p0, p1) {
     return getBucketsFromRectOff(this.bucketIdx(p0), this.bucketIdx(p1));
@@ -197,9 +196,6 @@ function getBucketsFromLine(begin, end) {
     var ret = [];
     var lIdx = this.bucketIdx(begin);
     var hIdx = this.bucketIdx(end);
-    lIdx = add2(lIdx, [-1, -1]);
-    hIdx = add2(hIdx, [1, 1]);
-    var cIdx = lIdx.slice(0);
     return getBucketsFromRectOff(lIdx, hIdx);
 }
 

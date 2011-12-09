@@ -87,6 +87,10 @@ function normalDecompose(d, normal) {
     return [dotn, ncomp, tcomp];
 }
 
+function msToTicks(ms) {
+	return Math.ceil(ms / timeStep);
+}
+
 
 Function.prototype.curry = function() {
 	if (arguments.length < 1) { return this; }

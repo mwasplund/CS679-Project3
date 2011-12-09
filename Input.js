@@ -5,7 +5,6 @@ function resetKeyState() {
     }
 }
 
-
 var keyId = {
     left: 65,
     up: 87,
@@ -31,7 +30,7 @@ function getKeyState(id) {
 }
 
 function keydown(event){
-    Debug.info("keydown: " + event.keyCode + " " + tick);
+    Debug.debug("keydown: " + event.keyCode + " " + tick);
     switch(event.keyCode) {
 		default:
 			// If the keyCode doesn't explicitly appear here, we ignore it
@@ -109,7 +108,7 @@ function getTargetFromMouse() {
 	if (in2dWorld) {
 		var pos = getMouse().getWorldPosition();
 		var ent = getEntityAtPoint(pos);
-		if (!ent) ent = { isPoint: true, position: pos, };
+		if (!ent) ent = pos;
 		Debug.info(ent);
 		return ent;
 	} else {
@@ -117,7 +116,7 @@ function getTargetFromMouse() {
 		// TODO(cjhopman) get this working
 		var pos = getMouse().getWorldPosition3d();
 		var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
-		if (!ent) ent = { isPoint: true, position: pos, };
+		if (!ent) ent = pos;
 		return ent;
 	}
 }

@@ -5,15 +5,13 @@ function getEnemies() {
 
 function addEnemy(e) {
     entityBuckets.add(e);
-
     enemies.push(e);
 }
 
-function removeEnemy(e) {
+function removeEnemy(i) {
+	var e = enemies[i];
     entityBuckets.remove(e);
-
-    var idx = e.enemyIdx;
-    enemies[idx] = enemies[enemies.length - 1];
+    enemies[i] = enemies[enemies.length - 1];
     enemies.pop();
 }
 
@@ -73,9 +71,10 @@ function enemyThinkMove() {
 	this.updateModel();
 }
 
-function inAttackRange() {
+function inAttackRange(off) {
+	off = off || 0;
 	return this.target.entity && 
-		(dist2(this.position, this.target.position) < this.attack.range + this.radius + this.target.entity.radius);
+		(dist2(this.position, this.target.position) < this.attack.range + this.radius + this.target.entity.radius - off);
 }
 
 function enemyThinkAttack() {
@@ -113,7 +112,7 @@ function makeSpiderEnemy(pos) {
 			speed: 2.2,
             sight: 200,
             memory: Math.ceil(5000 / timeStep),
-			health: 100,
+			health: 14,
 			regen: 0.01
 		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1]);
 }
@@ -161,6 +160,7 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 
 function entityDamage(dmg) {
 	this.health -= dmg;
+	this.isDead = this.health <= 0;
 }
 
 function makeEnemy(stats, position, i_Model, i_Scale) {
@@ -170,6 +170,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 	ret.damage = entityDamage;
 	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
+	ret.health = ret.stats.health;
 	ret.thinkMove = enemyThinkMove;
 	ret.updateModel = updateModel;
 	ret.look = enemyLook;
@@ -220,7 +221,7 @@ function makeEnemy(stats, position, i_Model, i_Scale) {
 }
 
 function shouldCleanup(e) {
-    return false;
+    return !e.health || e.health <= 0;
 }
 
 function cleanupDeadEnemies() {

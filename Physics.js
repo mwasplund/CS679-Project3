@@ -15,7 +15,6 @@ function update() {
 
 function processEffects() {
 
-
 }
 
 function movePhase() {
@@ -115,8 +114,11 @@ function attackPhase() {
         var ent = entities[i];
 		ent.cooldown();
         var atk = ent.thinkAttack();
-        if (atk) {
-            atk[0].apply(atk[1], atk[2]);
+        if (atk && atk[2]) {
+			var tgts = atk[2].length ? atk[2] : [atk[2]];
+			for (var i = 0; i < tgts.length; i++) {
+				atk[0].apply(atk[1], tgts[i]);
+			}
         }
     }
 }

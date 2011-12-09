@@ -23,14 +23,38 @@ function initializePlayer(i_Model, i_Scale) {
 		isPlayer: true,
 		health: stats.health,
 		damage: entityDamage,
-		cooldown: function() { },
+		cooldown: function() { 
+			for (var i = 0; i < this.meleeAttacks.length; i++) {
+				this.meleeAttacks[i].ready--;
+			}
+			for (var i = 0; i < this.specialAttacks.length; i++) {
+				this.specialAttacks[i].ready--;
+			}
+		},
     }
 
 	player.setTarget = function(tgt) {
-		this.target = tgt;
+		if (!tgt) {
+			this.target = null;
+		} else {
+			this.target = {
+				position: tgt.position || tgt,
+				entity: tgt.position ? tgt : null,
+			}
+		}
 	}
-    initializeAttacks();
 
+    initializeAttacks();
+	getAttacks(player);
+
+	player.currentMeleeAttack = 0;
+	player.currentSpecialAttack = 0;
+
+	player.getCurrentMeleeAttack = function() {
+		return this.meleeAttacks[this.currentMeleeAttack];
+	}
+
+	player.inAttackRange = inAttackRange;
     player.getPosition = function() {
         return this.position;
     }
@@ -40,35 +64,47 @@ function initializePlayer(i_Model, i_Scale) {
     };
 
 	player.thinkAttack = function() {
+		if (this.target && this.target.entity && this.inAttackRange() && this.getCurrentMeleeAttack().ready <= 0) {
+			var atk = this.getCurrentMeleeAttack();
+			var hit = getEnemiesInArc(atk);
+			if (hit.length <= 0) return null;
+			return [atk, this, hit];
+		}
 	}
     player.thinkMove = function() {
+		this.attack = this.getCurrentMeleeAttack();
 		var d;
 
 		var tgt = this.target;
 		if (tgt) {
-			if (tgt.isPoint) {
-				if (dist2(tgt.position, this.position) < this.radius) {
+			if (tgt.entity) {
+				if (tgt.entity.isDead) {
 					this.setTarget(null);
 				}
-			} else if (tgt.isEnemy) {
-				if (tgt.isDead) {
+			} else {
+				if (dist2(tgt.position, this.position) < this.radius) {
 					this.setTarget(null);
 				}
 			}
 		}
-		if (this.target) { 
+
+		var d = [shouldMoveX(), shouldMoveY()];
+		this.velocity = this.stats.speed;
+
+		if (d[0] != 0 || d[1] != 0) {
+			this.target = null;
+		} else if (this.target) {
+			if (this.target.entity && this.inAttackRange(4)) {
+				this.velocity = 0;
+			}
 			d = sub2(this.target.position, this.position);
 		} else {
-        	d = [shouldMoveX(), shouldMoveY()];
+			this.velocity = 0;
 		}
-        if (d[0] != 0 || d[1] != 0) {
-            this.direction = normalize2(d);
-            this.velocity = this.stats.speed;
-        } else {
-            this.direction = this.direction;
-            this.velocity = 0; 
-        }
-		
+		if (d[0] != 0 || d[1] != 0) {
+			this.direction = normalize2(d);
+		}
+
 		this.updateModel()
     }
     entityBuckets.add(player);
