@@ -17,6 +17,7 @@ function drawAttacks(ctx) {
     ctx.fillStyle = "#0000DD";
     ctx.fillText("Melee Attack", 10, 24);
 
+    ctx.translate(25, 30);
     drawAttacksVec(player.meleeAttacks);
 
     ctx.restore();
@@ -38,12 +39,21 @@ function drawAttacks(ctx) {
     ctx.fillStyle = "#00DD00";
     ctx.fillText("Ranged Attack", 10, 24);
 
+    ctx.translate(25, 30);
     drawAttacksVec(player.specialAttacks);
 
     ctx.restore();
 }
-function drawAttacksVec(atks) {
 
+function drawAttacksVec(atks) {
+    // working in [450, 100]
+
+    var sqW = 450 / atks.length;
+    var innerW = sqW * 0.9;
+
+    for (var i = 0; i < atks.length; i++) {
+        //atks[i].drawHud();
+    }
 }
 function drawHealth(ctx) {
     var hpWidth = 0.3;
