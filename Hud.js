@@ -18,7 +18,7 @@ function drawAttacks(ctx) {
     ctx.fillText("Melee Attack", 10, 24);
 
     ctx.translate(25, 30);
-    drawAttacksVec(player.meleeAttacks);
+    drawAttacksVec(player.meleeAttacks, ctx);
 
     ctx.restore();
     
@@ -40,19 +40,32 @@ function drawAttacks(ctx) {
     ctx.fillText("Ranged Attack", 10, 24);
 
     ctx.translate(25, 30);
-    drawAttacksVec(player.specialAttacks);
+    drawAttacksVec(player.specialAttacks, ctx);
 
     ctx.restore();
 }
 
-function drawAttacksVec(atks) {
+function drawAttacksVec(atks, ctx) {
     // working in [450, 100]
 
     var sqW = 450 / atks.length;
-    var innerW = sqW * 0.9;
+    var outerW = Math.min(sqW, 90);
+    var innerW = outerW * 0.9;
 
     for (var i = 0; i < atks.length; i++) {
-        //atks[i].drawHud();
+        var off0 = (sqW - outerW) / 2;
+        ctx.translate(off0, 0);
+        if (atks[i].isSelected) {
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.strokeRect(0, 0, outerW, outerW);
+        }
+        var off1 = (outerW - innerW) / 2;
+        ctx.translate(off1, off1);
+        ctx.save();
+        ctx.scale(innerW / 100, innerW / 100);
+        atks[i].drawHud(ctx);
+        ctx.restore();
+        ctx.translate(sqW - off0 - off1, 0 - off1);
     }
 }
 function drawHealth(ctx) {

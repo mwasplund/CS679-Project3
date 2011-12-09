@@ -16,7 +16,16 @@ function Attack(player) {
 		}
         return normalize2(sub2(target, this.getPlayerPosition()));
     };
+    this.ready = 0;
     this.draw = drawArc;
+    this.drawHud = function (ctx) {
+        ctx.strokeStyle = "#000000";
+        ctx.font = "10pt sans-serif";
+        ctx.strokeRect(0, 0, 100, 100);
+        ctx.fillText(this.name, 5, 40);
+        var cd = this.ready <= 0 ? "READY!" : "Cooldown: " + formatTime(this.ready * timeStep);
+        ctx.fillText(cd, 5, 60);
+    };
     this.apply = function(src, tgt) {
 		tgt.damage(this.damage);
 	};
@@ -39,6 +48,7 @@ function initializeAttacks() {
         var ret = new Attack(player);
         ret.damage = 4;
         ret.cooldown = msToTicks(1000);
+        ret.name = "Ranger's Bow";
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -53,6 +63,7 @@ function initializeAttacks() {
         var ret = new Attack(player);
         ret.damage = 40;
         ret.cooldown = msToTicks(20000);
+        ret.name = "Crushing Boulder";
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -67,6 +78,7 @@ function initializeAttacks() {
         var ret = new Attack(player);
         ret.damage = 10;
         ret.cooldown = msToTicks(15000);
+        ret.name = "Lightning Bolt";
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -79,6 +91,7 @@ function initializeAttacks() {
     };
     var fireAttack = function (player) {
         var ret = new Attack(player);
+        ret.name = "Unavailable";
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -90,6 +103,7 @@ function initializeAttacks() {
     };
     var iceAttack = function (player) {
         var ret = new Attack(player);
+        ret.name = "Unavailable";
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -113,6 +127,7 @@ function initializeAttacks() {
     var daggerAttack = function(player) {
 		var rng = 15;
         var ret = new Attack(player);
+        ret.name = "Little Dagger";
         ret.getCenter = ret.getPlayerPosition;
 
         ret.outerRadius = player.radius + rng;
@@ -129,6 +144,7 @@ function initializeAttacks() {
     var axeAttack = function(player) {
 		var rng = 15;
         var ret = new Attack(player);
+        ret.name = "Battle Axe";
         ret.getCenter = ret.getPlayerPosition;
 
         ret.outerRadius = player.radius + rng;
@@ -145,6 +161,7 @@ function initializeAttacks() {
     var saberAttack = function(player) {
 		var rng = 30;
         var ret = new Attack(player);
+        ret.name = "Light Sword";
         ret.getCenter = ret.getPlayerPosition;
 
         ret.outerRadius = player.radius + rng;
