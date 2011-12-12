@@ -19,12 +19,29 @@ function Attack(player) {
     this.ready = 0;
     this.draw = drawArc;
     this.drawHud = function (ctx) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, 100, 100);
+        ctx.closePath();
+        ctx.clip();
+
+
         ctx.strokeStyle = "#000000";
         ctx.font = "10pt sans-serif";
         ctx.strokeRect(0, 0, 100, 100);
         ctx.fillText(this.name, 5, 40);
-        var cd = this.ready <= 0 ? "READY!" : "Cooldown: " + formatTime(this.ready * timeStep);
-        ctx.fillText(cd, 5, 60);
+
+        if (this.ready > 0) {
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.arc(50, 50, 100, -Math.PI / 2, -Math.PI / 2 - 2 * Math.PI * (this.ready / this.wait), true);
+            ctx.closePath();
+            ctx.fillStyle = "#000000";
+            ctx.globalAlpha = 0.5;
+            ctx.fill();
+        }
+
+        ctx.restore();
     };
     this.apply = function(src, tgt) {
 		tgt.damage(this.damage);
