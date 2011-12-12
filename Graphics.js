@@ -72,7 +72,7 @@ function calcFogSingle(p) {
 
 
 function drawSelections() {
-    var arc = getLocalPlayer().getCurrentMeleeAttack();
+    var arc = getLocalPlayer().getMeleeAttack();
 	var objs = getEnemiesInArc(arc);
 
 	for (var i = 0; i < objs.length; i++) {
@@ -216,7 +216,7 @@ function drawEnvironment() {
 function drawSpecial() {
 	drawProjectiles();
 	// draw selection indicator? other stuff?
-	drawObject(getLocalPlayer().getCurrentMeleeAttack());
+	drawObject(getLocalPlayer().getMeleeAttack());
 }
 
 function drawProjectiles() {

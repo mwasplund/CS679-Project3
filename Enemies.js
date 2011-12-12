@@ -61,6 +61,10 @@ function enemyLook() {
     }
 }
 
+function getEntitySpeed(e) {
+    return e.speed || e.stats.speed;
+}
+
 function enemyThinkMove() {
     this.look();
     if (!this.isActive()) {
@@ -143,7 +147,7 @@ function simpleDirectAttack(dmg, cd, rng) {
 	ret.range = rng;
 	ret.ready = 0;
 	ret.apply = function(src, tgt) {
-		tgt.damage(this.damage, "direct");
+		tgt.damage(this.damage, src);
 		this.ready = this.cooldown;
 	};
 	return ret;
@@ -161,13 +165,13 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 	ret.ready = 0;
 
 	ret.apply = function(src, tgt) {
-		createProjectile(Loader.GetModel("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
+		createProjectile(Loader.GetModel("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
 		this.ready = this.cooldown;
 	};
 	return ret;
 }
 
-function entityDamage(dmg) {
+function entityDamage(dmg, src) {
 	this.health -= dmg;
 	this.isDead = this.health <= 0;
 }
@@ -177,7 +181,12 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	var ret = {};
 
 	ret.inAttackRange = inAttackRange;
-	ret.damage = entityDamage;
+	ret.damage = function(dmg, src) {
+        if (!this.target || !this.target.entity) {
+            this.setTarget(src);
+        }
+        entityDamage.apply(this, [dmg, src]);
+    }
 	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
 	ret.health = ret.stats.health;
@@ -199,7 +208,6 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.offset = i_Offset;
 	ret.preRotate = i_PreRotate;
 	ret.drawGL = drawModel;
-    ret.lastEvent = -1e12;
 	ret.updateTarget = enemyUpdateTarget;
 	ret.isEnemy = true;
     if (!isRanged) ret.health *= 0.5;

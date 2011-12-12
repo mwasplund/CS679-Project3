@@ -32,6 +32,10 @@ function Attack(player) {
 }
 
 var attacksInitialized;
+var meleeAttacks;
+var rangedAttacks;
+var specialAttacks;
+
 function initializeAttacks() {
 	if (attacksInitialized) {
 		return;
@@ -44,21 +48,6 @@ function initializeAttacks() {
 		}
 	};
 
-    var bowAttack = function (player) {
-        var ret = new Attack(player);
-        ret.damage = 4;
-        ret.cooldown = msToTicks(1000);
-        ret.name = "Ranger's Bow";
-        ret.attack = function(src, tgt) { 
-            if (this.ready > 0) return null;
-            this.ready = this.cooldown;
-            this.wait = this.cooldown;
-            tgt = tgt.position || tgt;
-            var dmg = this.damage;
-            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
-        }
-        return ret;
-    };
     var earthAttack = function (player) {
         var ret = new Attack(player);
         ret.damage = 40;
@@ -70,7 +59,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, false);
+            createProjectile(Loader.GetModel("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
         }
         return ret;
     };
@@ -85,7 +74,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg); }, true);
+            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
         }
         return ret;
     };
@@ -115,12 +104,16 @@ function initializeAttacks() {
     };
 
 
-	var meleeApply = function(old) {
+    var basicCooldown = function(src) {
+        for (var i = 0; i < src.basicAttacks.length; i++) {
+            src.basicAttacks[i].ready = this.cooldown;
+            src.basicAttacks[i].wait = this.cooldown;
+        }
+    }
+
+	var basicApply = function(old) {
 		return function(src, tgt) {
-			for (var i = 0; i < src.meleeAttacks.length; i++) {
-				src.meleeAttacks[i].ready = this.cooldown;
-				src.meleeAttacks[i].wait = this.cooldown;
-			}
+            basicCooldown.apply(this, [src]);
 			old.apply(this, [src, tgt]);
 		}
 	};
@@ -137,7 +130,7 @@ function initializeAttacks() {
 		ret.cooldown = msToTicks(300);
 		ret.damage = 4;
 		ret.ready = 0;
-		ret.apply = meleeApply(ret.apply);
+		ret.apply = basicApply(ret.apply);
         return ret;
     };
 
@@ -154,7 +147,7 @@ function initializeAttacks() {
 		ret.cooldown = msToTicks(1800);
 		ret.damage = 24;
 		ret.ready = 0;
-		ret.apply = meleeApply(ret.apply);
+		ret.apply = basicApply(ret.apply);
         return ret;
     };
 
@@ -171,24 +164,36 @@ function initializeAttacks() {
 		ret.cooldown = msToTicks(1000);
 		ret.damage = 12;
 		ret.ready = 0;
-		ret.apply = meleeApply(ret.apply);
+		ret.apply = basicApply(ret.apply);
+        return ret;
+    };
+
+    var bowAttack = function (player) {
+        var ret = new Attack(player);
+        ret.damage = 4;
+        ret.cooldown = msToTicks(1000);
+        ret.name = "Ranger's Bow";
+        ret.attack = function(src, tgt) { 
+            basicCooldown.apply(this, [src]);
+            tgt = tgt.position || tgt;
+            var dmg = this.damage;
+            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+        }
         return ret;
     };
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
-    specialAttacks = [bowAttack, earthAttack, lightningAttack, fireAttack, iceAttack];
+    rangedAttacks = [bowAttack];
+    specialAttacks = [earthAttack, lightningAttack, fireAttack, iceAttack];
 
 	attacksInitialized = true;
 }
 
-var meleeAttacks = [];
-var specialAttacks = [];
-
 function getAttacks(p) {
-	p.meleeAttacks = [];
-	for (var i = 0; i < meleeAttacks.length; i++) {
-		p.meleeAttacks.push(meleeAttacks[i](p));
-	}
+	p.basicAttacks = [];
+    p.setMeleeAttack(meleeAttacks[0](p));
+    p.setRangedAttack(rangedAttacks[0](p));
+
 	p.specialAttacks = [];
 	for (var i = 0; i < specialAttacks.length; i++) {
 		p.specialAttacks.push(specialAttacks[i](p));

@@ -18,7 +18,7 @@ function drawAttacks(ctx) {
     ctx.fillText("Melee Attack", 10, 24);
 
     ctx.translate(25, 30);
-    drawAttacksVec(player.meleeAttacks, ctx);
+    drawAttacksVec(player.basicAttacks, ctx);
 
     ctx.restore();
     

@@ -142,6 +142,7 @@ function initializeListeners() {
     document.onkeypress = function () { };
 	$(document).mousemove(mousemove);
 	document.onmousedown = mousedown;
+	document.onmousewheel = mousewheel;
 	$(document).mouseup(mouseup);
 	
 	/*
@@ -260,13 +261,13 @@ function InitializeModels()
 {
   Loader = new ModelLoader();
   
-  Loader.load("skeleton");
-  Loader.load("Fancy_Bounce_Ball");
+  //Loader.load("skeleton");
+  //Loader.load("Fancy_Bounce_Ball");
   Loader.load("bolder");
-  Loader.load("Link");
-  Loader.load("TestCube");
-  Loader.load("fbxTest");
-  Loader.load("handFbx");
+  //Loader.load("Link");
+  //Loader.load("TestCube");
+  //Loader.load("fbxTest");
+  //Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
   Loader.load("goodGuyWalk");

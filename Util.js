@@ -91,6 +91,9 @@ function msToTicks(ms) {
 	return Math.ceil(ms / timeStep);
 }
 
+function toArray(e) {
+    return Array.prototype.slice.call(e);
+}
 
 Function.prototype.curry = function() {
 	if (arguments.length < 1) { return this; }

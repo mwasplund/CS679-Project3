@@ -26,8 +26,8 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 		health: stats.health,
 		damage: entityDamage,
 		cooldown: function() { 
-			for (var i = 0; i < this.meleeAttacks.length; i++) {
-				this.meleeAttacks[i].ready--;
+			for (var i = 0; i < this.basicAttacks.length; i++) {
+				this.basicAttacks[i].ready--;
 			}
 			for (var i = 0; i < this.specialAttacks.length; i++) {
 				this.specialAttacks[i].ready--;
@@ -56,23 +56,36 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 		}
 	}
 
-    initializeAttacks();
-	getAttacks(player);
+    player.setMeleeAttack = function(atk) {
+        this.meleeAttack = atk;
+        this.basicAttacks[0] = atk;
+    }
+    player.setRangedAttack = function(atk) {
+        this.rangedAttack = atk;
+        this.basicAttacks[1] = atk;
+    }
 
-	player.getCurrentMeleeAttack = function() {
-		return this.meleeAttacks[this.currentMeleeAttack];
-	}
+    player.getMeleeAttack = function() {
+        return this.meleeAttack;
+    }
+    player.getRangedAttack = function() {
+        return this.rangedAttack;
+    }
+
 	player.getCurrentSpecialAttack = function() {
 		return this.specialAttacks[this.currentSpecialAttack];
 	}
 
-	player.currentMeleeAttack = 0;
+    initializeAttacks();
+	getAttacks(player);
+
+
 	player.currentSpecialAttack = 0;
 
-    player.setMeleeAttack = function(i) {
-        this.getCurrentMeleeAttack().isSelected = false;
-        this.currentMeleeAttack = i;
-        this.getCurrentMeleeAttack().isSelected = true;
+    player.cycleSpecialAttack = function(i) {
+        var l = this.specialAttacks.length;
+        var i = (((this.currentSpecialAttack + i) % l) + l) % l;
+        this.setSpecialAttack(i);
     }
     player.setSpecialAttack = function(i) {
         this.getCurrentSpecialAttack().isSelected = false;
@@ -80,9 +93,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
         this.getCurrentSpecialAttack().isSelected = true;
     }
 
-    player.setMeleeAttack(0);
     player.setSpecialAttack(0);
-
 
 	player.inAttackRange = inAttackRange;
     player.getPosition = function() {
@@ -94,54 +105,35 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
     };
 
 	player.thinkAttack = function() {
+        var ret;
         if (this.specialTarget) {
             var atk = this.getCurrentSpecialAttack();
-            var ret = atk.attack(this, this.specialTarget);
-            this.setSpecialTarget(null);
-            return ret;
-        }
-		if (this.target && this.target.entity && this.inAttackRange() && this.getCurrentMeleeAttack().ready <= 0) {
-			var atk = this.getCurrentMeleeAttack();
-			var hit = getEnemiesInArc(atk);
-			if (hit.length <= 0) return null;
-			return [atk, this, hit];
+            ret = atk.attack(this, this.specialTarget);
+        } else if (this.target) {
+            if (this.meleeAttack.ready <= 0) {
+                var atk = this.getMeleeAttack();
+                var hit = getEnemiesInArc(atk);
+                if (hit.length <= 0) {
+                    ret = this.getRangedAttack().attack(this, this.target);
+                } else {
+                    ret = [atk, this, hit];
+                }
+            }
 		}
+        this.setTarget(null);
+        this.setSpecialTarget(null);
+        return ret;
 	}
+
     player.thinkMove = function() {
-		this.attack = this.getCurrentMeleeAttack();
-		var d;
-
-		var tgt = this.target;
-		if (tgt) {
-			if (tgt.entity) {
-				if (tgt.entity.isDead) {
-					this.setTarget(null);
-				}
-			} else {
-				if (dist2(tgt.position, this.position) < this.radius) {
-					this.setTarget(null);
-				}
-			}
-		}
-
 		var d = [shouldMoveX(), shouldMoveY()];
-		this.velocity = this.stats.speed;
+		this.velocity = getEntitySpeed(this);
 
 		if (d[0] != 0 || d[1] != 0) {
-			this.target = null;
-		} else if (this.target) {
-			if (this.target.entity && this.inAttackRange(4)) {
-				this.velocity = 0;
-			}
-			d = sub2(this.target.position, this.position);
+			this.direction = normalize2(d);
 		} else {
 			this.velocity = 0;
 		}
-		if (d[0] != 0 || d[1] != 0) {
-			this.direction = normalize2(d);
-		}
-
-		addDebugValue("Player targeting Enemy:", this.target && this.target.entity ? "yes" : "no");
 
 		this.updateModel()
     }

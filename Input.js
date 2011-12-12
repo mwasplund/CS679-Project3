@@ -116,25 +116,27 @@ function keydown(event){
     return false;
 }
 
+function mousewheel(e) {
+    e = e || window.event;
+    var dw = e.detail || (e.wheelDelta / -120);
+
+    getLocalPlayer().cycleSpecialAttack(dw);
+}
+
 function mousedown(event) {
 	switch (event.button) {
 		case 0: // left
-            if (swapMouseKeys) {
-                getLocalPlayer().setTarget(getTargetFromMouse());
-            } else {
-                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
-            }
-
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            !swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		case 1: // middle
 
 			break;
 		case 2: // right
-            if (!swapMouseKeys) {
-                getLocalPlayer().setTarget(getTargetFromMouse());
-            } else {
-                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
-            }
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		default:
 	}
