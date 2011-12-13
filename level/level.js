@@ -77,7 +77,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -157,7 +157,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -202,6 +202,7 @@ if (window.addEventListener) {
 	      
 	      
 	    if(polyArray[i].id.toString() == "wall"){
+		imageView.getContext('2d').strokeStyle = "black";
 		imageView.getContext('2d').beginPath();
 		imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart);
 		imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish);
@@ -216,7 +217,7 @@ if (window.addEventListener) {
 		    
 		imageView.getContext('2d').beginPath();
 		 
-		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); 
+		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true); 
 		 
 		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
 		imageView.getContext('2d').fill();
@@ -239,7 +240,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -319,7 +320,7 @@ if (window.addEventListener) {
    
    
 	newtext += "\n } \n   </script>  </head> \n ";
-	newtext += " \n <body onload = \"load()\"> \n <div id=\"container\"> \n <canvas id=\"imageView\" width=\"1000\" height=\"1000\"> \n </canvas> \n</div> \n </body> \n</html> \n ";
+	newtext += " \n <body onload = \"load()\"> \n <div id=\"container\"> \n <canvas id=\"imageView\" width=\"1800\" height=\"1000\"> \n </canvas> \n</div> \n </body> \n</html> \n ";
    
    
 	document.myform.outputtext.value = newtext;
@@ -400,7 +401,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -540,7 +541,7 @@ if (window.addEventListener) {
 	    tools.poly = function () {
 		var tool = this;
 		this.started = false;
-		   
+		context.strokeStyle = "black";
 		   
 		  
 		   
