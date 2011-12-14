@@ -51,15 +51,11 @@ function keydown(event){
         case KEY_1 :
         case KEY_2 :
         case KEY_3 :
-            getLocalPlayer().setMeleeAttack(event.keyCode - KEY_1);
-            break;   
-
         case KEY_4 :
         case KEY_5 :
         case KEY_6 :
         case KEY_7 :
         case KEY_8 :
-            getLocalPlayer().setSpecialAttack(event.keyCode - KEY_4);
             break;   
 
         case NUMPAD_0 :
@@ -68,6 +64,13 @@ function keydown(event){
         case NUMPAD_5 :
             shouldReset = true;
             break;
+
+		case 187: // =
+			getOptions().increment("hudHeight");
+			break;
+		case 189: // -
+			getOptions().decrement("hudHeight");
+			break;
         case 220: // \
               SetDebugState(!DEBUG);             
             toggleDebugData();

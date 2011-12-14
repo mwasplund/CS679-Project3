@@ -49,9 +49,7 @@ $(window).load(function() {
 
 	// Load the models
 	InitializeModels();
-
-	//Load levels
-	InitializeLevels();
+	initializeOptions();
 
 	initializeListeners();
 
@@ -295,34 +293,6 @@ function AreModelsLoaded()
 	  return true;
 	}
 	return false;
-}
-
-/******************************************************/
-/* InitializeLevels
-/*
-/* Load and store the levels, or just the first level.
-/******************************************************/
-function InitializeLevels() 
-{
-	//CurrentLevel = new Level(1);
-}
-
-/******************************************************/
-/* SelectLevel
-/*
-/* Select a level to play.
-/******************************************************/
-function SelectLevel(i_LevelName)
-{
-	for(var k = 0; k < 2; k++)
-	{
-		if(Levels[k].Name == i_LevelName)
-		{
-			CurrentLevel = Levels[k];
-			Debug.Trace("CurrentLevel: "+ CurrentLevel);
-			return;
-		}
-	}
 }
     
 /******************************************************/

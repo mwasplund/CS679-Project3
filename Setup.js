@@ -170,11 +170,54 @@ function makeWall(pt0, pt1) {
     return ret;
 }
 
+var options;
 function getOptions() {
-    return {
+	return options;
+}
+function initializeOptions() {
+    options =  {
         playerVelocity: 3.3,
         keyUpWaitMax: 30,
+		hudHeight: 0.2,
+		hudHeightBounds: [0, 0.4],
+		hudHeightStep: 0.01,
     };
+	options.enforceBounds = function(str, report) {
+		var bds = this[str + "Bounds"];
+		if (this[str] == undefined || bds == undefined) {
+			if (report) {
+				Debug.error("value or valueBounds does not exist");
+			}
+			return;
+		}
+		this[str] = Math.min(bds[1], Math.max(bds[0], this[str]));
+	}
+	options.increment = function(str) {
+		var step = this[str + "Step"];
+		if (this[str] == undefined || step == undefined) {
+			Debug.error("value or valueStep does not exist");
+			return;
+		}
+		this.setValue(str, this[str] + step, true);
+	}
+	options.decrement = function(str) {
+		var step = this[str + "Step"];
+		if (this[str] == undefined || step == undefined) {
+			Debug.error("value or valueStep does not exist");
+			return;
+		}
+		this.setValue(str, this[str] - step, true);
+	}
+	options.setValue = function(str, val, report) {
+		if (this[str] == undefined) {
+			if (report) {
+				Debug.error("(" + str + ") does not exist.");
+			}
+			return;
+		}
+		this[str] = val;
+		this.enforceBounds(str, false);
+	}
 }
 
 function getBucketsFromRectOff(p0, p1) {

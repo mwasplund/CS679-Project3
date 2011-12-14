@@ -92,6 +92,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
         this.currentSpecialAttack = i;
         this.getCurrentSpecialAttack().isSelected = true;
     }
+	player.getSpecialAttacks = function() { return this.specialAttacks; }
 
     player.setSpecialAttack(0);
 

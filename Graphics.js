@@ -1,11 +1,13 @@
 function draw() {
     preDraw();
+    drawHud();
+	prepareHudForMinimap();
+
     drawEnemies();
     drawEnvironment();
     drawSelections();
     drawSpecial();
     drawPlayers();
-    drawHud();
 	
 	if (!in2dWorld) {
 		for(var i = 0; i < SceneModels.length; i++)

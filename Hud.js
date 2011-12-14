@@ -1,3 +1,75 @@
+var hudBounds = [[0, 80], [100, 100]];
+var minimap = [[81, 81], [99, 99]];
+var stats = [[1, 81], [19, 99]];
+var health = [[30, 81], [70, 84]];
+var basic = [[20, 85], [30, 99]];
+var melee = [[21, 90], [27, 96]];
+var ranged  = [[28, 90], [34, 96]];
+var special = [[31, 85], [80, 99]];
+
+function drawScaledRect(tgt, rect, style) {
+	var p = [rect[0][0], rect[0][1]];
+	var b = [rect[1][0], rect[1][1]];
+	if (drawTick == 1) Debug.debug(p.toString() + b.toString());
+
+	tgt.context.strokeStyle = style || "#000000";
+	tgt.context.strokeRect(p[0], p[1], b[0], b[1]);
+}
+function drawHudRects() {
+	var hudHeight = hud.height() * getOptions().hudHeight;
+	hudHeight = Math.min(hudHeight, 0.25 * hud.width());
+	var hudRect = [[0, hud.height() - hudHeight], [hud.width(), hudHeight]];
+
+	var spacer = hudHeight * 0.05;
+	var minimapHeight = hudHeight - 2 * spacer;
+	var minimapRect = [[hud.width() - spacer - minimapHeight, hud.height() - spacer - minimapHeight], [minimapHeight, minimapHeight]];
+
+	var statsRect = [add2(hudRect[0], [spacer, spacer]), [2 * minimapHeight, minimapHeight]];
+	var statsRight = statsRect[0][0] + statsRect[1][0];
+
+	var healthHeight = hudHeight * 0.16;
+	var healthWidth = (hud.width() - 4 * spacer - 2 * minimapHeight) * 0.5;
+	var healthOff = Math.max((hud.width() - healthWidth) / 2, statsRight + spacer);
+	var healthRect = [[healthOff, hudRect[0][1] + spacer], [healthWidth, healthHeight]];
+
+	var innerHudRect = [[statsRight + spacer, hudRect[0][1] + healthHeight + 2 * spacer],
+		[minimapRect[0][0] - statsRight - 2 * spacer, hudRect[1][1] - 3 * spacer - healthHeight]];
+
+	var numAttacks = getLocalPlayer().getSpecialAttacks().length + 2;
+	var widthPerAttack = Math.min((innerHudRect[1][0] - 5 * spacer) / numAttacks - spacer, innerHudRect[1][1] - 4 * spacer);
+
+	var basicAttackWidth = 2 * (widthPerAttack + spacer) + spacer;
+	var specialAttackWidth = (numAttacks - 2) * (widthPerAttack + spacer) + spacer;
+	var attackRectHeight = innerHudRect[1][1] - 2 * spacer;
+
+	var innerSpacer = (innerHudRect[1][0] - basicAttackWidth - specialAttackWidth) / 3;
+	innerSpacer = spacer;
+	var innerBottomRight = add2(innerHudRect[0], innerHudRect[1]);
+
+	var vertAttackSpacer = (innerHudRect[1][1] - widthPerAttack - 4 * spacer) / 2;
+
+	var basicAttackRect = [add2(innerHudRect[0], [innerSpacer, spacer]), [basicAttackWidth, attackRectHeight]];
+	var meleeAttackRect = [add2(basicAttackRect[0], [spacer, spacer + vertAttackSpacer]), [widthPerAttack, widthPerAttack]];
+	var rangedAttackRect = [add2(meleeAttackRect[0], [spacer + widthPerAttack, 0]), [widthPerAttack, widthPerAttack]];
+	var specialAttackRect = [sub2(innerBottomRight, [innerSpacer + specialAttackWidth, spacer + attackRectHeight]), [specialAttackWidth, attackRectHeight]];
+		
+	drawScaledRect(hud, hudRect, "#000000");
+	drawScaledRect(hud, minimapRect, "#AAAAAA");
+	drawScaledRect(hud, statsRect, "#666666");
+	drawScaledRect(hud, healthRect, "#FF0000");
+	drawScaledRect(hud, innerHudRect, "#000000");
+	drawScaledRect(hud, basicAttackRect, "#00FF00");
+	drawScaledRect(hud, specialAttackRect, "#0000FF");
+	drawScaledRect(hud, meleeAttackRect, "#FFFF00");
+	drawScaledRect(hud, rangedAttackRect, "#00FFFF");
+
+	var attackRect = [add2(specialAttackRect[0], [spacer, spacer + vertAttackSpacer]), [widthPerAttack, widthPerAttack]];
+	for (var i = 0; i < numAttacks - 2; i++) {
+		drawScaledRect(hud, attackRect, "#FF00FF");
+		attackRect[0][0] += spacer + widthPerAttack;
+	}
+}
+
 function drawAttacks(ctx) {
     var left = 0.02;
     var right = 0.32;
@@ -46,6 +118,7 @@ function drawAttacks(ctx) {
 }
 
 function drawAttacksVec(atks, ctx) {
+	ctx.save();
     // working in [450, 100]
 
     var sqW = 450 / atks.length;
@@ -67,6 +140,7 @@ function drawAttacksVec(atks, ctx) {
         ctx.restore();
         ctx.translate(sqW - off0 - off1, 0 - off1);
     }
+	ctx.restore();
 }
 function drawHealth(ctx) {
     var hpWidth = 0.3;
@@ -138,12 +212,18 @@ function drawHealth(ctx) {
 	ctx.restore();
 }
 
+function prepareHudForMinimap() {
+	//hud.translate(
+}
+
 function drawHud() {
 	var ctx = hud.context;
 // health, powerup stuff, minimap?
-  drawHealth(ctx);
+  //drawHealth(ctx);
   drawDebugData(ctx);
-  drawAttacks(ctx);
+  //drawAttacks(ctx);
+
+  drawHudRects();
 }
 
 var debugDataOn = false;
