@@ -115,6 +115,7 @@ function keydown(event){
             break;
 
 		case KEY_TAB:
+			shouldExpandMinimapFlag = !shouldExpandMinimapFlag;
 			break;
     }
     //checkPasswords(event.keyCode);
@@ -125,7 +126,9 @@ function keydown(event){
     return false;
 }
 
+var shouldExpandMinimapFlag = false;
 function shouldExpandMinimap() {
+	return shouldExpandMinimapFlag;
 	return keyState[KEY_TAB];
 }
 

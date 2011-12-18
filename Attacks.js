@@ -50,11 +50,7 @@ function Attack(player) {
 }
 
 function setImage(a, fname) {
-	var imageObj = new Image();
-	imageObj.src = fname;
-	imageObj.onload = function(){
-		a.image = imageObj;
-	};
+	getImage(fname, function(img) { a.image = img; });
 }
 
 var attacksInitialized;

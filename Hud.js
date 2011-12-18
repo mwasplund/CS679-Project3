@@ -83,10 +83,7 @@ function calculateHudRects() {
 
 function prepareRect(ctx, expected, actual, shouldClip) {
 	if (shouldClip) {
-        ctx.beginPath();
-        ctx.rect(actual[0][0] - 1, actual[0][1] - 1, actual[1][0] + 2, actual[1][1] + 2);
-        ctx.closePath();
-        ctx.clip();
+		clipRect(ctx, [sub2(actual[0], [1, 1]), add2(actual[1], [2, 2])]);
 	}
 	ctx.translate(actual[0][0] - expected[0][0], actual[0][1] - expected[0][1]);
 	ctx.scale(actual[1][0] / expected[1][0], actual[1][1] / expected[1][1]);
@@ -166,7 +163,6 @@ function drawAttack(ctx, attack, rect) {
 	ctx.restore();
 }
 
-
 function prepareHudForMinimap() {
 	var ctx = hud.context;
 	var rect = hudRects.minimap;
@@ -183,6 +179,28 @@ function prepareHudForMinimap() {
 	ctx.translate(500, 500);
 	getCamera().preDraw(ctx);
 }
+function clipRect(ctx, rect) {
+	ctx.beginPath();
+	ctx.rect(rect[0][0], rect[0][1], rect[1][0], rect[1][1]);
+	ctx.closePath();
+	ctx.clip();
+}
+
+var hudBackground;
+var backgroundLoading;
+function drawHudBackground(ctx) {
+	if (!hudBackground) {
+		if (!backgroundLoading) {
+			backgroundLoading = true;
+			getImage("icons/parchment.png", function(img) { hudBackground = img; });
+		}
+		return;
+	}
+	ctx.save();
+	clipRect(ctx, hudRects.hud);
+	ctx.drawImage(hudBackground, 0, 0);
+	ctx.restore();
+}
 
 function drawHud() {
 	calculateHudRects();
@@ -191,6 +209,7 @@ function drawHud() {
   drawDebugData(ctx);
 
 	drawScaledRect(hud, hudRects.hud, "#000000");
+	drawHudBackground(ctx);
 	drawScaledRect(hud, hudRects.minimap, "#AAAAAA");
 	drawScaledRect(hud, hudRects.stats, "#666666");
 	//drawScaledRect(hud, hudRects.inner, "#000000");

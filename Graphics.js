@@ -291,3 +291,10 @@ function swapWorld() {
 	}
 }
 
+function getImage(fname, success) {
+	var imageObj = new Image();
+	imageObj.src = fname;
+	imageObj.onload = function() { success(imageObj); };
+}
+
+
