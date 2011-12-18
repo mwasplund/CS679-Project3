@@ -27,6 +27,8 @@ var KEY_7 = 55;
 var KEY_8 = 56;
 var KEY_9 = 57;
 
+var KEY_TAB = 9;
+
 var keyState = [];
 var lastKeyDownTick = 0;
 
@@ -111,12 +113,20 @@ function keydown(event){
 
         case 66: // b
             break;
+
+		case KEY_TAB:
+			break;
     }
     //checkPasswords(event.keyCode);
     keyState[event.keyCode] = keyState[event.keyCode] > 0 ? keyState[event.keyCode] : 1;
     lastKeyDownTick = tick;
 
+	event.preventDefault();
     return false;
+}
+
+function shouldExpandMinimap() {
+	return keyState[KEY_TAB];
 }
 
 function mousewheel(e) {

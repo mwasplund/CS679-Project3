@@ -22,9 +22,14 @@ function Attack(player) {
         ctx.save();
 
         ctx.strokeStyle = "#000000";
-        ctx.font = "8pt sans-serif";
         ctx.strokeRect(0, 0, 100, 100);
-        ctx.fillText(this.name, 5, 40);
+
+		if (this.image) {
+			ctx.drawImage(this.image, 0, 0, 100, 100);
+		} else {
+			ctx.font = "8pt sans-serif";
+			ctx.fillText(this.name, 5, 40);
+		}
 
         if (this.ready > 0) {
             ctx.beginPath();
@@ -32,14 +37,23 @@ function Attack(player) {
             ctx.arc(50, 50, 100, -Math.PI / 2, -Math.PI / 2 - 2 * Math.PI * (this.ready / this.wait), true);
             ctx.closePath();
             ctx.fillStyle = "#000000";
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.7;
             ctx.fill();
         }
+
 
         ctx.restore();
     };
     this.apply = function(src, tgt) {
 		tgt.damage(this.damage);
+	};
+}
+
+function setImage(a, fname) {
+	var imageObj = new Image();
+	imageObj.src = fname;
+	imageObj.onload = function(){
+		a.image = imageObj;
 	};
 }
 
@@ -65,6 +79,7 @@ function initializeAttacks() {
         ret.damage = 40;
         ret.cooldown = msToTicks(20000);
         ret.name = "Crushing Boulder";
+		setImage(ret, "icons/Moon Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -80,6 +95,7 @@ function initializeAttacks() {
         ret.damage = 10;
         ret.cooldown = msToTicks(15000);
         ret.name = "Lightning Bolt";
+		setImage(ret, "icons/123.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -93,6 +109,7 @@ function initializeAttacks() {
     var fireAttack = function (player) {
         var ret = new Attack(player);
         ret.name = "Unavailable";
+		setImage(ret, "icons/Fire Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -105,6 +122,7 @@ function initializeAttacks() {
     var iceAttack = function (player) {
         var ret = new Attack(player);
         ret.name = "Unavailable";
+		setImage(ret, "icons/15.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -143,6 +161,7 @@ function initializeAttacks() {
 		ret.damage = 4;
 		ret.ready = 0;
 		ret.apply = basicApply(ret.apply);
+		setImage(ret, "icons/dagger.png");
         return ret;
     };
 
@@ -182,6 +201,7 @@ function initializeAttacks() {
 
     var bowAttack = function (player) {
         var ret = new Attack(player);
+		setImage(ret, "icons/slingshot.png");
         ret.damage = 4;
         ret.cooldown = msToTicks(1000);
         ret.name = "Ranger's Bow";

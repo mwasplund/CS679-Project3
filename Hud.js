@@ -69,6 +69,11 @@ function calculateHudRects() {
 	hudRects.ranged = rangedAttackRect;
 	hudRects.specialAttacks = [];
 
+	var aboveHeight = (hud.height() - hudHeight);
+	var expandWidth = Math.min(hud.width(), aboveHeight) * 0.92;
+	hudRects.expandedMinimap = [[(hud.width() - expandWidth) / 2, (aboveHeight - expandWidth) / 2], [expandWidth, expandWidth]];
+		
+
 	var attackRect = [add2(specialAttackRect[0], [spacer, spacer + vertAttackSpacer]), [widthPerAttack, widthPerAttack]];
 	for (var i = 0; i < numAttacks - 2; i++) {
 		hudRects.specialAttacks.push([attackRect[0].slice(0), attackRect[1].slice(0)]);
@@ -165,7 +170,16 @@ function drawAttack(ctx, attack, rect) {
 function prepareHudForMinimap() {
 	var ctx = hud.context;
 	var rect = hudRects.minimap;
-	prepareRect(ctx, [[0, 0], [1000, 1000]], hudRects.minimap, true);
+	ctx.fillStyle = "#BBAAAA";
+	ctx.fillRect(rect[0][0], rect[0][1], rect[1][0], rect[1][1]);
+
+	if (shouldExpandMinimap()) {
+		rect = hudRects.expandedMinimap;
+		ctx.globalAlpha = 0.7;
+	}
+	prepareRect(ctx, [[0, 0], [1000, 1000]], rect, true);
+	ctx.strokeStyle = "#000000";
+	ctx.strokeRect(0, 0, 1000, 1000);
 	ctx.translate(500, 500);
 	getCamera().preDraw(ctx);
 }
