@@ -258,7 +258,15 @@ function drawCircleSelected() {
 }
 
 function clearCanvas(tgt) {
+	// setting width clears canvas and canvas state correctly... but is slow
 	tgt.canvas.width = tgt.canvas.width;
+	
+	/*
+	// This should clear the important stuff... but seems to be screwing up the HUD.
+	tgt.context.setTransform(1, 0, 0, 1, 0, 0);
+	tgt.context.clearRect(0, 0, tgt.width(), tgt.height());
+	tgt.context.globalAlpha = 1;
+	*/
 }
 
 function clearDraw() {
