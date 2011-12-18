@@ -137,17 +137,18 @@ function drawSelected2d(o) {
 
 function drawObject(o) {
     if (in2dWorld) {
-        drawObject2d(o);
+        drawObject2d(target.context, o);
     } else {
+		drawObject2d(hud.context, o);
 		if(o.drawGL)
         	o.drawGL();
     }
 }
 
-function drawObject2d(o) {
-    target.context.save();
-    o.draw();
-    target.context.restore();
+function drawObject2d(ctx, o) {
+	ctx.save();
+    o.draw(ctx);
+	ctx.restore();
 }
 
 function getViewDrawCircle() {
@@ -228,8 +229,7 @@ function drawProjectiles() {
 	}
 }
 
-function drawCircle() {
-    var ctx = target.context;
+function drawCircle(ctx) {
     ctx.fillStyle = this.fillStyle || "#FFFFFF";
     ctx.translate(this.position[0], this.position[1]);
     ctx.beginPath();
@@ -258,8 +258,7 @@ function drawCircleSelected() {
 }
 
 function clearCanvas(tgt) {
-    tgt.context.setTransform(1, 0, 0, 1, 0, 0);
-	tgt.context.clearRect(0, 0, tgt.width(), tgt.height());
+	tgt.canvas.width = tgt.canvas.width;
 }
 
 function clearDraw() {

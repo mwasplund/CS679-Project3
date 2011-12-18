@@ -155,8 +155,7 @@ function makeWall(pt0, pt1) {
     };
     
     ret.pts = [pt0.slice(0), pt1.slice(0)];
-    ret.draw = function() {
-        var ctx = target.context;
+    ret.draw = function(ctx) {
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -172,12 +171,17 @@ function makeWall(pt0, pt1) {
 
 var options;
 function getOptions() {
+	if (!options) {
+		initializeOptions();
+	}
 	return options;
 }
-function initializeOptions() {
+function initializeOptions(force) {
+	if (options && !force) return;
     options =  {
         playerVelocity: 3.3,
         keyUpWaitMax: 30,
+
 		hudHeight: 0.2,
 		hudHeightBounds: [0, 0.4],
 		hudHeightStep: 0.01,
@@ -217,6 +221,7 @@ function initializeOptions() {
 		}
 		this[str] = val;
 		this.enforceBounds(str, false);
+		if (this[str + "Listener"]) this[str + "Listener"]();
 	}
 }
 

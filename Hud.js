@@ -15,7 +15,10 @@ function drawScaledRect(tgt, rect, style) {
 	tgt.context.strokeStyle = style || "#000000";
 	tgt.context.strokeRect(p[0], p[1], b[0], b[1]);
 }
-function drawHudRects() {
+
+var hudRects;
+function calculateHudRects() {
+	if (!hud || !hud.context) return;
 	var hudHeight = hud.height() * getOptions().hudHeight;
 	hudHeight = Math.min(hudHeight, 0.25 * hud.width());
 	var hudRect = [[0, hud.height() - hudHeight], [hud.width(), hudHeight]];
@@ -32,8 +35,8 @@ function drawHudRects() {
 	var healthOff = Math.max((hud.width() - healthWidth) / 2, statsRight + spacer);
 	var healthRect = [[healthOff, hudRect[0][1] + spacer], [healthWidth, healthHeight]];
 
-	var innerHudRect = [[statsRight + spacer, hudRect[0][1] + healthHeight + 2 * spacer],
-		[minimapRect[0][0] - statsRight - 2 * spacer, hudRect[1][1] - 3 * spacer - healthHeight]];
+	var innerHudRect = [[statsRight, hudRect[0][1] + healthHeight + 1 * spacer],
+		[minimapRect[0][0] - statsRight - 0 * spacer, hudRect[1][1] - 1 * spacer - healthHeight]];
 
 	var numAttacks = getLocalPlayer().getSpecialAttacks().length + 2;
 	var widthPerAttack = Math.min((innerHudRect[1][0] - 5 * spacer) / numAttacks - spacer, innerHudRect[1][1] - 4 * spacer);
@@ -53,111 +56,44 @@ function drawHudRects() {
 	var rangedAttackRect = [add2(meleeAttackRect[0], [spacer + widthPerAttack, 0]), [widthPerAttack, widthPerAttack]];
 	var specialAttackRect = [sub2(innerBottomRight, [innerSpacer + specialAttackWidth, spacer + attackRectHeight]), [specialAttackWidth, attackRectHeight]];
 		
-	drawScaledRect(hud, hudRect, "#000000");
-	drawScaledRect(hud, minimapRect, "#AAAAAA");
-	drawScaledRect(hud, statsRect, "#666666");
-	drawScaledRect(hud, healthRect, "#FF0000");
-	drawScaledRect(hud, innerHudRect, "#000000");
-	drawScaledRect(hud, basicAttackRect, "#00FF00");
-	drawScaledRect(hud, specialAttackRect, "#0000FF");
-	drawScaledRect(hud, meleeAttackRect, "#FFFF00");
-	drawScaledRect(hud, rangedAttackRect, "#00FFFF");
+	hudRects = {};
+	hudRects.spacer = spacer;
+	hudRects.hud = hudRect;
+	hudRects.inner = innerHudRect;
+	hudRects.minimap = minimapRect;
+	hudRects.health = healthRect;
+	hudRects.basicGroup = basicAttackRect;
+	hudRects.stats = statsRect;
+	hudRects.specialGroup = specialAttackRect;
+	hudRects.melee = meleeAttackRect;
+	hudRects.ranged = rangedAttackRect;
+	hudRects.specialAttacks = [];
 
 	var attackRect = [add2(specialAttackRect[0], [spacer, spacer + vertAttackSpacer]), [widthPerAttack, widthPerAttack]];
 	for (var i = 0; i < numAttacks - 2; i++) {
-		drawScaledRect(hud, attackRect, "#FF00FF");
+		hudRects.specialAttacks.push([attackRect[0].slice(0), attackRect[1].slice(0)]);
 		attackRect[0][0] += spacer + widthPerAttack;
 	}
 }
 
-function drawAttacks(ctx) {
-    var left = 0.02;
-    var right = 0.32;
-
-    var sc = [500, 150];
-    var w = hud.width() * (right - left);
-    var h = w * sc[1] / sc[0];
-    var x = hud.width() * left;
-    var y = hud.height() - h - 10;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(w / sc[0], h / sc[1]);
-
-    ctx.strokeRect(0, 0, sc[0], sc[1]);
-    ctx.font = "24px sans-serif";
-    ctx.fillStyle = "#0000DD";
-    ctx.fillText("Melee Attack", 10, 24);
-
-    ctx.translate(25, 30);
-    drawAttacksVec(player.basicAttacks, ctx);
-
-    ctx.restore();
-    
-
-    left = 0.68;
-    right = 0.98
-    sc = [500, 150];
-    w = hud.width() * (right - left);
-    h = w * sc[1] / sc[0];
-    x = hud.width() * left;
-    y = hud.height() - h - 10;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(w / sc[0], h / sc[1]);
-    ctx.strokeRect(0, 0, sc[0], sc[1]);
-    ctx.font = "24px sans-serif";
-    ctx.fillStyle = "#00DD00";
-    ctx.fillText("Ranged Attack", 10, 24);
-
-    ctx.translate(25, 30);
-    drawAttacksVec(player.specialAttacks, ctx);
-
-    ctx.restore();
+function prepareRect(ctx, expected, actual, shouldClip) {
+	if (shouldClip) {
+        ctx.beginPath();
+        ctx.rect(actual[0][0] - 1, actual[0][1] - 1, actual[1][0] + 2, actual[1][1] + 2);
+        ctx.closePath();
+        ctx.clip();
+	}
+	ctx.translate(actual[0][0] - expected[0][0], actual[0][1] - expected[0][1]);
+	ctx.scale(actual[1][0] / expected[1][0], actual[1][1] / expected[1][1]);
 }
 
-function drawAttacksVec(atks, ctx) {
-	ctx.save();
-    // working in [450, 100]
-
-    var sqW = 450 / atks.length;
-    var outerW = Math.min(sqW, 90);
-    var innerW = outerW * 0.9;
-
-    for (var i = 0; i < atks.length; i++) {
-        var off0 = (sqW - outerW) / 2;
-        ctx.translate(off0, 0);
-        if (atks[i].isSelected) {
-            ctx.strokeStyle = "#FFFFFF";
-            ctx.strokeRect(0, 0, outerW, outerW);
-        }
-        var off1 = (outerW - innerW) / 2;
-        ctx.translate(off1, off1);
-        ctx.save();
-        ctx.scale(innerW / 100, innerW / 100);
-        atks[i].drawHud(ctx);
-        ctx.restore();
-        ctx.translate(sqW - off0 - off1, 0 - off1);
-    }
-	ctx.restore();
-}
+var healthExpected = [200, 10];
 function drawHealth(ctx) {
-    var hpWidth = 0.3;
-    var hp = getLocalPlayer().getHealth();
-
-	var w = hud.width() * hpWidth;
-	var h = w / 15;
-
-	var x = (hud.width() - w) / 2;
-	var y = hud.height() - h - 20;
-
-	var sc = [200, 10];
-
 	ctx.save();
+	prepareRect(ctx, [[0, 0], healthExpected], hudRects.health);
 
-	ctx.translate(x, y);
-	ctx.scale(w / sc[0], h / sc[1]);
+    var hp = getLocalPlayer().getHealth();
+	var sc = healthExpected;
 
 	ctx.fillStyle = "#FF0000";
 	ctx.strokeStyle = "#000000";
@@ -208,22 +144,53 @@ function drawHealth(ctx) {
 	gradient.addColorStop(1.0, "#000000");
 	ctx.fillStyle = gradient;
     ctx.fillRect((sc[0] - barWidth) / 2, 0, barWidth, sc[1]);
-	
+
 	ctx.restore();
 }
 
+
+function drawAttack(ctx, attack, rect) {
+	ctx.save();
+	if (attack.isSelected) {
+		ctx.strokeStyle = "#FFFFFF";
+		var off = hudRects.spacer / 2;
+		ctx.strokeRect(rect[0][0] - off, rect[0][1] - off, rect[1][0] + 2 * off, rect[1][1] + 2 * off);
+	}
+	prepareRect(ctx, [[0, 0], [100, 100]], rect, true);
+	attack.drawHud(ctx);
+	ctx.restore();
+}
+
+
 function prepareHudForMinimap() {
-	//hud.translate(
+	var ctx = hud.context;
+	var rect = hudRects.minimap;
+	prepareRect(ctx, [[0, 0], [1000, 1000]], hudRects.minimap, true);
+	ctx.translate(500, 500);
+	getCamera().preDraw(ctx);
 }
 
 function drawHud() {
+	calculateHudRects();
 	var ctx = hud.context;
 // health, powerup stuff, minimap?
-  //drawHealth(ctx);
   drawDebugData(ctx);
-  //drawAttacks(ctx);
 
-  drawHudRects();
+	drawScaledRect(hud, hudRects.hud, "#000000");
+	drawScaledRect(hud, hudRects.minimap, "#AAAAAA");
+	drawScaledRect(hud, hudRects.stats, "#666666");
+	//drawScaledRect(hud, hudRects.inner, "#000000");
+	drawScaledRect(hud, hudRects.basicGroup, "#000000");
+	drawScaledRect(hud, hudRects.specialGroup, "#000000");
+
+	drawHealth(ctx);
+	
+	var attacks = getLocalPlayer().getSpecialAttacks();
+	for (var i = 0; i < attacks.length; i++) {
+		drawAttack(ctx, attacks[i], hudRects.specialAttacks[i]);
+	}
+	drawAttack(ctx, getLocalPlayer().getMeleeAttack(), hudRects.melee);
+	drawAttack(ctx, getLocalPlayer().getRangedAttack(), hudRects.ranged);
 }
 
 var debugDataOn = false;

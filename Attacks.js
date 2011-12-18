@@ -20,14 +20,9 @@ function Attack(player) {
     this.draw = drawArc;
     this.drawHud = function (ctx) {
         ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, 100, 100);
-        ctx.closePath();
-        ctx.clip();
-
 
         ctx.strokeStyle = "#000000";
-        ctx.font = "10pt sans-serif";
+        ctx.font = "8pt sans-serif";
         ctx.strokeRect(0, 0, 100, 100);
         ctx.fillText(this.name, 5, 40);
 
@@ -201,7 +196,7 @@ function initializeAttacks() {
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningAttack, fireAttack, iceAttack];
+    specialAttacks = [earthAttack, lightningAttack, fireAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
 
 	attacksInitialized = true;
 }
