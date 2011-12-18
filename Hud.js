@@ -92,6 +92,7 @@ function prepareRect(ctx, expected, actual, shouldClip) {
 var healthExpected = [200, 10];
 function drawHealth(ctx) {
 	ctx.save();
+	ctx.lineWidth = 1;
 	prepareRect(ctx, [[0, 0], healthExpected], hudRects.health);
 
     var hp = getLocalPlayer().getHealth();
@@ -152,12 +153,33 @@ function drawHealth(ctx) {
 
 
 function drawAttack(ctx, attack, rect) {
-	ctx.save();
 	if (attack.isSelected) {
-		ctx.strokeStyle = "#FFFFFF";
+		ctx.save();
+		var tm = new Date().getTime();
+		var a = tm / 2000 * Math.PI * 2;
 		var off = hudRects.spacer / 2;
+		var center = add2(rect[0], scale2(0.5, rect[1]));
+		var d = [Math.cos(a), Math.sin(a)];
+		//d = scale2(1 / (d[0] + d[1]), d);
+
+		var grad = ctx.createLinearGradient(
+				center[0] + d[0] * rect[1][0], center[1] + d[1] * rect[1][1],
+				center[0] - d[0] * rect[1][0], center[1] - d[1] * rect[1][1]
+				)
+		grad.addColorStop(0.0, "#000000");
+		grad.addColorStop(0.25, "#000000");
+		grad.addColorStop(0.45, "#00BFFF");
+		grad.addColorStop(0.55, "#00BFFF");
+		grad.addColorStop(0.75, "#000000");
+		grad.addColorStop(1.0, "#000000");
+
+		ctx.fillStyle = grad;
+		ctx.strokeStyle = grad;
+		ctx.lineWidth = 3;
 		ctx.strokeRect(rect[0][0] - off, rect[0][1] - off, rect[1][0] + 2 * off, rect[1][1] + 2 * off);
+		ctx.restore();
 	}
+	ctx.save();
 	prepareRect(ctx, [[0, 0], [100, 100]], rect, true);
 	attack.drawHud(ctx);
 	ctx.restore();
