@@ -82,7 +82,7 @@ function calculateHudRects() {
 
 function prepareRect(ctx, expected, actual, shouldClip) {
 	if (shouldClip) {
-		clipRect(ctx, [sub2(actual[0], [1, 1]), add2(actual[1], [2, 2])]);
+		clipRect(ctx, actual);
 	}
 	ctx.translate(actual[0][0] - expected[0][0], actual[0][1] - expected[0][1]);
 	ctx.scale(actual[1][0] / expected[1][0], actual[1][1] / expected[1][1]);

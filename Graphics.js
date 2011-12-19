@@ -84,8 +84,8 @@ function drawSelections() {
 
 function drawArc() {
 	var ctx = target.context;
-    var center = this.getCenter();
-    var orientation = this.getOrientation();
+    var center = this.getCenter() || this.position;
+    var orientation = this.getOrientation() || this.direction;
 	ctx.translate(center[0], center[1]);
 	ctx.transform(orientation[0], orientation[1], -orientation[1], orientation[0], 0, 0);
 	
@@ -217,15 +217,15 @@ function drawEnvironment() {
 }
 
 function drawSpecial() {
-	drawProjectiles();
+	drawEffects();
 	// draw selection indicator? other stuff?
 	drawObject(getLocalPlayer().getMeleeAttack());
 }
 
-function drawProjectiles() {
-	var projs = projectiles;
-	for (var i = 0; i < projs.length; i++) {
-		drawObject(projs[i]);
+function drawEffects() {
+	var efs = effects;
+	for (var i = 0; i < efs.length; i++) {
+		drawObject(efs[i]);
 	}
 }
 

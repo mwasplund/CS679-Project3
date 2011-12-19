@@ -4,9 +4,7 @@ function update() {
 
 	movePhase();
 	attackPhase();
-    processEffects();
-
-	projectilePhase();
+    effectPhase();
 
 	cleanupPhase();
 
@@ -28,49 +26,60 @@ function movePhase() {
 	getCamera().move();
 }
 
-var projectiles = [];
-function addProjectile(p) {
-	projectiles.push(p);
+var effects = [];
+function addEffect(e) {
+	effects.push(e);
 }
 
-function projectilePhase() {
+function effectPhase() {
 	var j = 0;
-	for (var i = 0; i < projectiles.length; i++) {
-		projectiles[i].move();
-		if (!projectiles[i].dead) projectiles[j++] = projectiles[i];
+	for (var i = 0; i < effects.length; i++) {
+		effects[i].act();
+		if (!effects[i].dead) effects[j++] = effects[i];
 	}
-	projectiles.length = j;
+	effects.length = j;
 }
 
-function createProjectile(i_Model, position, target, spd, radius, range, accept, apply, continues) {
+function modelDrawer(modelName) {
+	return {
+		model: Loader.GetModel(modelName),
+		set: function(obj) {
+			obj.model = this.model;
+			var scale = vec3.create([obj.radius, obj.radius, 3 * obj.radius]);
+			vec3.scale(scale, 0.01);
+			obj.scale = scale;
+			obj.rotation = 0;
+			obj.preRotate = 0;
+			obj.drawGL = drawModel;
+			obj.updateModel = updateModel;
+			obj.updateModel();
+		}
+	};
+}
+
+function createProjectile(drawSetter, position, target, spd, radius, range, accept, apply, continues) {
 	var proj = {};
 	proj.position = position.slice(0);
 	proj.direction = normalize2(sub2(target, position));
 	proj.velocity = spd;
 	proj.accept = accept;
 	proj.apply = apply;
-	proj.move = projectileMove;
+	proj.act = projectileMove;
 	proj.dead = false;
 	proj.radius = radius;
 	proj.range = range;
 	proj.home = position.slice(0);
 	proj.draw = drawCircle;
-	proj.fillStyle = "#FF0000";
+	proj.fillStyle = "#000000";
 	proj.continues = continues || false;
     proj.offset = [0, 10, 0];
-    proj.drawGL = drawModel;
 
-    var scale = vec3.create([radius, radius, 3 * radius]);
-    vec3.scale(scale, 0.01);
-    
-    proj.model = i_Model;
-    proj.scale = scale;
-    proj.rotation = 0;
-	proj.preRotate = 0;
-    proj.updateModel = updateModel;
-    proj.updateModel();
+	drawSetter.set(proj);
 
-	addProjectile(proj);
+	addEffect(proj);
+}
+
+function createEffect() {
 }
 
 function tryMove(ent, begin, end, accept) {
@@ -81,7 +90,18 @@ function tryMove(ent, begin, end, accept) {
 	return stop;
 }
 
+function createArc(position, outer, inner, angle) {
+	return {
+		position: position || [0, 0],
+		outerRadius: outer || 1,
+		innerRadius: inner || 0,
+		arcAngle: angle || Math.PI,
+	};
+}
+
+
 function projectileMove() {
+	/*
 	var e = getEntityAtPoint(this.position);
 	if (e && this.accept(e)) {
 		this.apply(e);
@@ -91,6 +111,7 @@ function projectileMove() {
 			return;
 		}
 	}
+	*/
 	var stop = tryMove(this, this.position, add2(this.position, scale2(this.velocity, this.direction)), this.accept);
 	if (stop[2]) {
 		if (stop[2].isWall) {
