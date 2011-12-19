@@ -13,6 +13,7 @@ function GLSL_Shader(i_ShaderName)
 
 function LoadShader(i_ShaderName)
 {
+	$.ajaxSetup({cache: false});
   var Shader = new GLSL_Shader(i_ShaderName);
 
   // Load the Vertex Shader

@@ -124,6 +124,15 @@ function drawHealth(ctx) {
 
 	strokeShape(border);
 
+	var barWidth = (sc[0] - 20) * hp;
+	var gradient = ctx.createLinearGradient(0, 0, 0, sc[1]);
+	gradient.addColorStop(0, "#000000");
+	gradient.addColorStop(0.45, "#FF0000");
+	gradient.addColorStop(0.55, "#FF0000");
+	gradient.addColorStop(1.0, "#000000");
+	ctx.fillStyle = gradient;
+    ctx.fillRect((sc[0] - barWidth) / 2, 0, barWidth, sc[1]);
+
 	var chrome = [];
 	chrome.push([border[0][0], 5/3]);
 	chrome.push([7.5, 0]);
@@ -138,15 +147,6 @@ function drawHealth(ctx) {
 	ctx.rotate(Math.PI);
 	strokeShape(chrome);
 	ctx.restore();
-
-	var barWidth = (sc[0] - 20) * hp;
-	var gradient = ctx.createLinearGradient(0, 0, 0, sc[1]);
-	gradient.addColorStop(0, "#000000");
-	gradient.addColorStop(0.45, "#FF0000");
-	gradient.addColorStop(0.55, "#FF0000");
-	gradient.addColorStop(1.0, "#000000");
-	ctx.fillStyle = gradient;
-    ctx.fillRect((sc[0] - barWidth) / 2, 0, barWidth, sc[1]);
 
 	ctx.restore();
 }

@@ -400,7 +400,7 @@ function Mesh_PreDraw()
   	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
   	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
     gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
-    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
+    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess || 30.0);
   	
   	// Bind the texture UV
   	var HasDiffuseColorTexture = this.DiffuseColorTexture != null;

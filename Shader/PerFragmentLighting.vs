@@ -8,7 +8,7 @@ uniform mat4 uPMatrix;
 uniform mat3 uNMatrix;
 
 uniform float uTime;
-uniform bool uTexture0_Enabled;
+uniform bool uDiffuseColorTexture_Enabled;
 
 varying vec2 vTextureCoord;
 varying vec3 vNormal;
@@ -18,9 +18,9 @@ void main(void)
 {
   vPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
   gl_Position = uPMatrix * uVMatrix * vPosition;
-  vNormal = uNMatrix * aVertexNormal;
+  vNormal = (uMVMatrix * vec4(aVertexNormal, 0.0)).xyz;
 
-  if(uTexture0_Enabled)
+  if(uDiffuseColorTexture_Enabled)
   	vTextureCoord = aTextureCoord;
   
 }

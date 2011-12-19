@@ -15,6 +15,7 @@ uniform vec3 uLight1_Position;
 uniform vec3 uLight1_Color;
 
 uniform bool uTexture0_Enabled;
+uniform bool uDiffuseColorTexture_Enabled;
 
 uniform vec3  uCameraPosition;
 uniform vec3  uAmbientColor;
@@ -27,6 +28,17 @@ uniform sampler2D uSampler;
 void main(void) 
 {
   vec3 ColorWeighting = vec3(1.0, 1.0, 1.0);
+  vec3 diffuseColor = uDiffuseColor;
+  if(uDiffuseColorTexture_Enabled)
+  {
+	  diffuseColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)).xyz;
+  } 
+
+  vec3 ambientColor = uAmbientColor;
+  // TODO: currently just disabling ambient color when we have a texture... this is wrong
+  if (uDiffuseColorTexture_Enabled) {
+	  ambientColor = vec3(0.0, 0.0, 0.0);
+  }
 
   if (uLight0_Enabled) 
   {
@@ -36,7 +48,7 @@ void main(void)
     vec3 ReflectionDirection     = reflect(-Light0_Direction, Normal);
     float DiffuseLightWeighting  = max(dot(Normal, Light0_Direction), 0.0);
     float SpecularLightWeighting = pow(max(dot(ReflectionDirection, Camera_Direction), 0.0), uShininess);
-    vec3 LightWeighting = uAmbientColor + uDiffuseColor * DiffuseLightWeighting + uSpecularColor * SpecularLightWeighting;
+    vec3 LightWeighting = ambientColor + diffuseColor * DiffuseLightWeighting + uSpecularColor * SpecularLightWeighting;
     ColorWeighting = ColorWeighting * LightWeighting * uLight0_Color;
   } 
   
@@ -54,15 +66,7 @@ void main(void)
 
   
   
-  vec4 FragmentColor;
-  if (uTexture0_Enabled) 
-  {
-    FragmentColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-  } 
-  else 
-  {
-    FragmentColor = vec4(1.0, 1.0, 1.0, 1.0);
-  }
+  vec4 FragmentColor = vec4(1.0, 1.0, 1.0, 1.0);
   
   // Apply the Light Weight to the fragment color
   gl_FragColor = vec4(FragmentColor.rgb * ColorWeighting, FragmentColor.a);
