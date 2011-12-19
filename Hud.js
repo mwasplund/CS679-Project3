@@ -264,45 +264,61 @@ function textDraw(txt, w, sz, color) {
 	}
 }
 var hmx = 100;
-var attackTooltip = {
-		title: textDraw("Tooltip", 200, 18, "#000000"),
-		description: textDraw("This is the tooltip description, it can be fairly long... I wonder if it will work. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", 200, 12, "#000000"),
-		hint: textDraw("This is the hint... might be useful", 200, 12, "#AAAAAA"),
+function makeTooltip(title, description, hint) {
+	var ret = {};
+	ret.title = textDraw(title, 200, 18, "#000000"),
+	ret.description = textDraw(description, 200, 12, "#000000"),
+	ret.hint = textDraw(hint, 200, 12, "#999999"),
+	ret.draw = function(ctx) {
+		if (!this.canvasReady) {
+			this.canvas = document.createElement("canvas");
+			this.context = this.canvas.getContext("2d");
+			this.canvas.width = 200;
+			this.canvas.height = 200;
+			var dy = 0;
+			var spacer = hudRects.spacer;
+			dy += this.title.draw(this.context, 0, dy);
+			this.context.strokeRect(0, dy, 200, 0);
+			dy += spacer;
+			dy += this.description.draw(this.context, 0, dy);
+			dy += spacer;
+			this.hint.draw(this.context, 0, dy) + spacer;
+			this.canvasReady = true;
+		}
+		ctx.drawImage(this.canvas, 0, 0);
+	}
+	return ret;
+}
+var dummyTitle = "Title";
+var dummyDesc = "This is the tooltip description, it can be fairly long... I wonder if it will work. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+var dummyHint = "This is the hint... might be useful";
 		
-		draw: function(ctx) {
-			if (!this.canvasReady) {
-				this.canvas = document.createElement("canvas");
-				this.context = this.canvas.getContext("2d");
-				this.canvas.width = 200;
-				this.canvas.height = 200;
-				var dy = 0;
-				var spacer = hudRects.spacer;
-				dy += this.title.draw(this.context, 0, dy);
-				this.context.strokeRect(0, dy, 200, 0);
-				dy += spacer;
-				dy += this.description.draw(this.context, 0, dy);
-				dy += spacer;
-				this.hint.draw(this.context, 0, dy) + spacer;
-				this.canvasReady = true;
-			}
-			ctx.drawImage(this.canvas, 0, 0);
-		},
-		x: hmx,
-	};
 function getAttackTooltip(atk) {
+	var attack = atk[0] == 1 ? getLocalPlayer().getSpecialAttacks()[atk[1]] :
+		atk[1] == 0 ? getLocalPlayer().getMeleeAttack() :
+		getLocalPlayer().getRangedAttack();
+	var title = attack.name || dummyTitle;
+	var desc = attack.description || dummyDesc;
+	var hint = dummyHint;
+	var tt = makeTooltip(title, desc, hint);
 	var attackRect = atk[0] == 1 ? hudRects.specialAttacks[atk[1]] :
 		atk[1] == 0 ? hudRects.melee :
 		hudRects.ranged;
-	attackTooltip.x = attackRect[0][0] + attackRect[1][0] / 2;
-	return attackTooltip;
+	tt.x = attackRect[0][0] + attackRect[1][0] / 2;
+	return tt;
 }
 function getHealthTooltip() {
-	attackTooltip.x = hudRects.health[0][0] + hudRects.health[1][0] / 2;
-	return attackTooltip;
+	var tt = makeTooltip("Health Bar", "This is your current health. When this bar empties, you will die... :(. You can regain health by using the Heal spell on yourself.", "There may be other ways to regain health... just experiment.");
+	tt.x = hudRects.health[0][0] + hudRects.health[1][0] / 2;
+	return tt;
 }
 function getMinimapTooltip() {
-	attackTooltip.x = hudRects.minimap[0][0] + hudRects.minimap[1][0] / 2;
-	return attackTooltip;
+	var title = "Minimap";
+	var desc = "This is the minimap. Enemies appear in red, while you and your friends appear green.";
+	var hint = "You can toggle the minimap overlay by pressing the 'TAB' key";
+	var tt = makeTooltip(title, desc, hint);
+	tt.x = hudRects.minimap[0][0] + hudRects.minimap[1][0] / 2;
+	return tt;
 }
 function getTooltip() {
 	return tooltip;
