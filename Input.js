@@ -140,6 +140,7 @@ function mousewheel(e) {
 }
 
 function mousedown(event) {
+	if (hudMouseDown(event)) return false;
 	switch (event.button) {
 		case 0: // left
             var pl = getLocalPlayer();
@@ -234,6 +235,7 @@ function getMouse() {
 	return mouse;
 }
 function mousemove(event) {
+	if (hudMouseMove(event)) return false;
 	getMouse().position = [event.clientX, event.clientY];
 	return false;
 }

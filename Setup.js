@@ -85,7 +85,7 @@ function makeWall(pt0, pt1) {
     // Make a 3d version of this wall
     var Dir = vec3.normalize([pt0[0] - pt1[0], 0, pt0[1] - pt1[1]]);
     var Right = vec3.normalize(vec3.cross(Dir, [0,1,0]));
-    var Height = 10;
+    var Height = 40;
     var Indices = [1,0,4,1,5,4,
                    1,0,2,1,2,3,
                    3,2,6,3,6,7,

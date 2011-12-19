@@ -87,6 +87,15 @@ function normalDecompose(d, normal) {
     return [dotn, ncomp, tcomp];
 }
 
+function binarySearch(lo, hi, accept) {
+	while (hi - lo > 1) {
+		var mid = Math.floor(lo + (hi - lo) / 2);
+		if (accept(mid)) lo = mid;
+		else hi = mid;
+	}
+	return lo;
+}
+
 function msToTicks(ms) {
 	return Math.ceil(ms / timeStep);
 }
