@@ -77,7 +77,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -157,7 +157,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -202,6 +202,7 @@ if (window.addEventListener) {
 	      
 	      
 	    if(polyArray[i].id.toString() == "wall"){
+		imageView.getContext('2d').strokeStyle = "black";
 		imageView.getContext('2d').beginPath();
 		imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart);
 		imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish);
@@ -216,7 +217,7 @@ if (window.addEventListener) {
 		    
 		imageView.getContext('2d').beginPath();
 		 
-		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); 
+		imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true); 
 		 
 		imageView.getContext('2d').fillStyle = polyArray[i].color.toString();
 		imageView.getContext('2d').fill();
@@ -239,7 +240,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -315,11 +316,11 @@ if (window.addEventListener) {
 
 	    }
 	}
-	newtext += " imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height); \n for (var i = 0; i < polyArray.length ; i++) \n{ \n if(polyArray[i].id.toString() == \"wall\"){ \n  imageView.getContext('2d').beginPath(); \n  imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart); \n imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish); \n  imageView.getContext('2d').stroke(); \n imageView.getContext('2d').closePath(); \n  } \n else   if(polyArray[i].id.toString() == \"player\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true);  \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n  imageView.getContext('2d').closePath(); \n //imageView.getContext('2d').closePath(); \n }else if( polyArray[i].id.toString() == \"enemy\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n imageView.getContext('2d').closePath(); \n } \n else if ( polyArray[i].id.toString == \"end\"){ \n  imageView.getContext('2d').strokeStyle = \"red\"; \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); \n context.closePath(); \n  imageView.getContext('2d').strokeStyle = \"black\"; }\n ";
+	newtext += " imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height); \n for (var i = 0; i < polyArray.length ; i++) \n{ \n if(polyArray[i].id.toString() == \"wall\"){ \n  imageView.getContext('2d').beginPath(); \n  imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart); \n imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish); \n  imageView.getContext('2d').stroke(); \n imageView.getContext('2d').closePath(); \n  } \n else   if(polyArray[i].id.toString() == \"player\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true);  \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n  imageView.getContext('2d').closePath(); \n //imageView.getContext('2d').closePath(); \n }else if( polyArray[i].id.toString() == \"enemy\"){ \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); \n imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); \n imageView.getContext('2d').fill(); \n imageView.getContext('2d').closePath(); \n } \n else if ( polyArray[i].id.toString() == \"end\"){ \n  imageView.getContext('2d').strokeStyle = \"red\"; \n imageView.getContext('2d').beginPath(); \n imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); \n imageView.getContext('2d').closePath(); \n  imageView.getContext('2d').strokeStyle = \"black\"; }\n ";
    
    
-	newtext += "\n } \n   </script>  </head> \n ";
-	newtext += " \n <body onload = \"load()\"> \n <div id=\"container\"> \n <canvas id=\"imageView\" width=\"1000\" height=\"1000\"> \n </canvas> \n</div> \n </body> \n</html> \n ";
+	newtext += "\n }} \n   </script>  </head> \n ";
+	newtext += " \n <body onload = \"load()\"> \n <div id=\"container\"> \n <canvas id=\"imageView\" width=\"1800\" height=\"1000\"> \n </canvas> \n</div> \n </body> \n</html> \n ";
    
    
 	document.myform.outputtext.value = newtext;
@@ -400,7 +401,7 @@ if (window.addEventListener) {
 		     imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
 		      
 		    
-		    context.closePath();
+		     imageView.getContext('2d').closePath();
 		     imageView.getContext('2d').strokeStyle = "black";
 
 
@@ -540,7 +541,7 @@ if (window.addEventListener) {
 	    tools.poly = function () {
 		var tool = this;
 		this.started = false;
-		   
+		context.strokeStyle = "black";
 		   
 		  
 		   
