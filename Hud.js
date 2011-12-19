@@ -299,7 +299,7 @@ function getAttackTooltip(atk) {
 		getLocalPlayer().getRangedAttack();
 	var title = attack.name || dummyTitle;
 	var desc = attack.description || dummyDesc;
-	var hint = dummyHint;
+	var hint = (atk[0] == 0 ? getLocalPlayer().getBasicAttackHint() : getLocalPlayer().getSpecialAttackHint()) || dummyHint;
 	var tt = makeTooltip(title, desc, hint);
 	var attackRect = atk[0] == 1 ? hudRects.specialAttacks[atk[1]] :
 		atk[1] == 0 ? hudRects.melee :

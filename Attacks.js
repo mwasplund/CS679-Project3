@@ -75,6 +75,7 @@ function initializeAttacks() {
         ret.damage = 40;
         ret.cooldown = msToTicks(20000);
         ret.name = "Crushing Boulder";
+		ret.description = "Cast out a large slow moving boulder. It will do massive damage to the first enemy that it hits.";
 		setImage(ret, "icons/Moon Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -91,6 +92,7 @@ function initializeAttacks() {
         ret.damage = 10;
         ret.cooldown = msToTicks(15000);
         ret.name = "Lightning Bolt";
+		ret.description = "Cast out a lightning bolt. It will deal damage to all enemies in a straight line.";
 		setImage(ret, "icons/123.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -105,6 +107,7 @@ function initializeAttacks() {
     var fireAttack = function (player) {
         var ret = new Attack(player);
         ret.name = "Unavailable";
+		ret.description = null;
 		setImage(ret, "icons/Fire Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -118,6 +121,7 @@ function initializeAttacks() {
     var iceAttack = function (player) {
         var ret = new Attack(player);
         ret.name = "Unavailable";
+		ret.description = null;
 		setImage(ret, "icons/15.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -147,6 +151,7 @@ function initializeAttacks() {
 		var rng = 15;
         var ret = new Attack(player);
         ret.name = "Little Dagger";
+		ret.description = "I bet you wish you had something more than this puny thing...";
         ret.getCenter = ret.getPlayerPosition;
 
         ret.outerRadius = player.radius + rng;
@@ -200,12 +205,13 @@ function initializeAttacks() {
 		setImage(ret, "icons/slingshot.png");
         ret.damage = 4;
         ret.cooldown = msToTicks(1000);
-        ret.name = "Ranger's Bow";
+        ret.name = "Slingshot";
+		ret.description = "Your trusty slingshot. It will shoot where you point it, but don't expect much damage.";
         ret.attack = function(src, tgt) { 
             basicCooldown.apply(this, [src]);
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            createProjectile(Loader.GetModel("bolder"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
         }
         return ret;
     };
