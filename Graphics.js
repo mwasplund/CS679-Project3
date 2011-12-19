@@ -155,29 +155,28 @@ function getViewDrawCircle() {
 	return [getLocalPlayer().position, 1000]
 }
 
-function getEnemiesInRect(topLeft, bottomRight) {
+function getEntitiesInRect(topLeft, bottomRight) {
     var idx = entityBuckets.getBucketsFromRect(topLeft, bottomRight);
     var ret = [];
     for (var i = 0; i < idx.length; i++) {
         var bucket = entityBuckets.getBucket(idx[i]);
         ret = ret.concat(bucket);
     }
-
-    return ret.filter(function(e) { return !e.isPlayer; });
+	return ret;
 }
 
-function getEnemiesInCircle(center, radius) {
-	var ret = getEnemiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
+function getEntitiesInCircle(center, radius) {
+	var ret = getEntitiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
     return ret.filter(function(obj) {
         return pointInCircle(obj.position, center, obj.radius + radius);
     });
 }
 
-function getEnemiesInArc(arc) {
+function getEntitiesInArc(arc) {
     var center = arc.getCenter();
     var orientation = arc.getOrientation();
     var off = [arc.outerRadius, arc.outerRadius];
-	var ret = getEnemiesInRect(sub2(center, off), add2(center, off));
+	var ret = getEntitiesInRect(sub2(center, off), add2(center, off));
 	ret = ret.filter(function(obj) {
 		return pointInCircle(obj.position, center, arc.outerRadius + obj.radius);
 	});
@@ -200,6 +199,17 @@ function getEnemiesInArc(arc) {
 
 	return ret;
 }
+
+function getEnemiesInRect(topLeft, bottomRight) {
+	return getEntitiesInRect(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInCircle(topLeft, bottomRight) {
+	return getEntitiesInCircle(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInArc(topLeft, bottomRight) {
+	return getEntitiesInArc(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+
 
 function drawPlayers() {
     var players = getPlayers();

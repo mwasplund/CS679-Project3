@@ -116,11 +116,12 @@ function initializeAttacks() {
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-			createEffect(modelDrawer("Sphere"), createArc(tgt.position, ret.radius),
+			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
 					msToTicks(5000), msToTicks(1000),
-					function(e) { return e.isEntity; },
-					function(e) { e.damage(ret.damage, src) }
-					);
+					function(e) { return true; },
+					function(e) { 
+						e.damage(ret.damage, src);
+					});
         }
         return ret;
     };

@@ -51,6 +51,8 @@ function modelDrawer(modelName) {
 			obj.rotation = 0;
 			obj.preRotate = 0;
 			obj.drawGL = drawModel;
+			obj.draw = drawCircle;
+			obj.offset = [0, 10, 0];
 			obj.updateModel = updateModel;
 			obj.updateModel();
 		}
@@ -69,17 +71,55 @@ function createProjectile(drawSetter, position, target, spd, radius, range, acce
 	proj.radius = radius;
 	proj.range = range;
 	proj.home = position.slice(0);
-	proj.draw = drawCircle;
 	proj.fillStyle = "#000000";
 	proj.continues = continues || false;
-    proj.offset = [0, 10, 0];
 
 	drawSetter.set(proj);
 
 	addEffect(proj);
+	return proj;
 }
 
-function createEffect() {
+
+function stationaryAct() {
+	if (--this.ready < 1) {
+		var ents = getEntitiesInArc(this.arc);
+		for (var i = 0; i < ents.length; i++) {
+			var e = ents[i];
+			if (this.accept(e)) {
+				this.apply(e);
+				if (--this.hits < 1) {
+					this.dead = true;
+					break;
+				}
+			}
+		}
+		this.ready = this.delay;
+	}
+	if (--this.lifetime < 1) {
+		this.dead = true;
+	}
+}
+
+function createStationaryEffect(drawSetter, arc, lifetime, delay, accept, apply, hits) {
+	var effect = {};
+	effect.position = arc.position;
+	effect.direction = arc.direction;
+	effect.hits = hits || 1e10;
+	effect.arc = arc;
+	effect.lifetime = lifetime;
+	effect.delay = delay;
+	effect.ready = 0;
+	effect.accept = accept;
+	effect.apply = apply;
+	effect.act = stationaryAct;
+	effect.radius = arc.outerRadius;
+	effect.dead = false;
+	effect.home = arc.position;
+	effect.fillStyle = "#000000";
+	drawSetter.set(effect);
+	addEffect(effect);
+	return effect;
 }
 
 function tryMove(ent, begin, end, accept) {
@@ -90,12 +130,15 @@ function tryMove(ent, begin, end, accept) {
 	return stop;
 }
 
-function createArc(position, outer, inner, angle) {
+function createArc(position, outer, inner, direction, angle) {
 	return {
 		position: position || [0, 0],
+		direction: direction || [1, 0],
 		outerRadius: outer || 1,
 		innerRadius: inner || 0,
 		arcAngle: angle || Math.PI,
+		getCenter: function() { return this.position; },
+		getOrientation: function() { return this.direction; },
 	};
 }
 
