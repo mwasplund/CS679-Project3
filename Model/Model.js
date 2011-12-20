@@ -1,4 +1,6 @@
-﻿
+﻿LoadjsFile("Model/Mesh.js");
+LoadjsFile("glMatrix.js");
+
 function Model(i_FileName)
 {
   // Functions
