@@ -35,6 +35,7 @@ function postDraw() {
     } else {
         Loader.DrawModels(new Date().getTime());
 		glNumbers.draw();
+		glBars.draw();
     }
 }
 

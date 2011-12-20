@@ -56,7 +56,7 @@ function initializeGlNumbers() {
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext("2d");
-	canvas.width = 154;
+	canvas.width = 160;
 	canvas.height = 32;
 
 	for (var i = 0; i < 10; i++) {

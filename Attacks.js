@@ -112,7 +112,7 @@ function initializeAttacks() {
     };
     var fireball = function (player) {
         var ret = new Attack(player);
-		ret.damage = 10;
+		ret.damage = 2;
         ret.name = "Fireball";
 		ret.description = null;
 		ret.radius = 18;
@@ -124,7 +124,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
 			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
-					msToTicks(5000), msToTicks(1000),
+					msToTicks(5000), msToTicks(500),
 					function(e) { return true; },
 					function(e) { 
 						e.damage(ret.damage, src);
@@ -172,8 +172,8 @@ function initializeAttacks() {
         ret.innerRadius = 0;
 		ret.range = rng;
         ret.arcAngle = Math.PI / 4;
-		ret.cooldown = msToTicks(300);
-		ret.damage = 4;
+		ret.cooldown = msToTicks(500);
+		ret.damage = 7;
 		ret.ready = 0;
 		ret.apply = basicApply(ret.apply);
 		setImage(ret, "icons/dagger.png");

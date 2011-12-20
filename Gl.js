@@ -1,4 +1,5 @@
 LoadjsFile("Numbers.js");
+LoadjsFile("GlBars.js");
 var gl;
 var mMatrix;
 var pMatrix;
@@ -95,6 +96,7 @@ function InitializeWebGL(canvas)
   
   InitializeShaders();
   initializeGlNumbers();
+  initializeGlBars();
 }
 
 /******************************************************/
@@ -109,6 +111,7 @@ function InitializeShaders()
   Shaders.push(LoadShader("PerVertexLighting"));
   Shaders.push(LoadShader("TimeTest"));
   Shaders.push(LoadShader("Numbers"));
+  Shaders.push(LoadShader("Bars"));
   CurrentShader = GetShader("PerFragmentLighting");
 }
 

@@ -182,7 +182,7 @@ function initializeOptions(force) {
         playerVelocity: 3.3,
         keyUpWaitMax: 30,
 
-		hudHeight: 0.2,
+		hudHeight: 0.13,
 		hudHeightBounds: [0, 0.4],
 		hudHeightStep: 0.01,
     };

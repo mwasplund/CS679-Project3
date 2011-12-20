@@ -1,4 +1,13 @@
 var player;
+function drawEntity() {
+	glBars.addBar(this.getHealth(), [this.position[0], this.height, this.position[1]], this.isPlayer ? [0, 1, 0] : [1, 0, 0]);
+	if (this.model) {
+		drawModel.apply(this);
+	}
+}
+function entityHealth() {
+	return Math.min(1, Math.max(0, this.health / this.stats.health));
+};
 function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 	var stats = {
 		speed: getOptions().playerVelocity,
@@ -14,13 +23,14 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 		offset: i_Offset,
 		preRotate: i_PreRotate,
         radius: 20,
+		height: 40,
         rotation: 0,
         fillStyle: "#00FF44",
 		model: i_Model,
         move: entityMove(slidingMove),
-        getHealth: function() { return Math.min(1, Math.max(0, this.health / this.stats.health)); },
+		getHealth: entityHealth,
         draw: drawCircle,
-		drawGL: drawModel,
+		drawGL: drawEntity,
 		updateModel: updateModel,
 		isPlayer: true,
 		health: stats.health,

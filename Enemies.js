@@ -111,6 +111,7 @@ function entityMove(func) {
 }
 
 function makeSpiderEnemy(pos) {
+    var isRanged = Math.random() < 0.7;
 	while (!pos) {
 		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 1900];
         if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
@@ -125,8 +126,9 @@ function makeSpiderEnemy(pos) {
 			speed: 2.2,
             sight: 200,
             memory: Math.ceil(5000 / timeStep),
-			health: 14,
-			regen: 0.01
+			health: isRanged ? 14 : 9,
+			regen: 0.01,
+			isRanged: isRanged,
 		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
 }
 
@@ -178,7 +180,7 @@ function entityDamage(dmg, src) {
 }
 
 function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
-    var isRanged = Math.random() < 0.7;
+    var isRanged = stats.isRanged;
 	var ret = {};
 
 	ret.inAttackRange = inAttackRange;
@@ -191,6 +193,7 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
 	ret.health = ret.stats.health;
+	ret.getHealth = entityHealth;
 	ret.thinkMove = enemyThinkMove;
 	ret.updateModel = updateModel;
 	ret.look = enemyLook;
@@ -198,6 +201,7 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
 	ret.radius = isRanged ? stats.radius : stats.radius * 0.7;
+	ret.height = ret.radius;
 	ret.fillStyle = "#FF2222";
 	ret.model = i_Model;
 	ret.rotation = 0;
@@ -208,12 +212,10 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.rotation = 0;
 	ret.offset = i_Offset;
 	ret.preRotate = i_PreRotate;
-	ret.drawGL = drawModel;
+	ret.drawGL = drawEntity;
 	ret.updateTarget = enemyUpdateTarget;
 	ret.isEnemy = true;
-    if (!isRanged) ret.health *= 0.5;
     if (!isRanged) ret.stats.speed = getLocalPlayer().stats.speed - 0.1;
-
 	if (isRanged) ret.attack = simpleProjectileAttack();
     else ret.attack = simpleDirectAttack();
 
