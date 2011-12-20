@@ -173,9 +173,8 @@ function getTargetFromMouse() {
 		// TODO(cjhopman) get this working
 		var pos = getMouse().getWorldPosition();
 		//var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
-		var ent = getEntityAtPoint(pos);
-		if (!ent) ent = pos;
-		return ent;
+		//var ent = getEntityAtPoint(pos);
+		return pos;
 	}
 }
 
