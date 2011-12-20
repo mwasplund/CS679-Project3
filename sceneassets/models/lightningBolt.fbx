@@ -11,9 +11,9 @@ FBXHeaderExtension:  {
         Year: 2011
         Month: 12
         Day: 20
-        Hour: 1
-        Minute: 29
-        Second: 47
+        Hour: 17
+        Minute: 15
+        Second: 26
         Millisecond: 0
     }
     Creator: "FBX SDK/FBX Plugins version 2011.1"
@@ -30,14 +30,14 @@ FBXHeaderExtension:  {
             Comment: ""
         }
         Properties70:  {
-            P: "DocumentUrl", "KString", "Url", "", "/Users/Rachina/Documents/CS 679/DungeonRunner/lightningBolt.fbx"
-            P: "SrcDocumentUrl", "KString", "Url", "", "/Users/Rachina/Documents/CS 679/DungeonRunner/lightningBolt.fbx"
+            P: "DocumentUrl", "KString", "Url", "", "/Users/Rachina/Documents/CS679-Project3/sceneassets/models/lightningBolt.fbx"
+            P: "SrcDocumentUrl", "KString", "Url", "", "/Users/Rachina/Documents/CS679-Project3/sceneassets/models/lightningBolt.fbx"
             P: "Original", "Compound", "", ""
             P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "Original|ApplicationName", "KString", "", "", "Maya"
             P: "Original|ApplicationVersion", "KString", "", "", "2011.1"
             P: "Original|DateTime_GMT", "DateTime", "", "", ""
-            P: "Original|FileName", "KString", "", "", "/Users/Rachina/Documents/CS 679/DungeonRunner/lightningBolt.fbx"
+            P: "Original|FileName", "KString", "", "", "/Users/Rachina/Documents/CS679-Project3/sceneassets/models/lightningBolt.fbx"
             P: "LastSaved", "Compound", "", ""
             P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "LastSaved|ApplicationName", "KString", "", "", "Maya"
@@ -72,7 +72,7 @@ GlobalSettings:  {
 
 Documents:  {
     Count: 1
-    Document: 5380306208, "", "Scene" {
+    Document: 5204911408, "", "Scene" {
         Properties70:  {
             P: "SourceObject", "object", "", ""
             P: "ActiveAnimStackName", "KString", "", "", "Take 001"
@@ -282,7 +282,7 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-    Geometry: 5277256272, "Geometry::", "Mesh" {
+    Geometry: 5283294928, "Geometry::", "Mesh" {
         Vertices: *96 {
 a: -0.5,-0.5,0.5,0.5,-0.5,0.5,-1.06954121589661,0.481498241424561,0.349886924028397,-0.369767904281616,0.481498241424561,0.349886924028397,-1.06954121589661,0.481498241424561,-0.349886924028397,-0.369767904281616,0.481498241424561,-0.349886924028397,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.234844878315926,0.276977777481079,0.367640972137451,-0.970126390457153,0.276977777481079,0.367640972137451,-0.970126390457153,0.276977777481079,-0.367640972137451,-0.234844878315926,0.276977777481079,-0.367640972137451,0.565154671669006,0.276977777481079,-0.367640972137451,0.565154671669006,0.276977777481079,0.367640972137451,0.430231630802155,0.481498241424561,-0.349886924028397,0.430231630802155,0.481498241424561,0.349886924028397,-0.965750455856323,1.26108109951019,0.293806940317154,-0.965750455856323,1.26108109951019,-0.293806940317154,-0.293974816799164,1.26108109951019,0.293806940317154,-0.293974816799164,1.26108109951019,-0.293806940317154,-0.144001871347427,1.09964048862457,0.305420309305191,-0.842330873012543,1.09964048862457,0.305420309305191,-0.842330873012543,1.09964048862457,-0.305420309305191,-0.144001871347427,1.09964048862457,-0.305420309305191,0.323291629552841,1.09964048862457,-0.305420309305191,0.323291629552841,1.09964048862457,0.305420309305191,0.173318684101105,1.26108109951019,-0.293806940317154,0.173318684101105,1.26108109951019,0.293806940317154,-0.776358067989349,2.14618563652039,0.0112670660018921,-0.776358067989349,2.14618563652039,-0.0112670660018921,-0.758438527584076,2.14618563652039,0.0112670660018921,-0.758438527584076,2.14618563652039,-0.0112670660018921
 } 
@@ -338,14 +338,15 @@ a: 0
             }
         }
     }
-    Model: 5427540480, "Model::pCube5", "Mesh" {
+    Model: 4485277184, "Model::pCube5", "Mesh" {
         Version: 232
         Properties70:  {
             P: "RotationActive", "bool", "", "",1
             P: "InheritType", "enum", "", "",1
             P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
             P: "DefaultAttributeIndex", "int", "Integer", "",0
-            P: "Lcl Translation", "Lcl Translation", "", "A+",0,3.88120305914463,0
+            P: "Lcl Translation", "Lcl Translation", "", "A+",0,3.06718695735153,0
+            P: "Lcl Rotation", "Lcl Rotation", "", "A+",0,0,-90
             P: "Lcl Scaling", "Lcl Scaling", "", "A+",0.597225097131963,1.73202711242978,0.597225097131963
         }
         MultiLayer: 0
@@ -353,7 +354,7 @@ a: 0
         Shading: T
         Culling: "CullingOff"
     }
-    Material: 5380532848, "Material::lambert7", "" {
+    Material: 5283169616, "Material::lambert7", "" {
         Version: 102
         ShadingModel: "lambert"
         MultiLayer: 0
@@ -368,16 +369,16 @@ a: 0
             P: "Opacity", "double", "Number", "",1
         }
     }
-    Video: 5263911472, "Video::file2", "Clip" {
+    Video: 5239597264, "Video::file2", "Clip" {
         Type: "Clip"
         Properties70:  {
-            P: "Path", "KString", "XRefUrl", "", "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-pCube5.png"
+            P: "Path", "KString", "XRefUrl", "", "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
         }
         UseMipMap: 0
-        Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-pCube5.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        RelativeFilename: "../../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
     }
-    Texture: 5380495968, "Texture::file2", "" {
+    Texture: 5236311712, "Texture::file2", "" {
         Type: "TextureVideoClip"
         Version: 202
         TextureName: "Texture::file2"
@@ -387,14 +388,14 @@ a: 0
             P: "UVSet", "KString", "", "", "map1"
         }
         Media: "Video::file2"
-        FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-pCube5.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        RelativeFilename: "../../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
         Cropping: 0,0,0,0
     }
-    AnimationStack: 5277308944, "AnimStack::Take 001", "" {
+    AnimationStack: 5283709552, "AnimStack::Take 001", "" {
         Properties70:  {
             P: "LocalStart", "KTime", "Time", "",1924423250
             P: "LocalStop", "KTime", "Time", "",46186158000
@@ -402,7 +403,7 @@ a: 0
             P: "ReferenceStop", "KTime", "Time", "",46186158000
         }
     }
-    AnimationLayer: 5380256256, "AnimLayer::BaseLayer", "" {
+    AnimationLayer: 5238694992, "AnimLayer::BaseLayer", "" {
     }
 }
 
@@ -410,12 +411,12 @@ a: 0
 ;------------------------------------------------------------------
 
 Connections:  {
-    C: "OO",5427540480,0
-    C: "OO",5380256256,5277308944
-    C: "OP",5380495968,5380532848, "DiffuseColor"
-    C: "OO",5263911472,5380495968
-    C: "OO",5277256272,5427540480
-    C: "OO",5380532848,5427540480
+    C: "OO",4485277184,0
+    C: "OO",5238694992,5283709552
+    C: "OP",5236311712,5283169616, "DiffuseColor"
+    C: "OO",5239597264,5236311712
+    C: "OO",5283294928,4485277184
+    C: "OO",5283169616,4485277184
 }
 ;Takes section
 ;----------------------------------------------------
