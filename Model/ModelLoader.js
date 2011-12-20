@@ -1,8 +1,4 @@
-﻿//importScripts('FBX/FBX_Parser.js', '../Libs/gserializer.js', '../glMatrix.js');
-LoadjsFile('Model/FBX/FBX_Parser.js');
-LoadjsFile('Model/Model.js');
-LoadjsFile('glMatrix.js');
-
+﻿
 function ModelLoader_File(i_Text, i_Model)
 {
   this.Text = i_Text;
@@ -100,27 +96,39 @@ function ModelLoader_GetModel(i_ModelName)
 }
 
 
-function ModelLoader_load(i_FileName)
+function ModelLoader_load(i_FileName, i_FilePath)
 {
   // Load the file
   var NewModel = new Model(i_FileName);
   this.Models.push(NewModel);
   
   var Loader = this;
-  var FilePath = "sceneassets/models/" + i_FileName + ".FBX";
   var loadSuccess = function(returned_data) 
   {
-      Debug.Trace("Model ("+ i_FileName +") Loaded: " + FilePath);
+      Debug.Trace("Model ("+ i_FileName +") Loaded: " + i_FilePath);
       Loader.Files.push(new ModelLoader_File(returned_data, NewModel));  
         
   };
 
-  $.get(FilePath)
+  $.get(i_FilePath)
     .success(loadSuccess)
     .error(function() {
-        FilePath = "sceneassets/models/" + i_FileName + ".fbx";
-        $.get(FilePath).success(loadSuccess);
+		Debug.error("Error Loading File: " + i_FilePath);
     });
+	
+	
+	// Try to add this to the list of models to select
+	var SelectModel = document.getElementById('SelectModel');
+	var NewOption = document.createElement('option');
+	NewOption.text = i_FileName;
+	NewOption.value = i_FileName;
+
+	try {
+	SelectModel.add(NewOption, null); // standards compliant; doesn't work in IE
+	}
+	catch(ex) {
+	SelectModel.add(NewOption); // IE only
+	}
 };
 
 function ModelLoader_TimerFunc()

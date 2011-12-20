@@ -11,13 +11,13 @@ function GLSL_Shader(i_ShaderName)
   this.Loaded                = false;
 }
 
-function LoadShader(i_ShaderName)
+function LoadShader(i_ShaderName, i_VertexShader, i_FragmentShader)
 {
   var Shader = new GLSL_Shader(i_ShaderName);
 
   // Load the Vertex Shader
-  $.get("Shader/" + i_ShaderName + ".vs",
-    function(Data)
+  $.get(i_VertexShader)
+    .success(function(Data)
     {
       gl.shaderSource(Shader.VertexShader, Data);
       gl.compileShader(Shader.VertexShader);
@@ -31,12 +31,13 @@ function LoadShader(i_ShaderName)
         GLSL_AttachShaderProgram(Shader);
         Shader.Loaded = true;
       }
-    }
-  );
+    })
+	.error(function() { alert("Cound Not find shader " + i_VertexShader); })
+   ;
     
   // Load the Fragment Shader
-  $.get("Shader/" + i_ShaderName + ".fs",
-    function(Data)
+  $.get(i_FragmentShader)
+    .success(function(Data)
     {
       gl.shaderSource(Shader.FragmentShader, Data);
       gl.compileShader(Shader.FragmentShader);
@@ -50,8 +51,9 @@ function LoadShader(i_ShaderName)
         GLSL_AttachShaderProgram(Shader);
         Shader.Loaded = true;
       }
-    }
-  );
+    })
+	.error(function() { alert("Cound Not find shader " + i_FragmentShader); })
+   ;
 
   return Shader;
 }

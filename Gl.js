@@ -96,38 +96,6 @@ function InitializeWebGL(canvas)
 }
 
 /******************************************************/
-/* InitializeShaders
-/*
-/* This function Loads all the shaders that will be used 
-/* during the time of the game.
-/******************************************************/
-function InitializeShaders() 
-{
-  Shaders.push(LoadShader("PerFragmentLighting"));
-  Shaders.push(LoadShader("PerVertexLighting"));
-  Shaders.push(LoadShader("TimeTest"));
-  CurrentShader = GetShader("PerFragmentLighting");
-
-}
-
-/******************************************************/
-/* GetShader
-/*
-/* This function finds one of the preloaded shaders.
-/******************************************************/
-function GetShader(i_ShaderName)
-{
-	for(var i = 0; i < Shaders.length; i++)
-	{
-		if(Shaders[i].Name == i_ShaderName)
-			return Shaders[i];
-	}
-
-	// Could not find the shader
-	return null;
-}
-
-/******************************************************/
 /* setMatrixUniforms
 /*
 /* This function binds the Matrixs used by the shader 

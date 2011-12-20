@@ -1,16 +1,4 @@
-﻿LoadjsFile("Model/Math.js");
-LoadjsFile("Model/FBX/FBX_Objects.js");
-LoadjsFile("Model/FBX/FBX_Model.js");
-LoadjsFile("Model/FBX/FBX_Geometry.js");
-LoadjsFile("Model/FBX/FBX_Texture.js");
-LoadjsFile("Model/FBX/FBX_Material.js");
-LoadjsFile("Model/FBX/FBX_Properties70.js");
-LoadjsFile("Model/FBX/FBX_Connections.js");
-LoadjsFile("Model/FBX/FBX_LayerElementUV.js");
-LoadjsFile("Model/FBX/FBX_LayerElementNormal.js");
-LoadjsFile("Model/FBX/FBX_AnimationCurve.js");
-LoadjsFile("Model/FBX/FBX_AnimationCurveNode.js");
-
+﻿
 function FBX_Parser(i_File)
 {
   var File = new FBX_FileContainer(i_File);
