@@ -57,8 +57,6 @@ function LoadShader(i_ShaderName)
   return Shader;
 }
 
-
-
 function GLSL_AttachShaderProgram(i_Shader)
 {
     gl.attachShader(i_Shader.Program, i_Shader.VertexShader);
@@ -105,6 +103,16 @@ function GLSL_AttachShaderProgram(i_Shader)
     i_Shader.Program.DiffuseColor_Uniform     = gl.getUniformLocation(i_Shader.Program, "uDiffuseColor");
     i_Shader.Program.SpecularColor_Uniform    = gl.getUniformLocation(i_Shader.Program, "uSpecularColor");
     i_Shader.Program.Shininess_Uniform        = gl.getUniformLocation(i_Shader.Program, "uShininess");
+	
+	// NumberShader Variables
+	i_Shader.Program.vertexValueAttribute = gl.getAttribLocation(i_Shader.Program, "aVertexValue");
+    if (i_Shader.Program.vertexValueAttribute) {
+		gl.enableVertexAttribArray(i_Shader.Program.vertexValueAttribute);
+	}
+	i_Shader.Program.vertexPlayerAttribute = gl.getAttribLocation(i_Shader.Program, "aPlayer");
+    if (i_Shader.Program.vertexPlayerAttribute) {
+		gl.enableVertexAttribArray(i_Shader.Program.vertexPlayerAttribute);
+	}
 }
 
 

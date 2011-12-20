@@ -140,6 +140,7 @@ function mousewheel(e) {
 }
 
 function mousedown(event) {
+	if (hudMouseDown(event)) return false;
 	switch (event.button) {
 		case 0: // left
             var pl = getLocalPlayer();
@@ -172,9 +173,8 @@ function getTargetFromMouse() {
 		// TODO(cjhopman) get this working
 		var pos = getMouse().getWorldPosition();
 		//var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
-		var ent = getEntityAtPoint(pos);
-		if (!ent) ent = pos;
-		return ent;
+		//var ent = getEntityAtPoint(pos);
+		return pos;
 	}
 }
 
@@ -234,6 +234,7 @@ function getMouse() {
 	return mouse;
 }
 function mousemove(event) {
+	if (hudMouseMove(event)) return false;
 	getMouse().position = [event.clientX, event.clientY];
 	return false;
 }

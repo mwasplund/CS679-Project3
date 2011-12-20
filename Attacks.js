@@ -75,6 +75,7 @@ function initializeAttacks() {
         ret.damage = 40;
         ret.cooldown = msToTicks(20000);
         ret.name = "Crushing Boulder";
+		ret.description = "Cast out a large slow moving boulder. It will do massive damage to the first enemy that it hits.";
 		setImage(ret, "icons/Moon Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -82,7 +83,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            createProjectile(modelDrawer("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
         }
         return ret;
     };
@@ -91,6 +92,7 @@ function initializeAttacks() {
         ret.damage = 10;
         ret.cooldown = msToTicks(15000);
         ret.name = "Lightning Bolt";
+		ret.description = "Cast out a lightning bolt. It will deal damage to all enemies in a straight line.";
 		setImage(ret, "icons/123.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -98,26 +100,35 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
+            createProjectile(modelDrawer("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
         }
         return ret;
     };
-    var fireAttack = function (player) {
+    var fireball = function (player) {
         var ret = new Attack(player);
-        ret.name = "Unavailable";
+		ret.damage = 10;
+        ret.name = "Fireball";
+		ret.description = null;
+		ret.radius = 30;
 		setImage(ret, "icons/Fire Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-            Debug.debug("fire");
+			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
+					msToTicks(5000), msToTicks(1000),
+					function(e) { return true; },
+					function(e) { 
+						e.damage(ret.damage, src);
+					});
         }
         return ret;
     };
     var iceAttack = function (player) {
         var ret = new Attack(player);
         ret.name = "Unavailable";
+		ret.description = null;
 		setImage(ret, "icons/15.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -147,6 +158,7 @@ function initializeAttacks() {
 		var rng = 15;
         var ret = new Attack(player);
         ret.name = "Little Dagger";
+		ret.description = "I bet you wish you had something more than this puny thing...";
         ret.getCenter = ret.getPlayerPosition;
 
         ret.outerRadius = player.radius + rng;
@@ -200,19 +212,20 @@ function initializeAttacks() {
 		setImage(ret, "icons/slingshot.png");
         ret.damage = 4;
         ret.cooldown = msToTicks(1000);
-        ret.name = "Ranger's Bow";
+        ret.name = "Slingshot";
+		ret.description = "Your trusty slingshot. It will shoot where you point it, but don't expect much damage.";
         ret.attack = function(src, tgt) { 
             basicCooldown.apply(this, [src]);
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(Loader.GetModel("Sphere"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            createProjectile(modelDrawer("bolder"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
         }
         return ret;
     };
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningAttack, fireAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
+    specialAttacks = [earthAttack, lightningAttack, fireball, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
 
 	attacksInitialized = true;
 }

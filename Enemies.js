@@ -165,7 +165,7 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 	ret.ready = 0;
 
 	ret.apply = function(src, tgt) {
-		createProjectile(Loader.GetModel("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
+		createProjectile(modelDrawer("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
 		this.ready = this.cooldown;
 	};
 	return ret;
@@ -174,6 +174,7 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 function entityDamage(dmg, src) {
 	this.health -= dmg;
 	this.isDead = this.health <= 0;
+	createNumberEffect(dmg, this.position, tick, tick + msToTicks(1000), this.isPlayer);
 }
 
 function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
@@ -197,7 +198,7 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
 	ret.radius = isRanged ? stats.radius : stats.radius * 0.7;
-	ret.fillStyle = "#111166";
+	ret.fillStyle = "#FF2222";
 	ret.model = i_Model;
 	ret.rotation = 0;
 	ret.position = position.slice(0);

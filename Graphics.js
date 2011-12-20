@@ -34,6 +34,7 @@ function postDraw() {
         fog.draw2d();
     } else {
         Loader.DrawModels(new Date().getTime());
+		glNumbers.draw();
     }
 }
 
@@ -84,8 +85,8 @@ function drawSelections() {
 
 function drawArc() {
 	var ctx = target.context;
-    var center = this.getCenter();
-    var orientation = this.getOrientation();
+    var center = this.getCenter() || this.position;
+    var orientation = this.getOrientation() || this.direction;
 	ctx.translate(center[0], center[1]);
 	ctx.transform(orientation[0], orientation[1], -orientation[1], orientation[0], 0, 0);
 	
@@ -155,29 +156,28 @@ function getViewDrawCircle() {
 	return [getLocalPlayer().position, 1000]
 }
 
-function getEnemiesInRect(topLeft, bottomRight) {
+function getEntitiesInRect(topLeft, bottomRight) {
     var idx = entityBuckets.getBucketsFromRect(topLeft, bottomRight);
     var ret = [];
     for (var i = 0; i < idx.length; i++) {
         var bucket = entityBuckets.getBucket(idx[i]);
         ret = ret.concat(bucket);
     }
-
-    return ret.filter(function(e) { return !e.isPlayer; });
+	return ret;
 }
 
-function getEnemiesInCircle(center, radius) {
-	var ret = getEnemiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
+function getEntitiesInCircle(center, radius) {
+	var ret = getEntitiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
     return ret.filter(function(obj) {
         return pointInCircle(obj.position, center, obj.radius + radius);
     });
 }
 
-function getEnemiesInArc(arc) {
+function getEntitiesInArc(arc) {
     var center = arc.getCenter();
     var orientation = arc.getOrientation();
     var off = [arc.outerRadius, arc.outerRadius];
-	var ret = getEnemiesInRect(sub2(center, off), add2(center, off));
+	var ret = getEntitiesInRect(sub2(center, off), add2(center, off));
 	ret = ret.filter(function(obj) {
 		return pointInCircle(obj.position, center, arc.outerRadius + obj.radius);
 	});
@@ -201,6 +201,17 @@ function getEnemiesInArc(arc) {
 	return ret;
 }
 
+function getEnemiesInRect(topLeft, bottomRight) {
+	return getEntitiesInRect(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInCircle(topLeft, bottomRight) {
+	return getEntitiesInCircle(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInArc(topLeft, bottomRight) {
+	return getEntitiesInArc(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+
+
 function drawPlayers() {
     var players = getPlayers();
     for (var i = 0; i < players.length; i++) {
@@ -217,15 +228,15 @@ function drawEnvironment() {
 }
 
 function drawSpecial() {
-	drawProjectiles();
+	drawEffects();
 	// draw selection indicator? other stuff?
 	drawObject(getLocalPlayer().getMeleeAttack());
 }
 
-function drawProjectiles() {
-	var projs = projectiles;
-	for (var i = 0; i < projs.length; i++) {
-		drawObject(projs[i]);
+function drawEffects() {
+	var efs = effects;
+	for (var i = 0; i < efs.length; i++) {
+		drawObject(efs[i]);
 	}
 }
 
