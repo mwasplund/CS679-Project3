@@ -1,0 +1,191 @@
+<!DOCTYPE html> 
+ <html lang="en"> 
+  <head>
+ <meta charset="utf-8"> 
+ <title>Level</title> 
+ <style type="text/css"><!-- #container { position: relative;  #imageView { border: 1px solid #000; } #imageTemp { position: absolute; top: 1px; left: 1px; } --></style> 
+ <script type="text/javascript"> 
+ function load() { 
+  var polyArray = []; 
+polyArray[polyArray.length] = { 'xLoc': 1633, 'yLoc': 88, 'color': "black" , 'id': "player" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 60, 'xFinish': 1682, 'yFinish': 160, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 160, 'xFinish': 1682, 'yFinish': 260, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 260, 'xFinish': 1682, 'yFinish': 360, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 360, 'xFinish': 1682, 'yFinish': 460, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 460, 'xFinish': 1682, 'yFinish': 560, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 560, 'xFinish': 1682, 'yFinish': 660, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 660, 'xFinish': 1682, 'yFinish': 760, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 760, 'xFinish': 1682, 'yFinish': 860, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 860, 'xFinish': 1682, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1682, 'yStart': 960, 'xFinish': 1582, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1582, 'yStart': 960, 'xFinish': 1482, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1482, 'yStart': 960, 'xFinish': 1382, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1382, 'yStart': 960, 'xFinish': 1282, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1282, 'yStart': 960, 'xFinish': 1182, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1182, 'yStart': 960, 'xFinish': 1082, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1082, 'yStart': 960, 'xFinish': 982, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 982, 'yStart': 960, 'xFinish': 882, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 882, 'yStart': 960, 'xFinish': 782, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 782, 'yStart': 960, 'xFinish': 682, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 682, 'yStart': 960, 'xFinish': 582, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 582, 'yStart': 960, 'xFinish': 482, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 482, 'yStart': 960, 'xFinish': 382, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 382, 'yStart': 960, 'xFinish': 282, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 282, 'yStart': 960, 'xFinish': 182, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 182, 'yStart': 960, 'xFinish': 82, 'yFinish': 960, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 960, 'xFinish': 82, 'yFinish': 860, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 860, 'xFinish': 82, 'yFinish': 760, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 760, 'xFinish': 82, 'yFinish': 660, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 660, 'xFinish': 82, 'yFinish': 560, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 560, 'xFinish': 82, 'yFinish': 460, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 460, 'xFinish': 82, 'yFinish': 360, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 360, 'xFinish': 82, 'yFinish': 260, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 260, 'xFinish': 82, 'yFinish': 160, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 160, 'xFinish': 82, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 82, 'yStart': 60, 'xFinish': 182, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 182, 'yStart': 60, 'xFinish': 282, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 282, 'yStart': 60, 'xFinish': 382, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 382, 'yStart': 60, 'xFinish': 482, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 482, 'yStart': 60, 'xFinish': 582, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 582, 'yStart': 60, 'xFinish': 682, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 682, 'yStart': 60, 'xFinish': 782, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 782, 'yStart': 60, 'xFinish': 882, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 882, 'yStart': 60, 'xFinish': 982, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 982, 'yStart': 60, 'xFinish': 1082, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1082, 'yStart': 60, 'xFinish': 1182, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1182, 'yStart': 60, 'xFinish': 1282, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1282, 'yStart': 60, 'xFinish': 1382, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1382, 'yStart': 60, 'xFinish': 1482, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1482, 'yStart': 60, 'xFinish': 1582, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1582, 'yStart': 60, 'xFinish': 1682, 'yFinish': 60, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1594, 'yStart': 157, 'xFinish': 1594, 'yFinish': 257, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1594, 'yStart': 257, 'xFinish': 1594, 'yFinish': 357, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1594, 'yStart': 357, 'xFinish': 1594, 'yFinish': 457, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1594, 'yStart': 457, 'xFinish': 1494, 'yFinish': 457, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1494, 'yStart': 457, 'xFinish': 1494, 'yFinish': 357, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1494, 'yStart': 357, 'xFinish': 1494, 'yFinish': 257, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1494, 'yStart': 257, 'xFinish': 1394, 'yFinish': 257, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1394, 'yStart': 257, 'xFinish': 1294, 'yFinish': 257, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1294, 'yStart': 257, 'xFinish': 1294, 'yFinish': 157, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1294, 'yStart': 157, 'xFinish': 1394, 'yFinish': 157, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1394, 'yStart': 157, 'xFinish': 1494, 'yFinish': 157, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1494, 'yStart': 157, 'xFinish': 1594, 'yFinish': 157, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 128, 'xFinish': 225, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 128, 'xFinish': 325, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 325, 'yStart': 128, 'xFinish': 425, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 425, 'yStart': 128, 'xFinish': 525, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 525, 'yStart': 128, 'xFinish': 625, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 625, 'yStart': 128, 'xFinish': 725, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 725, 'yStart': 128, 'xFinish': 825, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 825, 'yStart': 128, 'xFinish': 925, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 925, 'yStart': 128, 'xFinish': 1025, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1025, 'yStart': 128, 'xFinish': 1125, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1125, 'yStart': 128, 'xFinish': 1125, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1125, 'yStart': 228, 'xFinish': 1025, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1025, 'yStart': 228, 'xFinish': 925, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 925, 'yStart': 228, 'xFinish': 825, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 825, 'yStart': 228, 'xFinish': 725, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 725, 'yStart': 228, 'xFinish': 625, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 625, 'yStart': 228, 'xFinish': 525, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 525, 'yStart': 228, 'xFinish': 425, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 425, 'yStart': 228, 'xFinish': 325, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 325, 'yStart': 228, 'xFinish': 225, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 228, 'xFinish': 225, 'yFinish': 328, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 328, 'xFinish': 225, 'yFinish': 428, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 428, 'xFinish': 225, 'yFinish': 528, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 528, 'xFinish': 225, 'yFinish': 628, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 225, 'yStart': 628, 'xFinish': 125, 'yFinish': 628, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 628, 'xFinish': 125, 'yFinish': 528, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 528, 'xFinish': 125, 'yFinish': 428, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 428, 'xFinish': 125, 'yFinish': 328, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 328, 'xFinish': 125, 'yFinish': 228, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 125, 'yStart': 228, 'xFinish': 125, 'yFinish': 128, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 299, 'xFinish': 890, 'yFinish': 399, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 399, 'xFinish': 890, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 499, 'xFinish': 990, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 990, 'yStart': 499, 'xFinish': 1090, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1090, 'yStart': 499, 'xFinish': 1190, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1190, 'yStart': 499, 'xFinish': 1190, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1190, 'yStart': 599, 'xFinish': 1090, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1090, 'yStart': 599, 'xFinish': 990, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 990, 'yStart': 599, 'xFinish': 890, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 599, 'xFinish': 890, 'yFinish': 699, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 699, 'xFinish': 890, 'yFinish': 799, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 890, 'yStart': 799, 'xFinish': 790, 'yFinish': 799, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 799, 'xFinish': 790, 'yFinish': 699, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 699, 'xFinish': 790, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 599, 'xFinish': 690, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 690, 'yStart': 599, 'xFinish': 590, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 590, 'yStart': 599, 'xFinish': 490, 'yFinish': 599, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 490, 'yStart': 599, 'xFinish': 490, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 490, 'yStart': 499, 'xFinish': 590, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 590, 'yStart': 499, 'xFinish': 690, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 690, 'yStart': 499, 'xFinish': 790, 'yFinish': 499, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 499, 'xFinish': 790, 'yFinish': 399, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 399, 'xFinish': 790, 'yFinish': 299, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 790, 'yStart': 300, 'xFinish': 890, 'yFinish': 300, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1479, 'yStart': 667, 'xFinish': 1579, 'yFinish': 667, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1579, 'yStart': 667, 'xFinish': 1579, 'yFinish': 767, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1579, 'yStart': 767, 'xFinish': 1579, 'yFinish': 867, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1579, 'yStart': 867, 'xFinish': 1479, 'yFinish': 867, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1479, 'yStart': 867, 'xFinish': 1379, 'yFinish': 867, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1379, 'yStart': 867, 'xFinish': 1279, 'yFinish': 867, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1279, 'yStart': 867, 'xFinish': 1179, 'yFinish': 867, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1179, 'yStart': 867, 'xFinish': 1179, 'yFinish': 767, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1179, 'yStart': 767, 'xFinish': 1279, 'yFinish': 767, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1279, 'yStart': 767, 'xFinish': 1379, 'yFinish': 767, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1379, 'yStart': 767, 'xFinish': 1479, 'yFinish': 767, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xStart': 1479, 'yStart': 767, 'xFinish': 1479, 'yFinish': 667, 'id': "wall" }; 
+polyArray[polyArray.length] = { 'xLoc': 81, 'yLoc': 961, 'id': "end"}; 
+polyArray[polyArray.length] = { 'xLoc': 1633, 'yLoc': 518, 'color': "blue" , 'id': "enemy", 'enemy': "3", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 1225, 'yLoc': 114, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 1002, 'yLoc': 399, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 992, 'yLoc': 693, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 657, 'yLoc': 689, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 669, 'yLoc': 397, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 178, 'yLoc': 95, 'color': "green" , 'id': "enemy", 'enemy': "4", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 223, 'yLoc': 781, 'color': "purple" , 'id': "enemy", 'enemy': "5", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 161, 'yLoc': 898, 'color': "purple" , 'id': "enemy", 'enemy': "5", 'num':5}; 
+polyArray[polyArray.length] = { 'xLoc': 290, 'yLoc': 897, 'color': "purple" , 'id': "enemy", 'enemy': "5", 'num':5}; 
+ imageView.getContext('2d').clearRect(0, 0, imageView.width, imageView.height); 
+ for (var i = 0; i < polyArray.length ; i++) 
+{ 
+ if(polyArray[i].id.toString() == "wall"){ 
+  imageView.getContext('2d').beginPath(); 
+  imageView.getContext('2d').moveTo(polyArray[i].xStart, polyArray[i].yStart); 
+ imageView.getContext('2d').lineTo(polyArray[i].xFinish, polyArray[i].yFinish); 
+  imageView.getContext('2d').stroke(); 
+ imageView.getContext('2d').closePath(); 
+  } 
+ else   if(polyArray[i].id.toString() == "player"){ 
+ imageView.getContext('2d').beginPath(); 
+ imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 15, 0, Math.PI*2, true);  
+ imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); 
+ imageView.getContext('2d').fill(); 
+  imageView.getContext('2d').closePath(); 
+ //imageView.getContext('2d').closePath(); 
+ }else if( polyArray[i].id.toString() == "enemy"){ 
+ imageView.getContext('2d').beginPath(); 
+ imageView.getContext('2d').arc(polyArray[i].xLoc, polyArray[i].yLoc, 10, 0, Math.PI*2, true); 
+ imageView.getContext('2d').fillStyle = polyArray[i].color.toString(); 
+ imageView.getContext('2d').fill(); 
+ imageView.getContext('2d').closePath(); 
+ } 
+ else if ( polyArray[i].id.toString() == "end"){ 
+  imageView.getContext('2d').strokeStyle = "red"; 
+ imageView.getContext('2d').beginPath(); 
+ imageView.getContext('2d').strokeRect(polyArray[i].xLoc, polyArray[i].yLoc, 100,100); 
+ imageView.getContext('2d').closePath(); 
+  imageView.getContext('2d').strokeStyle = "black"; }
+ 
+ }} 
+   </script>  </head> 
+  
+ <body onload = "load()"> 
+ <div id="container"> 
+ <canvas id="imageView" width="1800" height="1000"> 
+ </canvas> 
+</div> 
+ </body> 
+</html> 
+ 
