@@ -1,4 +1,5 @@
-﻿/******************************************************/
+﻿var debugFlag;
+/******************************************************/
 /* SelectShader
 /*
 /* This function allows the program to update the current

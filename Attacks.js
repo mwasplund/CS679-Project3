@@ -87,10 +87,10 @@ function initializeAttacks() {
         }
         return ret;
     };
-    var lightningAttack = function (player) {
+    var lightningBolt = function (player) {
         var ret = new Attack(player);
         ret.damage = 10;
-        ret.cooldown = msToTicks(15000);
+        ret.cooldown = msToTicks(1500);
         ret.name = "Lightning Bolt";
 		ret.description = "Cast out a lightning bolt. It will deal damage to all enemies in a straight line.";
 		setImage(ret, "icons/123.png");
@@ -100,7 +100,13 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(modelDrawer("Sphere"), src.position, tgt, 16, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
+            var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 1, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
+			proj.scale = vec3.scale(proj.scale, 60);
+			//proj.preRotate0 = 0;
+			//proj.preRotate = Math.PI / 2;
+			//proj.preRotate2 = Math.PI / 2;
+			//proj.offset[0] = 50;
+
         }
         return ret;
     };
@@ -109,7 +115,8 @@ function initializeAttacks() {
 		ret.damage = 10;
         ret.name = "Fireball";
 		ret.description = null;
-		ret.radius = 30;
+		ret.radius = 18;
+        ret.cooldown = msToTicks(1500);
 		setImage(ret, "icons/Fire Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -225,7 +232,7 @@ function initializeAttacks() {
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningAttack, fireball, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
+    specialAttacks = [earthAttack, lightningBolt, fireball, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
 
 	attacksInitialized = true;
 }

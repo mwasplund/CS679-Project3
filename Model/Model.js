@@ -9,13 +9,13 @@ function Model(i_FileName)
   this.SmartDraw = Model_SmartDraw;
   this.Refs = new Array();
   
-  this.Update = function(i_DeltaMilisec)
+  this.Update = function(i_Ref)
   {
 	  if(this.Ready)
 	  {
   		for(var i = 0; i < this.Meshes.length; i++)
   		{
-  		  this.Meshes[i].Update(i_DeltaMilisec);
+  		  this.Meshes[i].Update(i_Ref);
   		}
 	  }
   }
@@ -103,6 +103,7 @@ function Model_SmartDraw(i_CurTime)
 			this.Refs[k].Time = i_CurTime;
 			
 			this.Refs[k].DoDraw = false;
+			this.Update(this.Refs[k]);
 			var Matrix = mat4.create(mvMatrix);
 			mat4.translate(Matrix, this.Refs[k].Position);
 			mat4.scale(Matrix, this.Refs[k].Scale);

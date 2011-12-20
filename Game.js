@@ -262,6 +262,9 @@ function InitializeModels()
   //Loader.load("skeleton");
   //Loader.load("Fancy_Bounce_Ball");
   Loader.load("bolder");
+  Loader.load("lightningBolt");
+  Loader.load("monsterWeak");
+  Loader.load("monsterMediumStrength");
   //Loader.load("Link");
   //Loader.load("TestCube");
   //Loader.load("fbxTest");
@@ -304,10 +307,6 @@ function Update(i_DeltaMiliSec)
 {
   if(GameState == GAME_STATE.PLAYING)
   {		    
-    player.model.Update(i_DeltaMiliSec);
-    
-    for(var i = 0; i < enemies.length; i ++)
-      enemies[i].model.Update(i_DeltaMiliSec);
   }
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {

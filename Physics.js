@@ -48,11 +48,11 @@ function modelDrawer(modelName) {
 			var scale = vec3.create([obj.radius, obj.radius, 3 * obj.radius]);
 			vec3.scale(scale, 0.01);
 			obj.scale = scale;
-			obj.rotation = 0;
+			obj.rotation = Math.atan2(obj.direction[0], obj.direction[1]);
 			obj.preRotate = 0;
 			obj.drawGL = drawModel;
 			obj.draw = drawCircle;
-			obj.offset = [0, 10, 0];
+			obj.offset = [0, 0, 0];
 			obj.updateModel = updateModel;
 			obj.updateModel();
 		}

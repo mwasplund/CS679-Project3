@@ -8,7 +8,6 @@
 	return (i_StartValue * (1 - i_Percent) + i_EndValue * i_Percent);	
 }
 
-
 function Mesh_Update(i_Ref)
 {	
 	var DeltaMilisec = i_Ref.Time - i_Ref.StartTime;
@@ -453,7 +452,7 @@ function Mesh_SmartDraw(i_MatrixRefs, i_Refs)
 	{
 
 			//mat4.multiply(mvMatrix, i_MatrixRefs);
-			this.Update(i_Refs[i]);
+			//this.Update(i_Refs[i]);
 			this.TSR(Copy[i]);
 			
 			if(this.HasGeometry)

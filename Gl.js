@@ -55,7 +55,7 @@ function updateModel()
 
 	vec3.add([this.position[0], 0, this.position[1]], this.offset, this.model.Position);
 	this.model.Scale = this.scale;
-	this.model.Rotate = [0, this.rotation + this.preRotate, 0];
+	this.model.Rotate = [this.preRotate0 || 0, this.rotation + this.preRotate, this.preRotate2 || 0];
 }
 
 function drawModel()
