@@ -80,6 +80,37 @@ function createProjectile(drawSetter, position, target, spd, radius, range, acce
 	return proj;
 }
 
+function splitToFour(val) {
+	var v = Math.floor(val);
+	var ret = [];
+	for (var i = 0; i < 4; i++) {
+		ret[3 - i] = v % 10;
+		v = Math.floor(v / 10);
+	}
+	return ret;
+}
+
+function createNumberEffect(val, position, start, end, isPlayer) {
+	var effect = {};
+	effect.position = position;
+	effect.y = 30;
+	effect.dy = 0.6;
+	effect.start = start;
+	effect.end = end;
+	effect.isPlayer = isPlayer;
+	effect.val = splitToFour(val);
+	effect.act = function() {
+		if (tick > this.end) this.dead = true;
+		this.y += this.dy;
+	}
+	effect.draw = function(ctx) {
+	}
+	effect.drawGL = function() {
+		glNumbers.addNumber(this.val, this.position, this.y, this.isPlayer);
+	}
+	addEffect(effect);
+	return effect;
+}
 
 function stationaryAct() {
 	if (--this.ready < 1) {
@@ -144,28 +175,17 @@ function createArc(position, outer, inner, direction, angle) {
 
 
 function projectileMove() {
-	/*
-	var e = getEntityAtPoint(this.position);
-	if (e && this.accept(e)) {
-		this.apply(e);
-		if (!this.continues) {
-			this.dead = true;
-            this.updateModel();
-			return;
-		}
-	}
-	*/
 	var stop = tryMove(this, this.position, add2(this.position, scale2(this.velocity, this.direction)), this.accept);
 	if (stop[2]) {
 		if (stop[2].isWall) {
 			this.dead = true;
-		} else {
+		} else if (stop[2] != this.last) {
+			//this.last = stop[2];
 			this.apply(stop[2]);
 			this.dead = !this.continues;
 		}
-	} else {
-		this.position = stop[0];
-	}
+	} 
+	clipMove.apply(this);
 	if (dist2(this.position, this.home) > this.range) this.dead = true;
     this.updateModel();
 }

@@ -1,3 +1,4 @@
+LoadjsFile("Numbers.js");
 var gl;
 var mMatrix;
 var pMatrix;
@@ -93,6 +94,7 @@ function InitializeWebGL(canvas)
   vMatrix = mat4.create();
   
   InitializeShaders();
+  initializeGlNumbers();
 }
 
 /******************************************************/
@@ -107,7 +109,6 @@ function InitializeShaders()
   Shaders.push(LoadShader("PerVertexLighting"));
   Shaders.push(LoadShader("TimeTest"));
   CurrentShader = GetShader("PerFragmentLighting");
-
 }
 
 /******************************************************/
@@ -133,10 +134,11 @@ function GetShader(i_ShaderName)
 /* This function binds the Matrixs used by the shader 
 /* programs.
 /******************************************************/
-function setMatrixUniforms() 
+function setMatrixUniforms(program) 
 {
-  gl.uniformMatrix4fv(CurrentShader.Program.pMatrixUniform, false, pMatrix);
-  gl.uniformMatrix4fv(CurrentShader.Program.vMatrixUniform, false, vMatrix);
+	var program = program || CurrentShader.Program;
+  gl.uniformMatrix4fv(program.pMatrixUniform, false, pMatrix);
+  gl.uniformMatrix4fv(program.vMatrixUniform, false, vMatrix);
 
 }
 

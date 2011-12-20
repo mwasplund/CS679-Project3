@@ -34,6 +34,7 @@ function postDraw() {
         fog.draw2d();
     } else {
         Loader.DrawModels(new Date().getTime());
+		glNumbers.draw();
     }
 }
 
