@@ -408,8 +408,7 @@ function Mesh_PreDraw()
   	if(HasDiffuseColorTexture)
   	{
   		gl.activeTexture(gl.TEXTURE0);
-  	  //gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
-  	  gl.bindTexture(gl.TEXTURE_2D, glNumbers.numTexture);
+  	  gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
   	  gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Uniform, 0);
   	}
   	
