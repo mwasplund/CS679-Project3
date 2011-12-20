@@ -105,13 +105,25 @@ function GLSL_AttachShaderProgram(i_Shader)
     i_Shader.Program.Shininess_Uniform        = gl.getUniformLocation(i_Shader.Program, "uShininess");
 	
 	// NumberShader Variables
-	i_Shader.Program.vertexValueAttribute = gl.getAttribLocation(i_Shader.Program, "aVertexValue");
-    if (i_Shader.Program.vertexValueAttribute) {
-		gl.enableVertexAttribArray(i_Shader.Program.vertexValueAttribute);
+	var attr = gl.getAttribLocation(i_Shader.Program, "aVertexValue");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexValueAttribute = attr;
 	}
-	i_Shader.Program.vertexPlayerAttribute = gl.getAttribLocation(i_Shader.Program, "aPlayer");
-    if (i_Shader.Program.vertexPlayerAttribute) {
-		gl.enableVertexAttribArray(i_Shader.Program.vertexPlayerAttribute);
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexColor");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexColorAttribute = attr;
+	}
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexTime");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexTimeAttribute = attr;
+	}
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexIndex");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexIndexAttribute = attr;
 	}
 }
 

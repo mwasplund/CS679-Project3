@@ -4,14 +4,19 @@ var glNumbers = {
 };
 var maxNumbers = 100;
 function initializeGlNumbers() {
-	Shaders.push(LoadShader("Numbers"));
 	glNumbers.shader = GetShader("Numbers");
 
 	glNumbers.vertexPositionBuffer = gl.createBuffer();
 	glNumbers.positionArray = new Float32Array(4 * 6 * 3 * maxNumbers);
     gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexPositionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.positionArray, gl.DYNAMIC_DRAW);
-	glNumbers.posIdx = 0;
+	glNumbers.positionIdx = 0;
+
+	glNumbers.vertexColorBuffer = gl.createBuffer();
+	glNumbers.colorArray = new Float32Array(4 * 6 * 3 * maxNumbers);
+    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexColorBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.colorArray, gl.DYNAMIC_DRAW);
+	glNumbers.colorIdx = 0;
 
 	glNumbers.vertexCoordBuffer = gl.createBuffer();
 	glNumbers.coordArray = new Float32Array(4 * 6 * 2 * maxNumbers);
@@ -20,16 +25,22 @@ function initializeGlNumbers() {
 	glNumbers.coordIdx = 0;
 
 	glNumbers.vertexValueBuffer = gl.createBuffer();
-	glNumbers.valueArray = new Float32Array(4 * 6 * maxNumbers);
+	glNumbers.valueArray = new Float32Array(4 * 6 * 1 * maxNumbers);
     gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexValueBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.valueArray, gl.DYNAMIC_DRAW);
-	glNumbers.valIdx = 0;
+	glNumbers.valueIdx = 0;
 
-	glNumbers.vertexPlayerBuffer = gl.createBuffer();
-	glNumbers.playerArray = new Float32Array(4 * 6 * maxNumbers);
-    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexPlayerBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.playerArray, gl.DYNAMIC_DRAW);
-	glNumbers.playerIdx = 0;
+	glNumbers.vertexTimeBuffer = gl.createBuffer();
+	glNumbers.timeArray = new Float32Array(4 * 6 * 1 * maxNumbers);
+    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexTimeBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.timeArray, gl.DYNAMIC_DRAW);
+	glNumbers.timeIdx = 0;
+
+	glNumbers.vertexIndexBuffer = gl.createBuffer();
+	glNumbers.indexArray = new Float32Array(4 * 6 * 1 * maxNumbers);
+    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexIndexBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.indexArray, gl.DYNAMIC_DRAW);
+	glNumbers.indexIdx = 0;
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext("2d");
@@ -49,62 +60,95 @@ function initializeGlNumbers() {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+	//gl.bindTexture(gl.TEXTURE_2D, null);
 
-	glNumbers.addNumber = function(val, position, y, isPlayer) {
+	glNumbers.addNumber = function(val, position, tm, color) {
 		if (this.count == maxNumbers) return;
-		var h = 3.5;
-		var w = 2.1;
-		var pos = [position[0] - 2 * w, y, position[1]];
-		var offsetPos = [[0, 0, 0], [w, 0, 0], [2 * w, 0, 0], [3 * w, 0, 0]];
-		var offsetVertex = [[0, 0, 0], [0, h, 0], [w, 0, 0], [w, 0, 0], [0, h, 0], [w, h, 0]];
 		var vertCoord = [[0, 0], [0, 1], [1, 0], [1, 0], [0, 1], [1, 1]];
 		for (var i = 0; i < 4; i++) {
 			for (var v = 0; v < 6; v++) {
-				for (var t = 0; t < 3; t++) {
-					this.positionArray[this.posIdx++] = pos[t] + offsetPos[i][t] + offsetVertex[v][t];
-				}
+				this.timeArray[this.timeIdx++] = tm;
+				this.valueArray[this.valueIdx++] = val[i];
+
+				this.colorArray[this.colorIdx++] = color[0];
+				this.colorArray[this.colorIdx++] = color[1];
+				this.colorArray[this.colorIdx++] = color[2];
+
+				this.positionArray[this.positionIdx++] = position[0];
+				this.positionArray[this.positionIdx++] = 0;
+				this.positionArray[this.positionIdx++] = position[1];
+
+				this.indexArray[this.indexIdx++] = i;
+
 				this.coordArray[this.coordIdx++] = vertCoord[v][0];
 				this.coordArray[this.coordIdx++] = vertCoord[v][1];
-				this.valueArray[this.valIdx++] = val[i];
-				this.playerArray[this.playerIdx++] = isPlayer ? 1.0 : 0.0;
 			}
 		}
 		this.count++;
 	}
 
 	glNumbers.draw = function() {
+		gl.useProgram(this.shader.Program);
+		setMatrixUniforms(this.shader.Program);
+
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
 
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.useProgram(this.shader.Program);
-		setMatrixUniforms(this.shader.Program);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, glNumbers.numTexture);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionBuffer);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.positionArray.subarray(0, this.posIdx));
-		gl.vertexAttribPointer(this.shader.Program.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-		this.posIdx = 0;
+		var vertsPerItem = 4 * 2 * 3;
+		var numVertices = vertsPerItem * this.count;
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexCoordBuffer);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.coordArray.subarray(0, this.coordIdx));
-		gl.vertexAttribPointer(this.shader.Program.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+		var bindAttribute = function(buffer, arr, attribute, itemSize) {
+			if (numVertices < 0) return;
+			glNumbers.numV = [numVertices, buffer, attribute, itemSize];
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			gl.bufferSubData(gl.ARRAY_BUFFER, 0, arr.subarray(0, numVertices * itemSize));
+			gl.vertexAttribPointer(attribute, itemSize, gl.FLOAT, false, 0, 0);
+		}
+
+		var buffer, arr, attribute;
+
+		buffer = this.vertexPositionBuffer;
+		arr = this.positionArray;
+		attribute = this.shader.Program.vertexPositionAttribute;
+		bindAttribute(buffer, arr, attribute, 3);
+		this.positionIdx = 0;
+
+		buffer = this.vertexColorBuffer;
+		arr = this.colorArray;
+		attribute = this.shader.Program.vertexColorAttribute;
+		bindAttribute(buffer, arr, attribute, 3);
+		this.colorIdx = 0;
+
+		buffer = this.vertexCoordBuffer;
+		arr = this.coordArray;
+		attribute = this.shader.Program.vertexCoordAttribute;
+		bindAttribute(buffer, arr, attribute, 2);
 		this.coordIdx = 0;
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexValueBuffer);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.valueArray.subarray(0, this.valIdx));
-		gl.vertexAttribPointer(this.shader.Program.vertexValueAttribute, 1, gl.FLOAT, false, 0, 0);
-		this.valIdx = 0;
+		buffer = this.vertexIndexBuffer;
+		arr = this.indexArray;
+		attribute = this.shader.Program.vertexIndexAttribute;
+		bindAttribute(buffer, arr, attribute, 1);
+		this.indexIdx = 0;
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPlayerBuffer);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.playerArray.subarray(0, this.playerIdx));
-		gl.vertexAttribPointer(this.shader.Program.vertexPlayerAttribute, 1, gl.FLOAT, false, 0, 0);
-		this.playerIdx = 0;
+		buffer = this.vertexValueBuffer;
+		arr = this.valueArray;
+		attribute = this.shader.Program.vertexValueAttribute;
+		bindAttribute(buffer, arr, attribute, 1);
+		this.valueIdx = 0;
 
-		gl.drawArrays(gl.TRIANGLES, 0, this.count * 4 * 2 * 3);
+		buffer = this.vertexTimeBuffer;
+		arr = this.timeArray;
+		attribute = this.shader.Program.vertexTimeAttribute;
+		bindAttribute(buffer, arr, attribute, 1);
+		this.timeIdx = 0;
+
+		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
 		this.count = 0;

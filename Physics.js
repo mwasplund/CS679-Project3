@@ -100,20 +100,17 @@ function splitToFour(val) {
 function createNumberEffect(val, position, start, end, isPlayer) {
 	var effect = {};
 	effect.position = position;
-	effect.y = 30;
-	effect.dy = 0.6;
 	effect.start = start;
 	effect.end = end;
 	effect.isPlayer = isPlayer;
 	effect.val = splitToFour(val);
 	effect.act = function() {
 		if (tick > this.end) this.dead = true;
-		this.y += this.dy;
 	}
 	effect.draw = function(ctx) {
 	}
 	effect.drawGL = function() {
-		glNumbers.addNumber(this.val, this.position, this.y, this.isPlayer);
+		glNumbers.addNumber(this.val, this.position, (tick - this.start) / (this.end - this.start), this.isPlayer ? [1, 0, 0] : [0, 1, 0]);
 	}
 	addEffect(effect);
 	return effect;
