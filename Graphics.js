@@ -1,11 +1,13 @@
 function draw() {
     preDraw();
+    drawHud();
+	prepareHudForMinimap();
+
     drawEnemies();
     drawEnvironment();
     drawSelections();
     drawSpecial();
     drawPlayers();
-    drawHud();
 	
 	if (!in2dWorld) {
 		for(var i = 0; i < SceneModels.length; i++)
@@ -32,6 +34,8 @@ function postDraw() {
         fog.draw2d();
     } else {
         Loader.DrawModels(new Date().getTime());
+		glNumbers.draw();
+		glBars.draw();
     }
 }
 
@@ -72,7 +76,7 @@ function calcFogSingle(p) {
 
 
 function drawSelections() {
-    var arc = getLocalPlayer().getCurrentMeleeAttack();
+    var arc = getLocalPlayer().getMeleeAttack();
 	var objs = getEnemiesInArc(arc);
 
 	for (var i = 0; i < objs.length; i++) {
@@ -82,8 +86,8 @@ function drawSelections() {
 
 function drawArc() {
 	var ctx = target.context;
-    var center = this.getCenter();
-    var orientation = this.getOrientation();
+    var center = this.getCenter() || this.position;
+    var orientation = this.getOrientation() || this.direction;
 	ctx.translate(center[0], center[1]);
 	ctx.transform(orientation[0], orientation[1], -orientation[1], orientation[0], 0, 0);
 	
@@ -135,46 +139,46 @@ function drawSelected2d(o) {
 
 function drawObject(o) {
     if (in2dWorld) {
-        drawObject2d(o);
+        drawObject2d(target.context, o);
     } else {
+		drawObject2d(hud.context, o);
 		if(o.drawGL)
         	o.drawGL();
     }
 }
 
-function drawObject2d(o) {
-    target.context.save();
-    o.draw();
-    target.context.restore();
+function drawObject2d(ctx, o) {
+	ctx.save();
+    o.draw(ctx);
+	ctx.restore();
 }
 
 function getViewDrawCircle() {
 	return [getLocalPlayer().position, 1000]
 }
 
-function getEnemiesInRect(topLeft, bottomRight) {
+function getEntitiesInRect(topLeft, bottomRight) {
     var idx = entityBuckets.getBucketsFromRect(topLeft, bottomRight);
     var ret = [];
     for (var i = 0; i < idx.length; i++) {
         var bucket = entityBuckets.getBucket(idx[i]);
         ret = ret.concat(bucket);
     }
-
-    return ret.filter(function(e) { return !e.isPlayer; });
+	return ret;
 }
 
-function getEnemiesInCircle(center, radius) {
-	var ret = getEnemiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
+function getEntitiesInCircle(center, radius) {
+	var ret = getEntitiesInRect(sub2(center, [radius, radius]), add2(center, [radius, radius]));
     return ret.filter(function(obj) {
         return pointInCircle(obj.position, center, obj.radius + radius);
     });
 }
 
-function getEnemiesInArc(arc) {
+function getEntitiesInArc(arc) {
     var center = arc.getCenter();
     var orientation = arc.getOrientation();
     var off = [arc.outerRadius, arc.outerRadius];
-	var ret = getEnemiesInRect(sub2(center, off), add2(center, off));
+	var ret = getEntitiesInRect(sub2(center, off), add2(center, off));
 	ret = ret.filter(function(obj) {
 		return pointInCircle(obj.position, center, arc.outerRadius + obj.radius);
 	});
@@ -198,6 +202,17 @@ function getEnemiesInArc(arc) {
 	return ret;
 }
 
+function getEnemiesInRect(topLeft, bottomRight) {
+	return getEntitiesInRect(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInCircle(topLeft, bottomRight) {
+	return getEntitiesInCircle(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+function getEnemiesInArc(topLeft, bottomRight) {
+	return getEntitiesInArc(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+}
+
+
 function drawPlayers() {
     var players = getPlayers();
     for (var i = 0; i < players.length; i++) {
@@ -214,20 +229,19 @@ function drawEnvironment() {
 }
 
 function drawSpecial() {
-	drawProjectiles();
+	drawEffects();
 	// draw selection indicator? other stuff?
-	drawObject(getLocalPlayer().getCurrentMeleeAttack());
+	drawObject(getLocalPlayer().getMeleeAttack());
 }
 
-function drawProjectiles() {
-	var projs = projectiles;
-	for (var i = 0; i < projs.length; i++) {
-		drawObject(projs[i]);
+function drawEffects() {
+	var efs = effects;
+	for (var i = 0; i < efs.length; i++) {
+		drawObject(efs[i]);
 	}
 }
 
-function drawCircle() {
-    var ctx = target.context;
+function drawCircle(ctx) {
     ctx.fillStyle = this.fillStyle || "#FFFFFF";
     ctx.translate(this.position[0], this.position[1]);
     ctx.beginPath();
@@ -256,8 +270,15 @@ function drawCircleSelected() {
 }
 
 function clearCanvas(tgt) {
-    tgt.context.setTransform(1, 0, 0, 1, 0, 0);
+	// setting width clears canvas and canvas state correctly... but is slow
+	tgt.canvas.width = tgt.canvas.width;
+	
+	/*
+	// This should clear the important stuff... but seems to be screwing up the HUD.
+	tgt.context.setTransform(1, 0, 0, 1, 0, 0);
 	tgt.context.clearRect(0, 0, tgt.width(), tgt.height());
+	tgt.context.globalAlpha = 1;
+	*/
 }
 
 function clearDraw() {
@@ -281,4 +302,11 @@ function swapWorld() {
         in2dWorld = false;
 	}
 }
+
+function getImage(fname, success) {
+	var imageObj = new Image();
+	imageObj.src = fname;
+	imageObj.onload = function() { success(imageObj); };
+}
+
 

@@ -27,6 +27,8 @@ var KEY_7 = 55;
 var KEY_8 = 56;
 var KEY_9 = 57;
 
+var KEY_TAB = 9;
+
 var keyState = [];
 var lastKeyDownTick = 0;
 
@@ -51,15 +53,11 @@ function keydown(event){
         case KEY_1 :
         case KEY_2 :
         case KEY_3 :
-            getLocalPlayer().setMeleeAttack(event.keyCode - KEY_1);
-            break;   
-
         case KEY_4 :
         case KEY_5 :
         case KEY_6 :
         case KEY_7 :
         case KEY_8 :
-            getLocalPlayer().setSpecialAttack(event.keyCode - KEY_4);
             break;   
 
         case NUMPAD_0 :
@@ -68,6 +66,13 @@ function keydown(event){
         case NUMPAD_5 :
             shouldReset = true;
             break;
+
+		case 187: // =
+			getOptions().increment("hudHeight");
+			break;
+		case 189: // -
+			getOptions().decrement("hudHeight");
+			break;
         case 220: // \
               SetDebugState(!DEBUG);             
             toggleDebugData();
@@ -108,33 +113,47 @@ function keydown(event){
 
         case 66: // b
             break;
+
+		case KEY_TAB:
+			shouldExpandMinimapFlag = !shouldExpandMinimapFlag;
+			break;
     }
     //checkPasswords(event.keyCode);
     keyState[event.keyCode] = keyState[event.keyCode] > 0 ? keyState[event.keyCode] : 1;
     lastKeyDownTick = tick;
 
+	event.preventDefault();
     return false;
 }
 
+var shouldExpandMinimapFlag = false;
+function shouldExpandMinimap() {
+	return shouldExpandMinimapFlag;
+	return keyState[KEY_TAB];
+}
+
+function mousewheel(e) {
+    e = e || window.event;
+    var dw = e.detail || (e.wheelDelta / -120);
+
+    getLocalPlayer().cycleSpecialAttack(dw);
+}
+
 function mousedown(event) {
+	if (hudMouseDown(event)) return false;
 	switch (event.button) {
 		case 0: // left
-            if (swapMouseKeys) {
-                getLocalPlayer().setTarget(getTargetFromMouse());
-            } else {
-                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
-            }
-
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            !swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		case 1: // middle
 
 			break;
 		case 2: // right
-            if (!swapMouseKeys) {
-                getLocalPlayer().setTarget(getTargetFromMouse());
-            } else {
-                getLocalPlayer().setSpecialTarget(getTargetFromMouse());
-            }
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		default:
 	}
@@ -154,9 +173,8 @@ function getTargetFromMouse() {
 		// TODO(cjhopman) get this working
 		var pos = getMouse().getWorldPosition();
 		//var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
-		var ent = getEntityAtPoint(pos);
-		if (!ent) ent = pos;
-		return ent;
+		//var ent = getEntityAtPoint(pos);
+		return pos;
 	}
 }
 
@@ -216,6 +234,7 @@ function getMouse() {
 	return mouse;
 }
 function mousemove(event) {
+	if (hudMouseMove(event)) return false;
 	getMouse().position = [event.clientX, event.clientY];
 	return false;
 }

@@ -13,6 +13,7 @@ function GLSL_Shader(i_ShaderName)
 
 function LoadShader(i_ShaderName, i_VertexShader, i_FragmentShader)
 {
+	$.ajaxSetup({cache: false});
   var Shader = new GLSL_Shader(i_ShaderName);
 
   // Load the Vertex Shader
@@ -57,8 +58,6 @@ function LoadShader(i_ShaderName, i_VertexShader, i_FragmentShader)
 
   return Shader;
 }
-
-
 
 function GLSL_AttachShaderProgram(i_Shader)
 {
@@ -106,6 +105,28 @@ function GLSL_AttachShaderProgram(i_Shader)
     i_Shader.Program.DiffuseColor_Uniform     = gl.getUniformLocation(i_Shader.Program, "uDiffuseColor");
     i_Shader.Program.SpecularColor_Uniform    = gl.getUniformLocation(i_Shader.Program, "uSpecularColor");
     i_Shader.Program.Shininess_Uniform        = gl.getUniformLocation(i_Shader.Program, "uShininess");
+	
+	// NumberShader Variables
+	var attr = gl.getAttribLocation(i_Shader.Program, "aVertexValue");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexValueAttribute = attr;
+	}
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexColor");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexColorAttribute = attr;
+	}
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexTime");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexTimeAttribute = attr;
+	}
+	attr = gl.getAttribLocation(i_Shader.Program, "aVertexIndex");
+    if (attr) {
+		gl.enableVertexAttribArray(attr);
+		i_Shader.Program.vertexIndexAttribute = attr;
+	}
 }
 
 

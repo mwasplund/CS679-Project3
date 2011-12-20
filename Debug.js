@@ -1,4 +1,5 @@
-﻿/******************************************************/
+﻿var debugFlag;
+/******************************************************/
 /* SelectShader
 /*
 /* This function allows the program to update the current
@@ -28,7 +29,7 @@ function SelectShader(i_ShaderName)
 function SelectModel(i_ModelName)
 {
 	Debug.Trace("Select Model " + i_ModelName);
-	var Model = GetModel(i_ModelName);
+	var Model = Loader.GetModel(i_ModelName);
 	if(Model != null)
 		TestModel = Model;
 }

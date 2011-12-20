@@ -49,9 +49,7 @@ $(window).load(function() {
 
 	// Load the models
 	InitializeModels();
-
-	//Load levels
-	InitializeLevels();
+	initializeOptions();
 
 	initializeListeners();
 
@@ -142,6 +140,7 @@ function initializeListeners() {
     document.onkeypress = function () { };
 	$(document).mousemove(mousemove);
 	document.onmousedown = mousedown;
+	document.onmousewheel = mousewheel;
 	$(document).mouseup(mouseup);
 	
 	/*
@@ -260,13 +259,16 @@ function InitializeModels()
 {
   Loader = new ModelLoader();
   
-  Loader.load("skeleton");
-  Loader.load("Fancy_Bounce_Ball");
+  //Loader.load("skeleton");
+  //Loader.load("Fancy_Bounce_Ball");
   Loader.load("bolder");
-  Loader.load("Link");
-  Loader.load("TestCube");
-  Loader.load("fbxTest");
-  Loader.load("handFbx");
+  Loader.load("lightningBolt");
+  Loader.load("monsterWeak");
+  Loader.load("monsterMediumStrength");
+  //Loader.load("Link");
+  //Loader.load("TestCube");
+  //Loader.load("fbxTest");
+  //Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
   Loader.load("goodGuyWalk");
@@ -295,34 +297,6 @@ function AreModelsLoaded()
 	}
 	return false;
 }
-
-/******************************************************/
-/* InitializeLevels
-/*
-/* Load and store the levels, or just the first level.
-/******************************************************/
-function InitializeLevels() 
-{
-	//CurrentLevel = new Level(1);
-}
-
-/******************************************************/
-/* SelectLevel
-/*
-/* Select a level to play.
-/******************************************************/
-function SelectLevel(i_LevelName)
-{
-	for(var k = 0; k < 2; k++)
-	{
-		if(Levels[k].Name == i_LevelName)
-		{
-			CurrentLevel = Levels[k];
-			Debug.Trace("CurrentLevel: "+ CurrentLevel);
-			return;
-		}
-	}
-}
     
 /******************************************************/
 /* Update
@@ -333,10 +307,6 @@ function Update(i_DeltaMiliSec)
 {
   if(GameState == GAME_STATE.PLAYING)
   {		    
-    player.model.Update(i_DeltaMiliSec);
-    
-    for(var i = 0; i < enemies.length; i ++)
-      enemies[i].model.Update(i_DeltaMiliSec);
   }
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {

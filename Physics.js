@@ -4,9 +4,7 @@ function update() {
 
 	movePhase();
 	attackPhase();
-    processEffects();
-
-	projectilePhase();
+    effectPhase();
 
 	cleanupPhase();
 
@@ -28,49 +26,135 @@ function movePhase() {
 	getCamera().move();
 }
 
-var projectiles = [];
-function addProjectile(p) {
-	projectiles.push(p);
+var effects = [];
+function addEffect(e) {
+	effects.push(e);
 }
 
-function projectilePhase() {
+function effectPhase() {
 	var j = 0;
-	for (var i = 0; i < projectiles.length; i++) {
-		projectiles[i].move();
-		if (!projectiles[i].dead) projectiles[j++] = projectiles[i];
+	for (var i = 0; i < effects.length; i++) {
+		effects[i].act();
+		if (!effects[i].dead) effects[j++] = effects[i];
 	}
-	projectiles.length = j;
+	effects.length = j;
 }
 
-function createProjectile(i_Model, position, target, spd, radius, range, accept, apply, continues) {
+function modelDrawer(modelName) {
+	return {
+		model: Loader.GetModel(modelName),
+		set: function(obj) {
+			obj.model = this.model;
+			var scale = vec3.create([obj.radius, obj.radius, 3 * obj.radius]);
+			vec3.scale(scale, 0.01);
+			obj.scale = scale;
+			obj.rotation = Math.atan2(obj.direction[0], obj.direction[1]);
+			obj.preRotate = 0;
+			obj.drawGL = drawModel;
+			obj.draw = drawCircle;
+			obj.offset = [0, 0, 0];
+			obj.updateModel = updateModel;
+			obj.updateModel();
+		}
+	};
+}
+
+function createProjectile(drawSetter, position, target, spd, radius, range, accept, apply, continues) {
 	var proj = {};
 	proj.position = position.slice(0);
 	proj.direction = normalize2(sub2(target, position));
 	proj.velocity = spd;
 	proj.accept = accept;
 	proj.apply = apply;
-	proj.move = projectileMove;
+	proj.act = projectileMove;
 	proj.dead = false;
 	proj.radius = radius;
 	proj.range = range;
 	proj.home = position.slice(0);
-	proj.draw = drawCircle;
-	proj.fillStyle = "#FF0000";
+	proj.fillStyle = "#000000";
 	proj.continues = continues || false;
-    proj.offset = [0, 10, 0];
-    proj.drawGL = drawModel;
 
-    var scale = vec3.create([radius, radius, 3 * radius]);
-    vec3.scale(scale, 0.01);
-    
-    proj.model = i_Model;
-    proj.scale = scale;
-    proj.rotation = 0;
-	proj.preRotate = 0;
-    proj.updateModel = updateModel;
-    proj.updateModel();
+	drawSetter.set(proj);
 
-	addProjectile(proj);
+	addEffect(proj);
+	return proj;
+}
+
+function splitToFour(val) {
+	var v = Math.floor(val);
+	var ret = [];
+	for (var i = 0; i < 4; i++) {
+		ret[3 - i] = v % 10;
+		v = Math.floor(v / 10);
+	}
+	for (var i = 0; i < 3; i++) {
+		if (ret[i] == 0) {
+			ret[i] = 10;
+		} else {
+			break;
+		}
+	}
+	return ret;
+}
+
+function createNumberEffect(val, position, start, end, isPlayer) {
+	var effect = {};
+	effect.position = position;
+	effect.start = start;
+	effect.end = end;
+	effect.isPlayer = isPlayer;
+	effect.val = splitToFour(val);
+	effect.act = function() {
+		if (tick > this.end) this.dead = true;
+	}
+	effect.draw = function(ctx) {
+	}
+	effect.drawGL = function() {
+		glNumbers.addNumber(this.val, this.position, (tick - this.start) / (this.end - this.start), this.isPlayer ? [1, 0, 0] : [0, 1, 0]);
+	}
+	addEffect(effect);
+	return effect;
+}
+
+function stationaryAct() {
+	if (--this.ready < 1) {
+		var ents = getEntitiesInArc(this.arc);
+		for (var i = 0; i < ents.length; i++) {
+			var e = ents[i];
+			if (this.accept(e)) {
+				this.apply(e);
+				if (--this.hits < 1) {
+					this.dead = true;
+					break;
+				}
+			}
+		}
+		this.ready = this.delay;
+	}
+	if (--this.lifetime < 1) {
+		this.dead = true;
+	}
+}
+
+function createStationaryEffect(drawSetter, arc, lifetime, delay, accept, apply, hits) {
+	var effect = {};
+	effect.position = arc.position;
+	effect.direction = arc.direction;
+	effect.hits = hits || 1e10;
+	effect.arc = arc;
+	effect.lifetime = lifetime;
+	effect.delay = delay;
+	effect.ready = 0;
+	effect.accept = accept;
+	effect.apply = apply;
+	effect.act = stationaryAct;
+	effect.radius = arc.outerRadius;
+	effect.dead = false;
+	effect.home = arc.position;
+	effect.fillStyle = "#000000";
+	drawSetter.set(effect);
+	addEffect(effect);
+	return effect;
 }
 
 function tryMove(ent, begin, end, accept) {
@@ -81,10 +165,24 @@ function tryMove(ent, begin, end, accept) {
 	return stop;
 }
 
+function createArc(position, outer, inner, direction, angle) {
+	return {
+		position: position || [0, 0],
+		direction: direction || [1, 0],
+		outerRadius: outer || 1,
+		innerRadius: inner || 0,
+		arcAngle: angle || Math.PI,
+		getCenter: function() { return this.position; },
+		getOrientation: function() { return this.direction; },
+	};
+}
+
+
 function projectileMove() {
 	var e = getEntityAtPoint(this.position);
-	if (e && this.accept(e)) {
+	if (e && this.accept(e) && this.last != e) {
 		this.apply(e);
+		this.last = e;
 		if (!this.continues) {
 			this.dead = true;
             this.updateModel();
@@ -95,13 +193,13 @@ function projectileMove() {
 	if (stop[2]) {
 		if (stop[2].isWall) {
 			this.dead = true;
-		} else {
+		} else if (stop[2] != this.last) {
 			this.apply(stop[2]);
+			this.last = stop[2];
 			this.dead = !this.continues;
 		}
-	} else {
-		this.position = stop[0];
-	}
+	} 
+	clipMove.apply(this);
 	if (dist2(this.position, this.home) > this.range) this.dead = true;
     this.updateModel();
 }
