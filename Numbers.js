@@ -33,13 +33,13 @@ function initializeGlNumbers() {
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext("2d");
-	canvas.width = 140;
+	canvas.width = 154;
 	canvas.height = 32;
 
 	for (var i = 0; i < 10; i++) {
 		context.font = "20pt sans-serif";
 		context.fillStyle = "#FFFFFF";
-		context.fillText(i + "", i * canvas.width / 10, 26);
+		context.fillText(i + "", i * canvas.width / 11, 26);
 	}
 	glNumbers.numCanvas = canvas;
 	glNumbers.numTexture = gl.createTexture();

@@ -87,6 +87,13 @@ function splitToFour(val) {
 		ret[3 - i] = v % 10;
 		v = Math.floor(v / 10);
 	}
+	for (var i = 0; i < 3; i++) {
+		if (ret[i] == 0) {
+			ret[i] = 10;
+		} else {
+			break;
+		}
+	}
 	return ret;
 }
 
@@ -175,13 +182,23 @@ function createArc(position, outer, inner, direction, angle) {
 
 
 function projectileMove() {
+	var e = getEntityAtPoint(this.position);
+	if (e && this.accept(e) && this.last != e) {
+		this.apply(e);
+		this.last = e;
+		if (!this.continues) {
+			this.dead = true;
+            this.updateModel();
+			return;
+		}
+	}
 	var stop = tryMove(this, this.position, add2(this.position, scale2(this.velocity, this.direction)), this.accept);
 	if (stop[2]) {
 		if (stop[2].isWall) {
 			this.dead = true;
 		} else if (stop[2] != this.last) {
-			//this.last = stop[2];
 			this.apply(stop[2]);
+			this.last = stop[2];
 			this.dead = !this.continues;
 		}
 	} 
