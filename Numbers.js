@@ -18,12 +18,6 @@ function initializeGlNumbers() {
 	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.colorArray, gl.DYNAMIC_DRAW);
 	glNumbers.colorIdx = 0;
 
-	glNumbers.vertexCoordBuffer = gl.createBuffer();
-	glNumbers.coordArray = new Float32Array(4 * 6 * 2 * maxNumbers);
-    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexCoordBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.coordArray, gl.DYNAMIC_DRAW);
-	glNumbers.coordIdx = 0;
-
 	glNumbers.vertexValueBuffer = gl.createBuffer();
 	glNumbers.valueArray = new Float32Array(4 * 6 * 1 * maxNumbers);
     gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexValueBuffer);
@@ -38,9 +32,27 @@ function initializeGlNumbers() {
 
 	glNumbers.vertexIndexBuffer = gl.createBuffer();
 	glNumbers.indexArray = new Float32Array(4 * 6 * 1 * maxNumbers);
-    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexIndexBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.indexArray, gl.DYNAMIC_DRAW);
 	glNumbers.indexIdx = 0;
+
+	glNumbers.vertexCoordBuffer = gl.createBuffer();
+	glNumbers.coordArray = new Float32Array(4 * 6 * 2 * maxNumbers);
+	glNumbers.coordIdx = 0;
+
+	var vertCoord = [[0, 0], [0, 1], [1, 0], [1, 0], [0, 1], [1, 1]];
+	for (var s = 0; s < maxNumbers; s++) {
+		for (var i = 0; i < 4; i++) {
+			for (var v = 0; v < 6; v++) {
+				glNumbers.indexArray[glNumbers.indexIdx++] = i;
+
+				glNumbers.coordArray[glNumbers.coordIdx++] = vertCoord[v][0];
+				glNumbers.coordArray[glNumbers.coordIdx++] = vertCoord[v][1];
+			}
+		}
+	}
+    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexIndexBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.indexArray, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexCoordBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.coordArray, gl.STATIC_DRAW);
 
 	var canvas = document.createElement("canvas");
 	var context = canvas.getContext("2d");
@@ -64,7 +76,6 @@ function initializeGlNumbers() {
 
 	glNumbers.addNumber = function(val, position, tm, color) {
 		if (this.count == maxNumbers) return;
-		var vertCoord = [[0, 0], [0, 1], [1, 0], [1, 0], [0, 1], [1, 1]];
 		for (var i = 0; i < 4; i++) {
 			for (var v = 0; v < 6; v++) {
 				this.timeArray[this.timeIdx++] = tm;
@@ -77,11 +88,6 @@ function initializeGlNumbers() {
 				this.positionArray[this.positionIdx++] = position[0];
 				this.positionArray[this.positionIdx++] = 0;
 				this.positionArray[this.positionIdx++] = position[1];
-
-				this.indexArray[this.indexIdx++] = i;
-
-				this.coordArray[this.coordIdx++] = vertCoord[v][0];
-				this.coordArray[this.coordIdx++] = vertCoord[v][1];
 			}
 		}
 		this.count++;
@@ -102,11 +108,10 @@ function initializeGlNumbers() {
 		var vertsPerItem = 4 * 2 * 3;
 		var numVertices = vertsPerItem * this.count;
 
-		var bindAttribute = function(buffer, arr, attribute, itemSize) {
+		var bindAttribute = function(buffer, arr, attribute, itemSize, staticData) {
 			if (numVertices < 0) return;
-			glNumbers.numV = [numVertices, buffer, attribute, itemSize];
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-			gl.bufferSubData(gl.ARRAY_BUFFER, 0, arr.subarray(0, numVertices * itemSize));
+			if (!staticData) gl.bufferSubData(gl.ARRAY_BUFFER, 0, arr.subarray(0, numVertices * itemSize));
 			gl.vertexAttribPointer(attribute, itemSize, gl.FLOAT, false, 0, 0);
 		}
 
@@ -124,18 +129,6 @@ function initializeGlNumbers() {
 		bindAttribute(buffer, arr, attribute, 3);
 		this.colorIdx = 0;
 
-		buffer = this.vertexCoordBuffer;
-		arr = this.coordArray;
-		attribute = this.shader.Program.vertexCoordAttribute;
-		bindAttribute(buffer, arr, attribute, 2);
-		this.coordIdx = 0;
-
-		buffer = this.vertexIndexBuffer;
-		arr = this.indexArray;
-		attribute = this.shader.Program.vertexIndexAttribute;
-		bindAttribute(buffer, arr, attribute, 1);
-		this.indexIdx = 0;
-
 		buffer = this.vertexValueBuffer;
 		arr = this.valueArray;
 		attribute = this.shader.Program.vertexValueAttribute;
@@ -147,6 +140,18 @@ function initializeGlNumbers() {
 		attribute = this.shader.Program.vertexTimeAttribute;
 		bindAttribute(buffer, arr, attribute, 1);
 		this.timeIdx = 0;
+
+		buffer = this.vertexCoordBuffer;
+		arr = this.coordArray;
+		attribute = this.shader.Program.vertexCoordAttribute;
+		bindAttribute(buffer, arr, attribute, 2, true);
+		this.coordIdx = 0;
+
+		buffer = this.vertexIndexBuffer;
+		arr = this.indexArray;
+		attribute = this.shader.Program.vertexIndexAttribute;
+		bindAttribute(buffer, arr, attribute, 1, true);
+		this.indexIdx = 0;
 
 		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 		gl.disable(gl.BLEND);
