@@ -176,7 +176,7 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 function entityDamage(dmg, src) {
 	this.health -= dmg;
 	this.isDead = this.health <= 0;
-	createNumberEffect(dmg, this.position, tick, tick + msToTicks(1000), this.isPlayer);
+	createNumberEffect(dmg, this, tick, tick + msToTicks(1000), this.isPlayer);
 }
 
 function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
