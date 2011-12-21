@@ -139,7 +139,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
                 }
             }
 		}
-        this.setTarget(null);
+        //this.setTarget(null);
         this.setSpecialTarget(null);
         return ret;
 	}

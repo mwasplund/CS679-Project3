@@ -160,6 +160,22 @@ function mousedown(event) {
 	return false;
 }
 function mouseup(event) {
+	switch (event.button) {
+		case 0: // left
+            var pl = getLocalPlayer();
+            var tgt = null;
+            !swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
+			break;
+		case 1: // middle
+
+			break;
+		case 2: // right
+            var pl = getLocalPlayer();
+            var tgt = null;
+            swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
+			break;
+		default:
+	}
     return false;
 }
 
