@@ -18,7 +18,7 @@
           <script type="text/javascript" src="GlBars.js"></script>
           <script type="text/javascript" src="Log.js"></script>
           
-          <script type="text/javascript" src="GL.js"></script>
+          <script type="text/javascript" src="Gl.js"></script>
           <script type="text/javascript" src="Util.js"></script>
           <script type="text/javascript" src="Graphics.js"></script>
           <script type="text/javascript" src="Physics.js"></script>
@@ -33,6 +33,27 @@
           <script type="text/javascript" src="GameState.js"></script>
           <script type="text/javascript" src="Model/ModelLoader.js"></script>
 
+		<!--
+		 * Load Google's ThreeD Library. We just want it for the particle system.
+		-->
+		<script type="text/javascript" src="Libs/tdl/base.js"></script>
+		<script type="text/javascript">
+			tdl.require('tdl.buffers');
+			tdl.require('tdl.fast');
+			tdl.require('tdl.fps');
+			tdl.require('tdl.log');
+			tdl.require('tdl.math');
+			tdl.require('tdl.models');
+			tdl.require('tdl.particles');
+			tdl.require('tdl.primitives');
+			tdl.require('tdl.programs');
+			tdl.require('tdl.textures');
+			tdl.require('tdl.webgl');
+		</script>
+
+		<script type="text/javascript" src="Log.js"></script>
+		<script type="text/javascript" src="Helper.js"></script>
+        <script type="text/javascript" src="Game.js"></script>
           <script type="text/javascript" src="Shader/GLSL_Shader.js"></script>          
           <script type="text/javascript" src="Model/ModelLoader.js"></script>
           <script type="text/javascript" src="Model/FBX/FBX_Parser.js"></script>

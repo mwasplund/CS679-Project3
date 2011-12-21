@@ -2294,7 +2294,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-polySurface1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-polySurface1.png"
+        RelativeFilename: "../images/ramp1-polySurface1.png"
     }
     Video: 5314161408, "Video::file2", "Clip" {
         Type: "Clip"
@@ -2303,7 +2303,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg_pCube2_pCubeShape2.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg_pCube2_pCubeShape2.png"
+        RelativeFilename: "../images/ramp1-leg_pCube2_pCubeShape2.png"
     }
     Video: 5379530800, "Video::file1", "Clip" {
         Type: "Clip"
@@ -2312,7 +2312,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg_pCube2_pCube3.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg_pCube2_pCube3.png"
+        RelativeFilename: "../images/ramp1-leg_pCube2_pCube3.png"
     }
     Video: 4959054736, "Video::file3", "Clip" {
         Type: "Clip"
@@ -2321,7 +2321,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg2_pCube2_pCubeShape2.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg2_pCube2_pCubeShape2.png"
+        RelativeFilename: "../images/ramp1-leg2_pCube2_pCubeShape2.png"
     }
     Video: 5379849248, "Video::file4", "Clip" {
         Type: "Clip"
@@ -2330,7 +2330,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg2_pCube2_pCube3.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg2_pCube2_pCube3.png"
+        RelativeFilename: "../images/ramp1-leg2_pCube2_pCube3.png"
     }
     Texture: 5314015664, "Texture::file5", "" {
         Type: "TextureVideoClip"
@@ -2343,7 +2343,7 @@ a: 0
         }
         Media: "Video::file5"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-polySurface1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-polySurface1.png"
+        RelativeFilename: "../images/ramp1-polySurface1.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -2360,7 +2360,7 @@ a: 0
         }
         Media: "Video::file2"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg_pCube2_pCubeShape2.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg_pCube2_pCubeShape2.png"
+        RelativeFilename: "../images/ramp1-leg_pCube2_pCubeShape2.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -2377,7 +2377,7 @@ a: 0
         }
         Media: "Video::file1"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg_pCube2_pCube3.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg_pCube2_pCube3.png"
+        RelativeFilename: "../images/ramp1-leg_pCube2_pCube3.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -2394,7 +2394,7 @@ a: 0
         }
         Media: "Video::file3"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg2_pCube2_pCubeShape2.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg2_pCube2_pCubeShape2.png"
+        RelativeFilename: "../images/ramp1-leg2_pCube2_pCubeShape2.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -2411,7 +2411,7 @@ a: 0
         }
         Media: "Video::file4"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-leg2_pCube2_pCube3.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-leg2_pCube2_pCube3.png"
+        RelativeFilename: "../images/ramp1-leg2_pCube2_pCube3.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
