@@ -32,6 +32,10 @@ function ModelLoader()
   this.GetModel = ModelLoader_GetModel;
   this.DrawModels = function(i_CurTime)
   {
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
+
 	if(this.Optimization_GroupModelRefs)
 	{
 		for(var i = 0; i < this.Models.length; i++)
@@ -46,6 +50,10 @@ function ModelLoader()
 			this.Models[i].Draw(i_CurTime);
 		}
 	}
+
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
   }
   
   this.getPercentLoaded = function()

@@ -85,6 +85,7 @@ function initializeGlBars() {
 	}
 
 	glBars.draw = function() {
+        var program = this.shader.Program;
 		gl.useProgram(this.shader.Program);
 		setMatrixUniforms(this.shader.Program);
 
@@ -98,6 +99,11 @@ function initializeGlBars() {
 
 		var vertsPerItem = verticesPerBar;
 		var numVertices = vertsPerItem * this.count;
+
+        gl.enableVertexAttribArray(program.vertexColorAttribute);
+        gl.enableVertexAttribArray(program.vertexValueAttribute);
+        gl.enableVertexAttribArray(program.textureCoordAttribute);
+        gl.enableVertexAttribArray(program.vertexPositionAttribute);
 
 		var bindAttribute = function(buffer, arr, attribute, itemSize, staticData) {
 			if (numVertices < 0) return;
@@ -128,13 +134,19 @@ function initializeGlBars() {
 
 		buffer = this.vertexCoordBuffer;
 		arr = this.coordArray;
-		attribute = this.shader.Program.vertexCoordAttribute;
-		bindAttribute(buffer, arr, attribute, 2, true);
+		attribute = this.shader.Program.textureCoordAttribute;
+		bindAttribute(buffer, arr, attribute, 2);
 		this.coordIdx = 0;
 
 		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
+
+        gl.disableVertexAttribArray(program.vertexColorAttribute);
+        gl.disableVertexAttribArray(program.vertexValueAttribute);
+        gl.disableVertexAttribArray(program.textureCoordAttribute);
+        gl.disableVertexAttribArray(program.vertexPositionAttribute);
+
 		this.count = 0;
 	}
 }

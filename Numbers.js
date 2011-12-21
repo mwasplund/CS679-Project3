@@ -51,6 +51,7 @@ function initializeGlNumbers() {
 	}
     gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexIndexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.indexArray, gl.STATIC_DRAW);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, glNumbers.vertexCoordBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, glNumbers.coordArray, gl.STATIC_DRAW);
 
@@ -72,7 +73,6 @@ function initializeGlNumbers() {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-	//gl.bindTexture(gl.TEXTURE_2D, null);
 
 	glNumbers.addNumber = function(val, position, tm, color) {
 		if (this.count == maxNumbers) return;
@@ -94,8 +94,9 @@ function initializeGlNumbers() {
 	}
 
 	glNumbers.draw = function() {
-		gl.useProgram(this.shader.Program);
-		setMatrixUniforms(this.shader.Program);
+        var program = this.shader.Program;
+		gl.useProgram(program);
+		setMatrixUniforms(program);
 
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
@@ -108,6 +109,13 @@ function initializeGlNumbers() {
 		var vertsPerItem = 4 * 2 * 3;
 		var numVertices = vertsPerItem * this.count;
 
+        gl.enableVertexAttribArray(program.vertexIndexAttribute);
+        gl.enableVertexAttribArray(program.vertexColorAttribute);
+        gl.enableVertexAttribArray(program.vertexValueAttribute);
+        gl.enableVertexAttribArray(program.vertexTimeAttribute);
+        gl.enableVertexAttribArray(program.textureCoordAttribute);
+        gl.enableVertexAttribArray(program.vertexPositionAttribute);
+
 		var bindAttribute = function(buffer, arr, attribute, itemSize, staticData) {
 			if (numVertices < 0) return;
 			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -119,43 +127,51 @@ function initializeGlNumbers() {
 
 		buffer = this.vertexPositionBuffer;
 		arr = this.positionArray;
-		attribute = this.shader.Program.vertexPositionAttribute;
+		attribute = program.vertexPositionAttribute;
 		bindAttribute(buffer, arr, attribute, 3);
 		this.positionIdx = 0;
 
 		buffer = this.vertexColorBuffer;
 		arr = this.colorArray;
-		attribute = this.shader.Program.vertexColorAttribute;
+		attribute = program.vertexColorAttribute;
 		bindAttribute(buffer, arr, attribute, 3);
 		this.colorIdx = 0;
 
 		buffer = this.vertexValueBuffer;
 		arr = this.valueArray;
-		attribute = this.shader.Program.vertexValueAttribute;
+		attribute = program.vertexValueAttribute;
 		bindAttribute(buffer, arr, attribute, 1);
 		this.valueIdx = 0;
 
 		buffer = this.vertexTimeBuffer;
 		arr = this.timeArray;
-		attribute = this.shader.Program.vertexTimeAttribute;
+		attribute = program.vertexTimeAttribute;
 		bindAttribute(buffer, arr, attribute, 1);
 		this.timeIdx = 0;
 
 		buffer = this.vertexCoordBuffer;
 		arr = this.coordArray;
-		attribute = this.shader.Program.vertexCoordAttribute;
-		bindAttribute(buffer, arr, attribute, 2, true);
+		attribute = program.textureCoordAttribute;
+		bindAttribute(buffer, arr, attribute, 2);
 		this.coordIdx = 0;
 
 		buffer = this.vertexIndexBuffer;
 		arr = this.indexArray;
-		attribute = this.shader.Program.vertexIndexAttribute;
-		bindAttribute(buffer, arr, attribute, 1, true);
+		attribute = program.vertexIndexAttribute;
+		bindAttribute(buffer, arr, attribute, 1);
 		this.indexIdx = 0;
 
 		gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 		gl.disable(gl.BLEND);
 		gl.enable(gl.DEPTH_TEST);
+
+        gl.disableVertexAttribArray(program.vertexIndexAttribute);
+        gl.disableVertexAttribArray(program.vertexColorAttribute);
+        gl.disableVertexAttribArray(program.vertexValueAttribute);
+        gl.disableVertexAttribArray(program.vertexTimeAttribute);
+        gl.disableVertexAttribArray(program.textureCoordAttribute);
+        gl.disableVertexAttribArray(program.vertexPositionAttribute);
+
 		this.count = 0;
 	}
 }

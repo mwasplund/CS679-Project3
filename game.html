@@ -9,6 +9,25 @@
         <script type="text/javascript" src="Libs/webgl-utils.js"></script>
         <script type="text/javascript" src="Libs/glMatrix-0.9.5.min.js"></script>
 
+		
+		<!--
+		 * Load Google's ThreeD Library. We just want it for the particle system.
+		-->
+		<script type="text/javascript" src="Libs/tdl/base.js"></script>
+		<script type="text/javascript">
+			tdl.require('tdl.buffers');
+			tdl.require('tdl.fast');
+			tdl.require('tdl.fps');
+			tdl.require('tdl.log');
+			tdl.require('tdl.math');
+			tdl.require('tdl.models');
+			tdl.require('tdl.particles');
+			tdl.require('tdl.primitives');
+			tdl.require('tdl.programs');
+			tdl.require('tdl.textures');
+			tdl.require('tdl.webgl');
+		</script>
+
 		<script type="text/javascript" src="Log.js"></script>
 		<script type="text/javascript" src="Helper.js"></script>
         <script type="text/javascript" src="Game.js"></script>

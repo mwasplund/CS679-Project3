@@ -107,22 +107,18 @@ function GLSL_AttachShaderProgram(i_Shader)
 	// NumberShader Variables
 	var attr = gl.getAttribLocation(i_Shader.Program, "aVertexValue");
     if (attr) {
-		gl.enableVertexAttribArray(attr);
 		i_Shader.Program.vertexValueAttribute = attr;
 	}
 	attr = gl.getAttribLocation(i_Shader.Program, "aVertexColor");
     if (attr) {
-		gl.enableVertexAttribArray(attr);
 		i_Shader.Program.vertexColorAttribute = attr;
 	}
 	attr = gl.getAttribLocation(i_Shader.Program, "aVertexTime");
     if (attr) {
-		gl.enableVertexAttribArray(attr);
 		i_Shader.Program.vertexTimeAttribute = attr;
 	}
 	attr = gl.getAttribLocation(i_Shader.Program, "aVertexIndex");
     if (attr) {
-		gl.enableVertexAttribArray(attr);
 		i_Shader.Program.vertexIndexAttribute = attr;
 	}
 }
