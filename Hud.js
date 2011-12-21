@@ -184,6 +184,11 @@ function drawAttack(ctx, attack, rect) {
 	ctx.restore();
 }
 
+function drawHudBackgroundImage(ctx) {
+	if (hudBackground) {
+		ctx.drawImage(hudBackground, 0, hud.height() - hudBackground.height);
+	}
+}
 var hoverStart = 1e100;
 var tooltipDelay = 1000;
 function drawTooltip(ctx) {
@@ -218,9 +223,7 @@ function drawTooltip(ctx) {
 	ctx.clip();
 	ctx.strokeStyle = "#000000";
 	ctx.lineWidth = 3;
-	if (hudBackground) {
-		ctx.drawImage(hudBackground, 0, 0);
-	}
+    drawHudBackgroundImage(ctx);
 	ctx.stroke();
 
 	prepareRect(ctx,
@@ -432,7 +435,7 @@ function drawHudBackground(ctx) {
 	}
 	ctx.save();
 	clipRect(ctx, hudRects.hud);
-	ctx.drawImage(hudBackground, 0, 0);
+    drawHudBackgroundImage(ctx);
 	ctx.restore();
 }
 

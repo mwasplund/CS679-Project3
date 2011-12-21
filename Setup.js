@@ -151,7 +151,13 @@ function makeWall(pt0, pt1) {
     ret.mesh = new Mesh(FakeModel ,null);
     ret.drawGL = function()
     {
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
       this.mesh.Draw();
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
     };
     
     ret.pts = [pt0.slice(0), pt1.slice(0)];
