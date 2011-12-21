@@ -178,7 +178,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset, position) {
     player.setSpecialAttack(0);
 
 	player.getSpecialAttackHint = function() {
-		return "Right-click to use the selected special ability.";
+		return "Click on an ability to select it, or use the mouse wheel to cycle through them. Right-click to use the selected special ability.";
 	}
 	player.getBasicAttackHint = function() {
 		return "Left-click to use a basic attack. The player will use his melee attack if he's in range, and will use his ranged attack otherwise.";

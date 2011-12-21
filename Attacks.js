@@ -238,8 +238,8 @@ function initializeAttacks() {
     var fireball = function (player) {
         var ret = new Attack(player);
 		ret.damage = 2;
-        ret.name = "Fireball";
-		ret.description = null;
+        ret.name = "Fire";
+		ret.description = "This is fire. Anything caught in the fire will take damage as long as they are in it. This means you, too.";
 		ret.radius = 18;
         ret.cooldown = msToTicks(30000);
 		setImage(ret, "icons/Fire Mod 1.png");
@@ -262,7 +262,7 @@ function initializeAttacks() {
     var icestorm = function (player) {
         var ret = new Attack(player);
         ret.name = "Ice Storm";
-		ret.description = null;
+		ret.description = "A storm of ice appears over an area of the dungeon. Any enemies caught in the storm will be slowed down significantly for the next 20 seconds. This is a good way to escape those fast moving enemies or to make targeting them easier.";
 		ret.radius = 18;
         ret.cooldown = msToTicks(10000);
 		setImage(ret, "icons/Shadow Mark Original.png");
@@ -378,7 +378,7 @@ function initializeAttacks() {
         var ret = new Attack(player);
 		ret.damage = 10;
         ret.name = "Healing Circle";
-		ret.description = null;
+		ret.description = "The healing circle will provide a health boost to everyone in it. The longer you stay within the healing rays of the circle, the more you will be healed.";
 		ret.radius = 15;
         ret.cooldown = msToTicks(90000);
 		setImage(ret, "icons/Leafs Original.png");
