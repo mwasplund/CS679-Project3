@@ -27,7 +27,7 @@ function getEntityEmitter(color) {
 }
 
 var deathEmitterParams = {
-	numParticles: 1000,
+	numParticles: 10000,
 	lifeTime: 5,
 	timeRange: 5,
 	startSize: 4,

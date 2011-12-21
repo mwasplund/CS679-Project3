@@ -40,6 +40,29 @@ function getEyebeamEmitter() {
 	return emitter;
 }
 
+var webEmitterParams = {
+	numParticles: 50,
+	lifeTime: 0.3,
+	startSize: 5,
+	endSize: 2,
+	position:[0, 12, 0],
+	positionRange:[0, 0, 0],
+	velocity:[0, 0, 0],
+	velocityRange: [8, 4, 8],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getWebEmitter() {
+	var emitter = particleSystem.createTrail(1000, webEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[0.5, 0.5, 0.5, 1,
+			0.3, 0.3, 0.5, 1,
+			0.1, 0.1, 0.3, 0.5,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 function makeEnemyType(type) {
 
     var isRanged = Math.random() < 0.7;
@@ -84,10 +107,27 @@ function makeEnemyType(type) {
 				stats.height *= 0.7;
 				scale = vec3.scale(scale, 0.7);
 				offset = vec3.scale(offset, 0.7);
-				stats.speed *= 1.5;
-				stats.attack = simpleDirectAttack();
+				stats.speed = 3.0;
+				stats.attack = simpleDirectAttack(12);
 			} else {
-				stats.attack = simpleProjectileAttack();
+				var web = function(src, tgt) {
+					var webApply = function(e) { 
+						e.damage(1, src);
+
+						if (hasMoveEffect(e)) return;
+						var slow = function(ent) {
+							ent.velocity *= 0.3;
+						}
+						var effect = createEffect(slow);
+						effect.lifetime = msToTicks(2000);
+						addEmitter(effect, getEntityEmitter([0, 0, 1]));
+						addMoveEffect(e, effect);
+					};
+
+					var proj = createProjectile(nullDrawer(), src.position, tgt.position, 3.2, 3, 10000, function(e) { return !e.isEnemy; }, webApply);
+					addEmitter(proj, getWebEmitter());
+				}
+				stats.attack = simpleProjectileAttack(web, msToTicks(2800), 130);
 			}
 			stats.height = stats.radius;
 			return makeEnemy(stats, null, Loader.GetModel("WolfSpider_Linked"), scale, Math.PI, offset);
