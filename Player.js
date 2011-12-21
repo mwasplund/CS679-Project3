@@ -29,7 +29,7 @@ function getEntityEmitter(color) {
 function entityHealth() {
 	return Math.min(1, Math.max(0, this.health / this.stats.health));
 };
-function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
+function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset, position) {
 	var stats = {
 		speed: getOptions().playerVelocity,
         sight: 300,
@@ -37,7 +37,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 	};
     player = {
 		stats: stats,
-        position: [0, 0],
+        position: position || [0, 0],
         direction: [0, 1],
 		scale: i_Scale,
 		rotation: 0,

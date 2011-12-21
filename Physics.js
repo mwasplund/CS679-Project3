@@ -418,8 +418,14 @@ function intersectPathWalls(begin, end, radius, accept) {
 }
 
 function getWallsInRect(pt0, pt1) {
-	// TODO(cjhopman): used for fog
-    return [];
+	var walls = [];
+	var buckets = wallBuckets.getBucketsFromRect(pt0, pt1);
+	for (var i = 0; i < buckets.length; i++) {
+		var buck = wallBuckets.getBucket(buckets[i]);
+		walls = walls.concat(buck);
+	}
+
+    return walls;
 }
 
 function intersectLineCircle(line, circle) {

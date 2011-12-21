@@ -352,6 +352,7 @@ var TOOLTIP = {
 var tooltipAttack = [0, 0];
 var tooltipType = TOOLTIP.NONE;
 function hudMouseMove(ev) {
+	if (!hudRects) return;
 	if (!eventInRect(ev, hudRects.hud)) {
 		tooltip = null;
 		return false;
@@ -387,6 +388,7 @@ function hudMouseMove(ev) {
 	return true;
 }
 function hudMouseDown(ev) {
+	if (!hudRects) return;
 	if (!eventInRect(ev, hudRects.hud)) return false;
 
 	var atk = attackAtEvent(ev);

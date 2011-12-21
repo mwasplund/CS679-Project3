@@ -1,18 +1,85 @@
 var shouldReset;
 function setup() {
-	clear();
-    initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
-    initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
-
-    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0]);
-    for (var i = 0; i < 50; i++) {
-        addEnemy(makeSpiderEnemy());
-    }
-
-    setupWalls();
-	
+	loadLevel(getLevels()[0]);
 	// Add 3d Models to sceen
 	SceneModels.push(Loader.GetModel("Ground"));
+}
+
+function normalizeCoord(c) {
+	return Math.round(c / 4) * 6;
+}
+
+function normalizeCoords(objs) {
+	var mem = ["xStart", "yStart", "xFinish", "yFinish", "xLoc", "yLoc"];
+	for (var i = 0; i < objs.length; i++) {
+		var o = objs[i];
+		for (var j = 0; j < mem.length; j++) {
+			var m = mem[j];
+			if (o[m]) {
+				o[m] = normalizeCoord(o[m]);
+			}
+		}
+	}
+}
+
+function calcBounds(objs) {
+	var xvals = ["xStart", "xFinish", "xLoc"];
+	var yvals = ["yStart", "yFinish", "yLoc"];
+	var bounds = [[300, 300], [300, 300]];
+	for (var i = 0; i < objs.length; i++) {
+		var o = objs[i];
+		for (var j = 0; j < xvals.length; j++) {
+			var x = xvals[j];
+			var y = xvals[y];
+			if (o[x]) {
+				bounds[0][0] = Math.min(bounds[0][0], o[x]);
+				bounds[1][0] = Math.max(bounds[1][0], o[x]);
+			}
+			if (o[y]) {
+				bounds[0][1] = Math.min(bounds[0][1], o[y]);
+				bounds[1][1] = Math.max(bounds[1][1], o[y]);
+			}
+		}
+	}
+	bounds[0][0] -= 100;
+	bounds[0][1] -= 100;
+	bounds[1][0] += 100;
+	bounds[1][1] += 100;
+	return bounds;
+}
+
+
+function loadLevel(levelFunc) {
+	clear();
+	var objs = levelFunc();
+	normalizeCoords(objs);
+	var bounds = calcBounds(objs);
+	initializeEntityBuckets(bounds, 40, 40);
+	initializeWallBuckets(bounds, 100, 100);
+
+	for (var i = 0; i < objs.length; i++) {
+		var o = objs[i];
+		switch(o.id) {
+			case "wall":
+				pushWall(makeWall([o.xStart, o.yStart], [o.xFinish, o.yFinish]));
+				Debug.info("Wall: " + o.xStart + "," + o.yStart + " " + o.xFinish + " " + o.yFinish);
+				break;
+			case "enemy":
+				addEnemy(makeSpiderEnemy([o.xLoc, o.yLoc]));
+				Debug.info("Enemy: " + o.xLoc + "," + o.yLoc);
+				break;
+			case "player":
+				initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0], [o.xLoc, o.yLoc]);
+				Debug.info("Player: " + o.xLoc + "," + o.yLoc);
+				break;
+			case "end":
+
+				break;
+			default:
+				Debug.error("Unrecognized object id: " + o.id);
+				break;
+		}
+	}
 }
 
 var walls;
@@ -151,13 +218,19 @@ function makeWall(pt0, pt1) {
     ret.mesh = new Mesh(FakeModel ,null);
     ret.drawGL = function()
     {
-    gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
-    gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
-    gl.enableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
-      this.mesh.Draw();
-    gl.disableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
-    gl.disableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
-    gl.disableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
+		var p = getLocalPlayer();
+		if (Math.min(
+					dist2(p.position, this.pts[1]), 
+					dist2(p.position, this.pts[0])
+					) > 300) return;
+
+		gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+		gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+		gl.enableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
+		this.mesh.Draw();
+		gl.disableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+		gl.disableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+		gl.disableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
     };
     
     ret.pts = [pt0.slice(0), pt1.slice(0)];
