@@ -88,7 +88,7 @@ var lightningEmitterParams = {
 	startSize: 1,
 	endSize: 6,
 	position:[0, 10, 0],
-	positionRange:[0, 0, 10],
+	positionRange:[0, 0, 0],
 	velocity:[0, 0, 0],
 	velocityRange: [8, 4, 8],
 	worldAcceleration: [0, -1, 0],
@@ -264,7 +264,7 @@ function initializeAttacks() {
 		ret.description = null;
 		ret.radius = 18;
         ret.cooldown = msToTicks(10000);
-		setImage(ret, "icons/15.png");
+		setImage(ret, "icons/Shadow Mark Original.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -293,7 +293,7 @@ function initializeAttacks() {
         ret.cooldown = msToTicks(30000);
         ret.name = "Venom Shot";
 		ret.description = "Cast out multiple venomous shots in an arc. Any enemies hit will take damage over several seconds.";
-		setImage(ret, "icons/123.png");
+		setImage(ret, "icons/31.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -326,13 +326,39 @@ function initializeAttacks() {
         return ret;
     };
 
+    var teleport = function (player) {
+        var ret = new Attack(player);
+        ret.name = "Teleport";
+		ret.description = "Teleport toward the target location. You cannot teleport through enemies or walls.";
+		ret.radius = 15;
+        ret.cooldown = msToTicks(30000);
+		setImage(ret, "icons/17.png");
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+			var teleportEffect = createEffect(function(e) {
+						e.velocity = Math.min(15, dist2(tgt, e.position));
+						if (e.velocity < 0.1) {
+							this.lifetime = 0;
+							return;
+						}
+						e.direction = normalize2(sub2(tgt, e.position));
+					});
+			teleportEffect.lifetime = msToTicks(1000);
+			addEmitter(teleportEffect, getEntityEmitter([1, 1, 1]));
+			addMoveEffect(src, teleportEffect);
+        }
+        return ret;
+    };
     var haste = function (player) {
         var ret = new Attack(player);
         ret.name = "Haste";
 		ret.description = "Haste increases your movement speed and decreases your attack cooldowns for several seconds.";
 		ret.radius = 15;
-        ret.cooldown = msToTicks(60000);
-		setImage(ret, "icons/16.png");
+        ret.cooldown = msToTicks(45000);
+		setImage(ret, "icons/88.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -354,7 +380,7 @@ function initializeAttacks() {
 		ret.description = null;
 		ret.radius = 15;
         ret.cooldown = msToTicks(90000);
-		setImage(ret, "icons/16.png");
+		setImage(ret, "icons/Leafs Original.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
@@ -474,7 +500,7 @@ function initializeAttacks() {
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningBolt, fireball, icestorm, poisonShot, dummy, dummy, dummy, haste, heal];
+    specialAttacks = [earthAttack, lightningBolt, fireball, poisonShot, icestorm, teleport, haste, heal];
 
 	attacksInitialized = true;
 }

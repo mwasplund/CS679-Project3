@@ -133,20 +133,28 @@ function splitToFour(val) {
 	return ret;
 }
 
+function addDelayedBreath(ticks, func) {
+	var effect = createEffect(null, func);
+	effect.lifetime = ticks;
+	addEffect(effect);
+}
+
 function addEmitter(effect, emitter) {
 	if (!effect.emitters) {
 		effect.emitters = [];
 		effect.act = (function(old) {
 				return function(context) {
-					var direction = this.direction || context.direction || [1, 0];
-					var position = this.position || context.position || [0, 0];
 					if (old) old.apply(this, [context]);
+					var direction = this.direction || context && context.direction || [1, 0];
+					var position = this.position || context && context.position || [0, 0];
+					var velocity = this.velocity || context && context.velocity || 0;
 					var a = directionToAngle(direction);
 					for (var i = 0; i < this.emitters.length; i++) {
 						var em = this.emitters[i];
 						if (em.birthParticles) {
+							em.parameters.positionRange[2] = velocity;
 							em.setRotateY(a);
-							em.birthParticles([position[0], 0, position[1]]);	
+							em.birthParticles([position[0] - direction[0] * velocity / 2, 0, position[1] - direction[1] * velocity / 2]);	
 							em.setRotateY(0);
 						} else {
 							em.setTranslation(position[0], 0, position[1]);
@@ -158,7 +166,12 @@ function addEmitter(effect, emitter) {
 				return function(context) {
 					if (old) old.apply(this, [context]);
 					for (var i = 0; i < this.emitters.length; i++) {
-						particleSystem.removeEmitter(this.emitters[i]);
+						var em = this.emitters[i];
+						if (em.birthParticles) {
+							addDelayedBreath(msToTicks(em.parameters.lifeTime * 1000), function() { particleSystem.removeEmitter(em); })
+						} else {
+							particleSystem.removeEmitter(em);
+						}
 					}
 				}
 		})(effect.lastBreath);
@@ -182,8 +195,9 @@ function createEffect(act, lastBreath) {
 					func.apply(this, [context]);
 				}
 			})(this.act);
-		}
-
+		},
+		draw: function() { },
+		drawGL: function() { },
 	};
 }
 
