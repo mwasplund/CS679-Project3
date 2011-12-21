@@ -132,7 +132,7 @@ function makeEnemyType(type) {
 				offset = vec3.scale(offset, 0.7);
 				stats.speed = 3.0;
 				stats.health *= 1.3;
-				stats.attack = simpleDirectAttack(function(src, tgt) { simpleDirect(src, tgt, 3); });
+				stats.attack = simpleDirectAttack(function(src, tgt) { simpleDirect(src, tgt, 9); });
 			} else {
 				var web = function(src, tgt) {
 					var webApply = function(e) { 
