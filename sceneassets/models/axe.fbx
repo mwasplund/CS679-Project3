@@ -2152,7 +2152,7 @@ a: -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//envChrome1-polySurface1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/envChrome1-polySurface1.png"
+        RelativeFilename: "../images/envChrome1-polySurface1.png"
     }
     Video: 5290562640, "Video::file2", "Clip" {
         Type: "Clip"
@@ -2161,7 +2161,7 @@ a: -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//envChrome1-pCylinder1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/envChrome1-pCylinder1.png"
+        RelativeFilename: "../images/envChrome1-pCylinder1.png"
     }
     Texture: 5283260304, "Texture::file1", "" {
         Type: "TextureVideoClip"
@@ -2174,7 +2174,7 @@ a: -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
         }
         Media: "Video::file1"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//envChrome1-polySurface1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/envChrome1-polySurface1.png"
+        RelativeFilename: "../images/envChrome1-polySurface1.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -2190,7 +2190,7 @@ a: -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
         }
         Media: "Video::file2"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//envChrome1-pCylinder1.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/envChrome1-pCylinder1.png"
+        RelativeFilename: "../images/envChrome1-pCylinder1.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"

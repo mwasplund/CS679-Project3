@@ -375,7 +375,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
-        RelativeFilename: "../../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        RelativeFilename: "../images/ramp1-pCube5.png"
     }
     Texture: 5223946080, "Texture::file2", "" {
         Type: "TextureVideoClip"
@@ -388,7 +388,7 @@ a: 0
         }
         Media: "Video::file2"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
-        RelativeFilename: "../../../ART 529 files/Tony/sourceimages/ramp1-pCube5.png"
+        RelativeFilename: "../images/ramp1-pCube5.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
