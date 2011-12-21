@@ -33,7 +33,7 @@ function updateModel()
 		Difference -= 2*Math.PI;
 	else if(Difference < -2*Math.PI)
 		Difference += 2*Math.PI;
-	
+
 	if(Difference >  0.1)
 	{
 		if((Difference - Math.PI) > 0.1)
@@ -121,7 +121,7 @@ function GetShader(i_ShaderName)
 		if(Shaders[i].Name == i_ShaderName)
 			return Shaders[i];
 	}
-	
+
 	// Could not find the shader
 	return null;
 }
@@ -142,7 +142,7 @@ function setMatrixUniforms()
 function setmvMatrixUniform(i_mvMatrix)
 {
 	gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, i_mvMatrix);
-	    
+
   var normalMatrix = mat3.create();
   mat4.toInverseMat3(mvMatrix, normalMatrix);
   mat3.transpose(normalMatrix);
@@ -194,27 +194,16 @@ function PreDrawGL(currentTime)
     gl.uniform3fv(CurrentShader.Program.Light0_Position_Uniform, [5, 50, -5]);
     gl.uniform3fv(CurrentShader.Program.Light0_Color_Uniform, [1.0, 1.0, 1.0]);
   }
-		
-	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
-	mvMatrix = mat4.create(getMvMatrix());
-	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
-	
-	setMatrixUniforms();
-}
 
-function getViewport() {
-	return [0, 0, gl.viewportWidth, gl.viewportHeight];
-}
-function getMvMatrix() {
-	var ret = mat4.create();
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
+
     var playerPos = getLocalPlayer().getPosition();
     playerPos = [playerPos[0], 0, playerPos[1]];
     vec3.set(playerPos, CameraPos);
     vec3.add(CameraPos, CameraOffset);
-	
-	mat4.lookAt(CameraPos, playerPos, Up, ret);	
-	return ret;
-}
-function getProjMatrix() {
-	return mat4.create(pMatrix);
+
+	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
+	mat4.lookAt(CameraPos, playerPos, Up, vMatrix);	
+	mat4.identity(mvMatrix);
+	setMatrixUniforms();
 }
