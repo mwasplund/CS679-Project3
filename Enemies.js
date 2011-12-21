@@ -40,6 +40,29 @@ function getEyebeamEmitter() {
 	return emitter;
 }
 
+var enemyFireballEmitterParams = {
+	numParticles: 50,
+	lifeTime: 0.5,
+	startSize: 5,
+	endSize: 2,
+	position:[0, 16, 0],
+	positionRange:[0, 0, 0],
+	velocity:[0, 0, 0],
+	velocityRange: [8, 4, 8],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getEnemyFireballEmitter() {
+	var emitter = particleSystem.createTrail(1000, enemyFireballEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 1, 0, 1,
+			1, 0, 0, 1,
+			1, 0, 0, 0.5,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 var webEmitterParams = {
 	numParticles: 50,
 	lifeTime: 0.3,
@@ -87,7 +110,7 @@ function makeEnemyType(type) {
 				stats.height *= 0.5;
 				scale = vec3.scale(scale, 0.5);
 				offset = vec3.scale(offset, 0.5);
-				stats.attack = simpleDirectAttack(3);
+				stats.attack = simpleDirectAttack(function(src, tgt) { simpleDirect(src, tgt, 3); });
 			} else {
 				var eyebeam = function(src, tgt) {
 					var proj = createProjectile(nullDrawer(), src.position, tgt.position, 2, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(2, src); });
@@ -108,7 +131,8 @@ function makeEnemyType(type) {
 				scale = vec3.scale(scale, 0.7);
 				offset = vec3.scale(offset, 0.7);
 				stats.speed = 3.0;
-				stats.attack = simpleDirectAttack(12);
+				stats.health *= 1.3;
+				stats.attack = simpleDirectAttack(function(src, tgt) { simpleDirect(src, tgt, 3); });
 			} else {
 				var web = function(src, tgt) {
 					var webApply = function(e) { 
@@ -137,14 +161,27 @@ function makeEnemyType(type) {
 			var scale = [1, 1, 1];
 			stats.height = 70;
 			stats.speed = 2.5;
+			stats.health = 24;
 			if (!isRanged) {
 				stats.radius *= 1.2;
 				stats.height *= 1.2;
 				scale = vec3.scale(scale, 1.2);
 				offset = vec3.scale(offset, 1.2);
-				stats.attack = simpleDirectAttack();
+
+				var stun = function(src, tgt) {
+					tgt.damage(10, src);
+					var slow = function(ent) {
+						ent.velocity *= 0.0;
+					}
+					var effect = createEffect(slow);
+					effect.lifetime = msToTicks(1200);
+					addEmitter(effect, getEntityEmitter([0, 0, 1]));
+					addMoveEffect(tgt, effect);
+				}
+				stats.attack = simpleDirectAttack(stun, msToTicks(1500));
+
 			} else {
-				stats.attack = simpleProjectileAttack();
+				stats.attack = simpleProjectileAttack(function(src, tgt) { simpleProjectile(src, tgt, 8); });
 			}
 			return makeEnemy(stats, null, Loader.GetModel("monsterMediumStrength"), scale, 0, offset);
 		case 4:
@@ -152,15 +189,22 @@ function makeEnemyType(type) {
 			var offset = [0, 10, 0];
 			var scale = [1, 1, 1];
 			stats.height = 20;
-			stats.speed = 2.5;
+			stats.speed = 3.7;
+			stats.health = 24;
 			if (!isRanged) {
 				stats.radius *= 0.5;
 				stats.height *= 0.5;
 				scale = vec3.scale(scale, 0.5);
 				offset = vec3.scale(offset, 0.5);
-				stats.attack = simpleDirectAttack();
+				stats.attack = simpleDirectAttack(function(src, tgt) { simpleDirect(src, tgt, 20); });
 			} else {
-				stats.attack = simpleProjectileAttack();
+				var fireball = function(src, tgt) {
+					if (++this.attackNum % 3 != 0) this.ready = msToTicks(400);
+					var proj = createProjectile(nullDrawer(), src.position, tgt.position, 2, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(12, src); });
+					addEmitter(proj, getEnemyFireballEmitter());
+				}
+				stats.attack = simpleProjectileAttack(fireball, msToTicks(2000), 100);
+				stats.attack.attackNum = 0;
 			}
 			return makeEnemy(stats, null, Loader.GetModel("goodGuyWalkTextured"), scale, 0, offset);
 		case 5:
@@ -332,18 +376,26 @@ function entityCanSee(ent, target) {
     return true;
 }
 
-function simpleDirectAttack(dmg, cd, rng) {
+function simpleDirect(src, tgt, dmg) {
 	if (!dmg) dmg = 10;
+	tgt.damage(dmg, src);
+}
+
+function simpleDirectAttack(apply, cd, rng) {
 	if (!cd) cd = 1000 / timeStep;
 	if (!rng) rng = 8;
+	apply = apply || function(src, tgt) {
+		simpleDirect(src, tgt, dmg);
+	}
 	var ret = {};
-	ret.damage = dmg;
 	ret.cooldown = cd;
 	ret.range = rng;
 	ret.ready = 0;
+
+	ret.baseApply = apply;
 	ret.apply = function(src, tgt) {
-		tgt.damage(this.damage, src);
 		this.ready = this.cooldown;
+		this.baseApply.apply(this, [src, tgt]);
 	};
 	return ret;
 }
@@ -366,8 +418,8 @@ function simpleProjectileAttack(apply, cd, rng) {
 	ret.cooldown = cd;
 	ret.range = rng;
 	ret.ready = 0;
-	ret.baseApply = apply;
 
+	ret.baseApply = apply;
 	ret.apply = function(src, tgt) {
 		this.ready = this.cooldown;
 		this.baseApply.apply(this, [src, tgt]);
