@@ -72,7 +72,7 @@ function ModelRef()
 	this.Rotate = [0,0,0];
 	this.Scale = [1.0,1.0,1.0];
 	this.Time = 0;
-	this.StartTime = Math.random() * 1000;
+	this.StartTime = Date.now();
 	
 	this.Draw = function()
 	{
@@ -129,6 +129,22 @@ function ModelLoader_load(i_FileName)
         FilePath = "sceneassets/models/" + i_FileName + ".fbx";
         $.get(FilePath).success(loadSuccess);
     });
+	
+	// Add the model to the list of selections
+	  var SelectModel = document.getElementById('SelectModel');
+	  if(SelectModel != null)
+	  {
+		   var NewOption = document.createElement('option');
+		   NewOption.text = i_FileName;
+		   NewOption.value = i_FileName;
+		  
+		  try {
+			SelectModel.add(NewOption, null); // standards compliant; doesn't work in IE
+		  }
+		  catch(ex) {
+			SelectModel.add(NewOption); // IE only
+		  }
+	  }
 };
 
 function ModelLoader_TimerFunc()

@@ -222,6 +222,11 @@ function degToRad(degrees)
   return degrees * Math.PI / 180;
 }
 
+function clearGLError()
+{
+	var error = gl.getError();
+}
+
 /******************************************************/
 /* checkGLError
 /*

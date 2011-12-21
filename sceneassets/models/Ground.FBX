@@ -10,11 +10,11 @@ FBXHeaderExtension:  {
         Version: 1000
         Year: 2011
         Month: 12
-        Day: 9
-        Hour: 11
-        Minute: 42
-        Second: 31
-        Millisecond: 958
+        Day: 20
+        Hour: 18
+        Minute: 45
+        Second: 56
+        Millisecond: 485
     }
     Creator: "FBX SDK/FBX Plugins version 2011.1"
     SceneInfo: "SceneInfo::GlobalInfo", "UserData" {
@@ -36,13 +36,13 @@ FBXHeaderExtension:  {
             P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "Original|ApplicationName", "KString", "", "", "3ds Max"
             P: "Original|ApplicationVersion", "KString", "", "", "2011.1"
-            P: "Original|DateTime_GMT", "DateTime", "", "", "09/12/2011 17:42:31.958"
+            P: "Original|DateTime_GMT", "DateTime", "", "", "21/12/2011 00:45:56.484"
             P: "Original|FileName", "KString", "", "", "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\models\Ground.FBX"
             P: "LastSaved", "Compound", "", ""
             P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
             P: "LastSaved|ApplicationName", "KString", "", "", "3ds Max"
             P: "LastSaved|ApplicationVersion", "KString", "", "", "2011.1"
-            P: "LastSaved|DateTime_GMT", "DateTime", "", "", "09/12/2011 17:42:31.958"
+            P: "LastSaved|DateTime_GMT", "DateTime", "", "", "21/12/2011 00:45:56.484"
         }
     }
 }
@@ -60,7 +60,7 @@ GlobalSettings:  {
         P: "UnitScaleFactor", "double", "Number", "",2.54
         P: "OriginalUnitScaleFactor", "double", "Number", "",2.54
         P: "AmbientColor", "ColorRGB", "Color", "",0,0,0
-        P: "DefaultCamera", "KString", "", "", "Producer Front"
+        P: "DefaultCamera", "KString", "", "", "Producer Perspective"
         P: "TimeMode", "enum", "", "",6
         P: "TimeSpanStart", "KTime", "Time", "",0
         P: "TimeSpanStop", "KTime", "Time", "",153953860000
@@ -72,7 +72,7 @@ GlobalSettings:  {
 
 Documents:  {
     Count: 1
-    Document: 725348816, "", "Scene" {
+    Document: 1226380896, "", "Scene" {
         Properties70:  {
             P: "SourceObject", "object", "", ""
             P: "ActiveAnimStackName", "KString", "", "", ""
@@ -92,7 +92,7 @@ References:  {
 
 Definitions:  {
     Version: 100
-    Count: 5
+    Count: 8
     ObjectType: "GlobalSettings" {
         Count: 1
     }
@@ -212,24 +212,93 @@ Definitions:  {
             }
         }
     }
+    ObjectType: "Material" {
+        Count: 1
+        PropertyTemplate: "KFbxSurfacePhong" {
+            Properties70:  {
+                P: "ShadingModel", "KString", "", "", "Phong"
+                P: "MultiLayer", "bool", "", "",0
+                P: "EmissiveColor", "ColorRGB", "Color", "",0,0,0
+                P: "EmissiveFactor", "double", "Number", "",1
+                P: "AmbientColor", "ColorRGB", "Color", "",0.2,0.2,0.2
+                P: "AmbientFactor", "double", "Number", "",1
+                P: "DiffuseColor", "ColorRGB", "Color", "",0.8,0.8,0.8
+                P: "DiffuseFactor", "double", "Number", "",1
+                P: "Bump", "Vector3D", "Vector", "",0,0,0
+                P: "NormalMap", "Vector3D", "Vector", "",0,0,0
+                P: "BumpFactor", "double", "Number", "",1
+                P: "TransparentColor", "ColorRGB", "Color", "",0,0,0
+                P: "TransparencyFactor", "double", "Number", "",0
+                P: "DisplacementColor", "ColorRGB", "Color", "",0,0,0
+                P: "DisplacementFactor", "double", "Number", "",1
+                P: "SpecularColor", "ColorRGB", "Color", "",0.2,0.2,0.2
+                P: "SpecularFactor", "double", "Number", "",1
+                P: "ShininessExponent", "double", "Number", "",20
+                P: "ReflectionColor", "ColorRGB", "Color", "",0,0,0
+                P: "ReflectionFactor", "double", "Number", "",1
+            }
+        }
+    }
+    ObjectType: "Texture" {
+        Count: 1
+        PropertyTemplate: "KFbxTexture" {
+            Properties70:  {
+                P: "TextureTypeUse", "enum", "", "",0
+                P: "Texture alpha", "Number", "", "A+",1
+                P: "CurrentMappingType", "enum", "", "",0
+                P: "WrapModeU", "enum", "", "",0
+                P: "WrapModeV", "enum", "", "",0
+                P: "UVSwap", "bool", "", "",0
+                P: "Translation", "Vector", "", "A+",0,0,0
+                P: "Rotation", "Vector", "", "A+",0,0,0
+                P: "Scaling", "Vector", "", "A+",1,1,1
+                P: "TextureRotationPivot", "Vector3D", "Vector", "",0,0,0
+                P: "TextureScalingPivot", "Vector3D", "Vector", "",0,0,0
+                P: "UseMaterial", "bool", "", "",0
+                P: "UseMipMap", "bool", "", "",0
+                P: "CurrentTextureBlendMode", "enum", "", "",1
+                P: "UVSet", "KString", "", "", "default"
+            }
+        }
+    }
+    ObjectType: "Video" {
+        Count: 1
+        PropertyTemplate: "KFbxVideo" {
+            Properties70:  {
+                P: "FrameRate", "double", "Number", "",0
+                P: "LastFrame", "int", "Integer", "",0
+                P: "Width", "int", "Integer", "",0
+                P: "Height", "int", "Integer", "",0
+                P: "Path", "KString", "XRefUrl", "", ""
+                P: "StartFrame", "int", "Integer", "",0
+                P: "StopFrame", "int", "Integer", "",0
+                P: "PlaySpeed", "double", "Number", "",0
+                P: "Offset", "KTime", "Time", "",0
+                P: "InterlaceMode", "enum", "", "",0
+                P: "FreeRunning", "bool", "", "",0
+                P: "Loop", "bool", "", "",0
+                P: "AccessMode", "enum", "", "",0
+            }
+        }
+    }
 }
 
 ; Object properties
 ;------------------------------------------------------------------
 
 Objects:  {
-    Geometry: 725787840, "Geometry::", "Mesh" {
+    Geometry: 1235327408, "Geometry::", "Mesh" {
         Properties70:  {
-            P: "Color", "ColorRGB", "Color", "",0.894117647058824,0.72156862745098,0.6
+            P: "Color", "ColorRGB", "Color", "",0.6,0.894117647058824,0.83921568627451
         }
-        Vertices: *24 {
-a: -50000,-50000,0,50000,-50000,0,-50000,50000,0,50000,50000,0,-50000,-50000,-2,50000,-50000,-2,-50000,50000,-2,50000,50000,-2
+        Vertices: *75 {
+a: -50000,-50000,0,-25000,-50000,0,0,-50000,0,25000,-50000,0,50000,-50000,0,-50000,-25000,0,-25000,-25000,0,0,-25000,0,25000,-25000,0,50000,-25000,0,-50000,0,0,-25000,0,0,0,0,0,25000,0,0,50000,0,0,-50000,25000,0,-25000,25000,0,0,25000,0,25000,25000,0,50000,25000,0,-50000,50000,0,-25000,50000,0,0,50000,0,25000,50000,0,50000,50000,0
 } 
-        PolygonVertexIndex: *36 {
-a: 2,0,-4,1,3,-1,5,4,-8,6,7,-5,1,0,-6,4,5,-1,3,1,-8,5,7,-2,2,3,-7,7,6,-4,0,2,-5,6,4,-3
+        PolygonVertexIndex: *96 {
+a: 5,0,-7,1,6,-1,6,1,-8,2,7,-2,7,2,-9,3,8,-3,8,3,-10,4,9,-4,10,5,-12,6,11,-6,11,6,-13,7,12,-7,12,7,-14,8,13,-8,13,8,-15,9,14,-9,15,10,-17,11,16,-11,16,11,-18,12,17,-12,17,12,-19,13,18,-13,18,13,-20,14,19,-14,20,15,-22,16,21,-16,21,16,-23,17,22,-17,22,17,-24,18,23,-18,23,18,-25,19,24,-19
 } 
-        Edges: *18 {
-a: 0,1,2,3,5,6,7,8,9,11,13,14,17,19,20,25,26,31
+        Edges: *56 {
+a: 0,1,2,3,5,7,8,9,11,13,14,15,17,19,20,21,23,24,25,26,27,31,32,33,37,38,39,43,44,45,48,49,50,51,55,56,57,61,62,63,67,68,69,72,73,74,75,79,80,81,85,86,87,91,92,93
 } 
         GeometryVersion: 124
         LayerElementNormal: 0 {
@@ -237,8 +306,8 @@ a: 0,1,2,3,5,6,7,8,9,11,13,14,17,19,20,25,26,31
             Name: ""
             MappingInformationType: "ByPolygonVertex"
             ReferenceInformationType: "Direct"
-            Normals: *108 {
-a: 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0
+            Normals: *288 {
+a: 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1
 } 
         }
         LayerElementUV: 0 {
@@ -246,11 +315,11 @@ a: 0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1
             Name: "UVChannel_1"
             MappingInformationType: "ByPolygonVertex"
             ReferenceInformationType: "IndexToDirect"
-            UV: *24 {
-a: 0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1
+            UV: *50 {
+a: -494.999145507813,-494.998931884766,-244.999633789063,-494.998962402344,4.99988079071045,-494.999053955078,254.999404907227,-494.999114990234,504.998931884766,-494.999145507813,-494.999114990234,-244.999404907227,-244.999572753906,-244.999465942383,4.99994039535522,-244.999526977539,254.999465942383,-244.999572753906,504.998962402344,-244.999633789063,-494.999053955078,5.00011920928955,-244.999526977539,5.00005960464478,5,5,254.999526977539,4.99994039535522,504.999053955078,4.99988079071045,-494.998962402344,254.999633789063,-244.999465942383,254.999572753906,5.00005960464478,254.999526977539,254.999572753906,254.999465942383,504.999114990234,254.999404907227,-494.998931884766,504.999145507813,-244.999404907227,504.999114990234,5.00011920928955,504.999053955078,254.999633789063,504.998962402344,504.999145507813,504.998931884766
 } 
-            UVIndex: *36 {
-a: 10,8,11,9,11,8,8,9,10,11,10,9,5,4,7,6,7,4,1,0,3,2,3,0,5,4,7,6,7,4,1,0,3,2,3,0
+            UVIndex: *96 {
+a: 5,0,6,1,6,0,6,1,7,2,7,1,7,2,8,3,8,2,8,3,9,4,9,3,10,5,11,6,11,5,11,6,12,7,12,6,12,7,13,8,13,7,13,8,14,9,14,8,15,10,16,11,16,10,16,11,17,12,17,11,17,12,18,13,18,12,18,13,19,14,19,13,20,15,21,16,21,15,21,16,22,17,22,16,22,17,23,18,23,17,23,18,24,19,24,18
 } 
         }
         LayerElementVisibility: 0 {
@@ -258,14 +327,27 @@ a: 10,8,11,9,11,8,8,9,10,11,10,9,5,4,7,6,7,4,1,0,3,2,3,0,5,4,7,6,7,4,1,0,3,2,3,0
             Name: ""
             MappingInformationType: "ByEdge"
             ReferenceInformationType: "Direct"
-            Visibility: *18 {
-a: 1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,0
+            Visibility: *56 {
+a: 1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,0,1,1,0,1,1
+} 
+        }
+        LayerElementMaterial: 0 {
+            Version: 101
+            Name: ""
+            MappingInformationType: "AllSame"
+            ReferenceInformationType: "IndexToDirect"
+            Materials: *1 {
+a: 0
 } 
         }
         Layer: 0 {
             Version: 100
             LayerElement:  {
                 Type: "LayerElementNormal"
+                TypedIndex: 0
+            }
+            LayerElement:  {
+                Type: "LayerElementMaterial"
                 TypedIndex: 0
             }
             LayerElement:  {
@@ -278,7 +360,7 @@ a: 1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,0
             }
         }
     }
-    Model: 1234913520, "Model::Box001", "Mesh" {
+    Model: 1238474240, "Model::Plane001", "Mesh" {
         Version: 232
         Properties70:  {
             P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
@@ -286,17 +368,63 @@ a: 1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,0
             P: "InheritType", "enum", "", "",1
             P: "ScalingMin", "Vector3D", "Vector", "",1,1,1
             P: "DefaultAttributeIndex", "int", "Integer", "",0
-            P: "Lcl Translation", "Lcl Translation", "", "A+",0,0,-5.26869371242356e-007
-            P: "MaxHandle", "int", "Integer", "U",7
+            P: "MaxHandle", "int", "Integer", "U",1
         }
         MultiLayer: 0
         MultiTake: 1
         Shading: T
         Culling: "CullingOff"
     }
-    AnimationStack: 720325632, "AnimStack::Take 001", "" {
+    Material: 84600288, "Material::01 - Default", "" {
+        Version: 102
+        ShadingModel: "phong"
+        MultiLayer: 0
+        Properties70:  {
+            P: "ShadingModel", "KString", "", "", "phong"
+            P: "EmissiveFactor", "double", "Number", "",0
+            P: "AmbientColor", "ColorRGB", "Color", "",0.588235318660736,0.588235318660736,0.588235318660736
+            P: "DiffuseColor", "ColorRGB", "Color", "",0.588235318660736,0.588235318660736,0.588235318660736
+            P: "TransparentColor", "ColorRGB", "Color", "",1,1,1
+            P: "SpecularColor", "ColorRGB", "Color", "",0.899999976158142,0.899999976158142,0.899999976158142
+            P: "SpecularFactor", "double", "Number", "",0
+            P: "ShininessExponent", "double", "Number", "",1.99999991737042
+            P: "Emissive", "Vector3D", "Vector", "",0,0,0
+            P: "Ambient", "Vector3D", "Vector", "",0.588235318660736,0.588235318660736,0.588235318660736
+            P: "Diffuse", "Vector3D", "Vector", "",0.588235318660736,0.588235318660736,0.588235318660736
+            P: "Specular", "Vector3D", "Vector", "",0,0,0
+            P: "Shininess", "double", "Number", "",1.99999991737042
+            P: "Opacity", "double", "Number", "",1
+            P: "Reflectivity", "double", "Number", "",0
+        }
     }
-    AnimationLayer: 725348144, "AnimLayer::BaseLayer", "" {
+    Video: 1235314096, "Video::Map #1", "Clip" {
+        Type: "Clip"
+        Properties70:  {
+            P: "Path", "KString", "XRefUrl", "", "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\images\Ground-Texture-2.jpg"
+        }
+        UseMipMap: 0
+        Filename: "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\images\Ground-Texture-2.jpg"
+        RelativeFilename: "..\images\Ground-Texture-2.jpg"
+    }
+    Texture: 1587934112, "Texture::Map #1", "" {
+        Type: "TextureVideoClip"
+        Version: 202
+        TextureName: "Texture::Map #1"
+        Properties70:  {
+            P: "UseMaterial", "bool", "", "",1
+            P: "UVSet", "KString", "", "", "UVChannel_1"
+        }
+        Media: "Video::Map #1"
+        FileName: "\\wfs1\users$\asplund\My Documents\CS679\Project3\CS679-Project3\sceneassets\images\Ground-Texture-2.jpg"
+        RelativeFilename: "..\images\Ground-Texture-2.jpg"
+        ModelUVTranslation: 0,0
+        ModelUVScaling: 1,1
+        Texture_Alpha_Source: "None"
+        Cropping: 0,0,0,0
+    }
+    AnimationStack: 717036336, "AnimStack::Take 001", "" {
+    }
+    AnimationLayer: 1226381120, "AnimLayer::BaseLayer", "" {
     }
 }
 
@@ -304,9 +432,12 @@ a: 1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,0,1,0
 ;------------------------------------------------------------------
 
 Connections:  {
-    C: "OO",1234913520,0
-    C: "OO",725348144,720325632
-    C: "OO",725787840,1234913520
+    C: "OO",1238474240,0
+    C: "OO",1226381120,717036336
+    C: "OO",1235327408,1238474240
+    C: "OO",84600288,1238474240
+    C: "OP",1587934112,84600288, "DiffuseColor"
+    C: "OO",1235314096,1587934112
 }
 ;Takes section
 ;----------------------------------------------------

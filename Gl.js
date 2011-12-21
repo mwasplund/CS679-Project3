@@ -1,5 +1,3 @@
-LoadjsFile("Numbers.js");
-LoadjsFile("GlBars.js");
 var gl;
 var mMatrix;
 var pMatrix;
@@ -119,26 +117,60 @@ function InitializeWebGL(canvas)
   pMatrix = mat4.create();
   vMatrix = mat4.create();
   
-  InitializeShaders();
+  InitializeShaders("Shader/");
   initializeGlNumbers();
   initializeGlBars();
 }
-
-/******************************************************/
+	
+	/******************************************************/
 /* InitializeShaders
 /*
 /* This function Loads all the shaders that will be used 
 /* during the time of the game.
 /******************************************************/
-function InitializeShaders() 
+function InitializeShaders(i_Path) 
 {
-  Shaders.push(LoadShader("PerFragmentLighting"));
-  Shaders.push(LoadShader("PerVertexLighting"));
-  Shaders.push(LoadShader("TimeTest"));
-  Shaders.push(LoadShader("Numbers"));
-  Shaders.push(LoadShader("Bars"));
+  Shaders.push(LoadShader("PerFragmentLighting", i_Path+"PerFragmentLighting.vs", i_Path+"PerFragmentLighting.fs"));
+  Shaders.push(LoadShader("PerVertexLighting", i_Path+"PerVertexLighting.vs", i_Path+"PerVertexLighting.fs"));
+  Shaders.push(LoadShader("TimeTest", i_Path+"TimeTest.vs", i_Path+"TimeTest.fs"));
+  Shaders.push(LoadShader("Numbers", i_Path+"Numbers.vs", i_Path+"Numbers.fs"));
+  Shaders.push(LoadShader("Bars", i_Path+"Bars.vs", i_Path+"Bars.fs"));
   CurrentShader = GetShader("PerFragmentLighting");
+  
+  // Add the shader names to the selector
+  var SelectShader = document.getElementById('SelectShader');
+  for(var i = 0; i < Shaders.length; i++)
+  {
+	   var NewOption = document.createElement('option');
+	   NewOption.text = Shaders[i].Name;
+	   NewOption.value = Shaders[i].Name;
+	  
+	  try {
+		SelectShader.add(NewOption, null); // standards compliant; doesn't work in IE
+	  }
+	  catch(ex) {
+		SelectShader.add(NewOption); // IE only
+	  }
+  }
 }
+
+/******************************************************/
+/* GetShader
+/*
+/* This function finds one of the preloaded shaders.
+/******************************************************/
+function GetShader(i_ShaderName)
+{
+	for(var i = 0; i < Shaders.length; i++)
+	{
+		if(Shaders[i].Name == i_ShaderName)
+			return Shaders[i];
+	}
+
+	// Could not find the shader
+	return null;
+}
+
 
 /******************************************************/
 /* GetShader
