@@ -418,7 +418,7 @@ tdl.particles.ParticleSystem.prototype.createTextureFromFloats = function(width,
  * emitter.setParameters({
  *   numParticles: 40,
  *   lifeTime: 2,
- *   timeRange: 2,
+ *   uimeRange: 2,
  *   startSize: 50,
  *   endSize: 90,
  *   positionRange: [10, 10, 10],
@@ -641,6 +641,13 @@ tdl.particles.ParticleSystem.prototype.createParticleEmitter =
   return emitter;
 };
 
+tdl.particles.ParticleSystem.prototype.removeEmitter = function(emitter) {
+  var idx = this.drawables_.indexOf(emitter);
+  if (idx >= 0) {
+    this.drawables_.splice(idx, 1);
+  }
+}
+
 /**
  * Creates a Trail particle emitter.
  * You can use this for jet exhaust, etc...
@@ -786,6 +793,8 @@ tdl.particles.ParticleEmitter = function(particleSystem,
    */
   this.translation_ = [0, 0, 0];
 
+  this.rotateY_ = 0;
+
   // Set up the blend functions for drawing the particles.
   this.setState(tdl.particles.ParticleStateIds.BLEND);
 };
@@ -799,6 +808,10 @@ tdl.particles.ParticleEmitter.prototype.setTranslation = function(x, y, z) {
   this.translation_[1] = y;
   this.translation_[2] = z;
 };
+
+tdl.particles.ParticleEmitter.prototype.setRotateY = function(a) {
+	this.rotateY_ = a;
+}
 
 /**
  * Sets the blend state for the particles.
@@ -922,8 +935,12 @@ tdl.particles.ParticleEmitter.prototype.createParticles_ = function(
         (ii * parameters.lifeTime / numParticles) : parameters.startTime;
     var pFrameStart =
         parameters.frameStart + plusMinus(parameters.frameStartRange);
+	var posOffset = plusMinusVector(parameters.positionRange);
+	if (this.rotateY_) {
+		posOffset = tdl.math.matrix4.transformPoint(tdl.fast.matrix4.rotationY([], this.rotateY_), posOffset);
+	}
     var pPosition = tdl.math.addVector(
-        parameters.position, plusMinusVector(parameters.positionRange));
+        parameters.position, posOffset);
     var pVelocity = tdl.math.addVector(
         parameters.velocity, plusMinusVector(parameters.velocityRange));
     var pAcceleration = tdl.math.addVector(
@@ -1097,6 +1114,7 @@ tdl.particles.ParticleEmitter.prototype.draw = function(world, viewProjection, t
   tdl.fast.matrix4.copy(tmpWorld, world);
 
   tdl.fast.matrix4.translate(tmpWorld, this.translation_);
+
   gl.uniformMatrix4fv(shader.worldLoc,
                       false,
                       tmpWorld);
@@ -1217,12 +1235,11 @@ tdl.particles.OneShot = function(emitter) {
   // Remove the parent emitter from the particle system's drawable
   // list (if it's still there) and add ourselves instead.
   var particleSystem = emitter.particleSystem;
-  var idx = particleSystem.drawables_.indexOf(emitter);
-  if (idx >= 0) {
-    particleSystem.drawables_.splice(idx, 1);
-  }
+  particleSystem.remove(emitter);
   particleSystem.drawables_.push(this);
 };
+
+
 
 /**
  * Triggers the oneshot.

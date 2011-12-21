@@ -61,7 +61,10 @@ function keydown(event){
             break;   
 
         case NUMPAD_0 :
-            swapMouseKeys = !swapMouseKeys;
+			var atks = getLocalPlayer().getSpecialAttacks();
+			for (var i = 0; i < atks.length; i++) {
+				atks[i].ready = 0;
+			}
             break;
         case NUMPAD_5 :
             shouldReset = true;

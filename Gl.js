@@ -62,29 +62,8 @@ function drawModel()
 	this.model.Draw();	
 }
 
-function setupFlame(particleSystem) {
-  var emitter = particleSystem.createParticleEmitter();
-  emitter.setTranslation(0, 0, 0);
-  emitter.setState(tdl.particles.ParticleStateIds.ADD);
-  emitter.setColorRamp(
-      [1, 1, 0, 1,
-       1, 0, 0, 1,
-       0, 0, 0, 1,
-       0, 0, 0, 0.5,
-       0, 0, 0, 0]);
-  emitter.setParameters({
-      numParticles: 20,
-      lifeTime: 2,
-      timeRange: 2,
-      startSize: 8,
-      endSize: 16,
-      velocity:[0, 9, 0],
-	  velocityRange: [4.5, 4.5, 4.5],
-      worldAcceleration: [0, -2, 0],
-      spinSpeedRange: 4});
-}
-
 var particleSystem;
+
 function InitializeWebGL(canvas)
 {
   // Initialize
@@ -94,7 +73,6 @@ function InitializeWebGL(canvas)
 
   particleSystem = new tdl.particles.ParticleSystem(
       gl, null, tdl.math.pseudoRandom);
-  setupFlame(particleSystem);
 
 
   if(!gl)

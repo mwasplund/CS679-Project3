@@ -14,7 +14,6 @@ function removeEnemy(i) {
     enemies[i] = enemies[enemies.length - 1];
     enemies.pop();
 	e.removed = true;
-	e.position = [-1e12, -1e12];
 	e.updateModel();
 
     //addEnemy(makeSpiderEnemy());

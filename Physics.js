@@ -35,9 +35,22 @@ function effectPhase() {
 	var j = 0;
 	for (var i = 0; i < effects.length; i++) {
 		effects[i].act();
-		if (!effects[i].dead) effects[j++] = effects[i];
+		if (!effects[i].dead) {
+            effects[j++] = effects[i];
+        } else {
+            if (effects[i].lastBreath) effects[i].lastBreath();
+        }
 	}
 	effects.length = j;
+}
+
+function nullDrawer() {
+    return {
+        set: function(obj) {
+                 obj.draw = function() { };
+                 obj.drawGL = function() { };
+             }
+    }
 }
 
 function modelDrawer(modelName) {
@@ -45,7 +58,7 @@ function modelDrawer(modelName) {
 		model: Loader.GetModel(modelName),
 		set: function(obj) {
 			obj.model = this.model;
-			var scale = vec3.create([obj.radius, obj.radius, 3 * obj.radius]);
+			var scale = vec3.create([obj.radius, obj.radius, obj.radius]);
 			vec3.scale(scale, 0.01);
 			obj.scale = scale;
 			obj.rotation = Math.atan2(obj.direction[0], obj.direction[1]);
@@ -95,6 +108,37 @@ function splitToFour(val) {
 		}
 	}
 	return ret;
+}
+
+function addEmitter(effect, emitter) {
+	if (!effect.emitters) {
+		effect.emitters = [];
+		effect.act = (function(old) {
+				return function() {
+					if (old) old.apply(this);
+					var a = directionToAngle(this.direction) || 0;
+					for (var i = 0; i < this.emitters.length; i++) {
+						var em = this.emitters[i];
+						if (em.birthParticles) {
+							em.setRotateY(a);
+							em.birthParticles([this.position[0], 0, this.position[1]]);	
+							em.setRotateY(0);
+						} else {
+							em.setTranslation(this.position[0], 0, this.position[1]);
+						}
+					}
+				}
+			})(effect.act);
+		effect.lastBreath = (function(old) {
+				return function() {
+					if (old) old.apply(this);
+					for (var i = 0; i < this.emitters.length; i++) {
+						particleSystem.removeEmitter(this.emitters[i]);
+					}
+				}
+		})(effect.lastBreath);
+	}
+	effect.emitters.push(emitter);
 }
 
 function createNumberEffect(val, src, start, end, color) {

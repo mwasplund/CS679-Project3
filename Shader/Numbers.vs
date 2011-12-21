@@ -13,7 +13,10 @@ varying vec2 vTextureCoord;
 
 void main(void) 
 {
-	vec3 position = aVertexPosition + vec3(aTextureCoord.x * 2.1, 30.0 + 20.0 * aVertexTime + aTextureCoord.y * 3.5, 0.0) + vec3(aVertexIndex * 2.1, 0.0, 0.0);
+	float sc = 2.0;
+	float w = 3.0 * sc;
+	float h = 5.0 * sc;
+	vec3 position = aVertexPosition + vec3(aTextureCoord.x * w, 30.0 + 20.0 * aVertexTime + aTextureCoord.y * h, 0.0) + vec3(aVertexIndex * w, 0.0, 0.0);
 	vec4 vPosition = uVMatrix * vec4(position, 1.0);
 
 	gl_Position = uPMatrix * vPosition;

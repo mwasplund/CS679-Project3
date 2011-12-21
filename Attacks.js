@@ -58,6 +58,79 @@ var meleeAttacks;
 var rangedAttacks;
 var specialAttacks;
 
+var lightningEmitterParams = {
+	numParticles: 50,
+	lifeTime: 1,
+	startSize: 1,
+	endSize: 6,
+	position:[0, 10, 0],
+	positionRange:[0, 0, 10],
+	velocity:[0, 0, 0],
+	velocityRange: [8, 4, 8],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getLightningEmitter() {
+	var emitter = particleSystem.createTrail(3000, lightningEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 1, 1, 1,
+			1, 1, 0, 1,
+			1, 1, 0, 0.5,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
+var healEmitterParams = {
+	numParticles: 1000,
+	lifeTime: 5,
+	timeRange: 5,
+	startSize: 6,
+	endSize: 12,
+	velocity:[0, 3, 0],
+	velocityRange: [12, 1, 12],
+	positionRange: [10, 0, 10],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getHealEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setParameters(healEmitterParams);
+	emitter.setColorRamp(
+			[0, 0, 1, 1,
+			0, 0.7, 0.7, 1,
+			0, 0.7, 0.7, 0.5,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
+var fireballEmitterParams = {
+		numParticles: 1000,
+		lifeTime: 5,
+		timeRange: 5,
+		startSize: 6,
+		endSize: 12,
+		velocity:[0, 15, 0],
+		velocityRange: [8, 5, 8],
+		positionRange: [10, 0, 10],
+		worldAcceleration: [0, -4, 0],
+		spinSpeedRange: 4
+};
+function getFireballEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 1, 0, 1,
+			1, 0, 0, 1,
+			1, 0, 0, 0.5,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	emitter.setParameters(fireballEmitterParams);
+	return emitter;
+}
 function initializeAttacks() {
 	if (attacksInitialized) {
 		return;
@@ -100,16 +173,18 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 1, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
+            var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 10, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
 			proj.scale = vec3.scale(proj.scale, 60);
 			//proj.preRotate0 = 0;
-			//proj.preRotate = Math.PI / 2;
+			proj.preRotate = -Math.PI / 2;
 			//proj.preRotate2 = Math.PI / 2;
 			//proj.offset[0] = 50;
 
+			addEmitter(proj, getLightningEmitter());
         }
         return ret;
     };
+
     var fireball = function (player) {
         var ret = new Attack(player);
 		ret.damage = 2;
@@ -123,12 +198,14 @@ function initializeAttacks() {
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
+
+			effect = createStationaryEffect(nullDrawer(), createArc(tgt, ret.radius),
 					msToTicks(5000), msToTicks(500),
 					function(e) { return true; },
 					function(e) { 
 						e.damage(ret.damage, src);
 					});
+			addEmitter(effect, getFireballEmitter());
         }
         return ret;
     };
@@ -137,7 +214,7 @@ function initializeAttacks() {
         ret.name = "Ice Storm";
 		ret.description = null;
 		ret.radius = 18;
-        ret.cooldown = msToTicks(30000);
+        ret.cooldown = msToTicks(10000);
 		setImage(ret, "icons/15.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -165,12 +242,13 @@ function initializeAttacks() {
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
+			var effect = createStationaryEffect(nullDrawer(), createArc(tgt, ret.radius),
 					msToTicks(1000), msToTicks(200),
 					function(e) { return true; },
 					function(e) { 
 						e.heal(ret.damage, src);
 					});
+			addEmitter(effect, getHealEmitter());
         }
         return ret;
     };
@@ -269,7 +347,8 @@ function initializeAttacks() {
             basicCooldown.apply(this, [src]);
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(modelDrawer("bolder"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            var proj = createProjectile(modelDrawer("bolder"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+			proj.offset[1] = 20;
         }
         return ret;
     };

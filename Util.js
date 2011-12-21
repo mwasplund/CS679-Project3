@@ -1,4 +1,8 @@
 var sliders = new Array();
+
+function directionToAngle(direction) {
+	return Math.atan2(direction[0], direction[1]);
+}
 function makeSlider(label, slidefun, slideparams, linkedParam)
 {
 	if (typeof(label)=="undefined") label="nolabel";
