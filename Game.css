@@ -1,6 +1,6 @@
 ﻿body
 {
- background-color:#FFFFFF;
+ background-color:#5D2B1C;
  overflow:hidden;
 }
 canvas#Canvas3D 
@@ -22,34 +22,17 @@ div#Menu_Debug
 
 div#Menu_Loading
 {
-  background-color: rgba(255, 255, 255, 1.0);
-  position: absolute;
-  width: 300px;
-  margin-left: -150px;
-  height:190px;
-  margin-top: -80px;
-  top: 30%;
-  left: 50%;
-  color: #000000;
-  padding: 10px;
- border-radius:5px;
-}
-
-
-div#Menu_Start 
-{
-  background-color: rgba(255, 255, 255, 1.0);
-  position: absolute;
-  width: 500px;
-  margin-left: -250px;
-  height:320px;
-  margin-top: -160px;
-  top: 30%;
-  left: 50%;
-  color: #000000;
-  padding: 10px;
- border-radius:5px;
- display:none;
+	background-color: #D7A661;
+	background-image: url('icons/parchment.png');
+	position: absolute;
+	width: 300px;
+	margin-left: -150px;
+	margin-top: -80px;
+	top: 30%;
+	left: 50%;
+	color: #000000;
+	padding: 10px;
+	border-radius: 5px;
 }
 
 div#Menu_Paused

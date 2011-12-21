@@ -253,7 +253,8 @@ function Update(i_DeltaMiliSec)
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {
   	// Stay in loading stat until all the models are loaded
-    SetGameState_Playing();
+  	var Btn_StartPlaying = document.getElementById('Btn_StartPlaying');
+    Btn_StartPlaying.disabled = false;
     //SetGameState_Start();
   }
 }

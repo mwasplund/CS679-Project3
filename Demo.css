@@ -1,13 +1,18 @@
 ﻿body
 {
- background-color:#FFFFFF;
- overflow:hidden;
+	background-color: #FFFFFF;
+	overflow: hidden;
+	position: absolute;
+	left: 0px;
+	top: 0px;
 }
-#3dCanvas 
+
+div#3dDiv
 {
 	position:absolute;
 	top:0px;
 	left:0px;
+	display:inline;
 }
 
 div#Menu_Debug 
