@@ -7,15 +7,73 @@
         <script type="text/javascript" src="Libs/jquery-ui-1.8.13.custom.min.js"></script>
 
         <script type="text/javascript" src="Libs/webgl-utils.js"></script>
-        <script type="text/javascript" src="Libs/glMatrix-0.9.5.min.js"></script>
+		  <script type="text/javascript" src="Helper.js"></script>
+          <script type="text/javascript" src="Game.js"></script>
+          <script type="text/javascript" src="jquery.js"></script>
+          <script type="text/javascript" src="Events.js"></script>
+          <script type="text/javascript" src="glMatrix.js"></script>
+          <script type="text/javascript" src="Debug.js"></script>
+          <script type="text/javascript" src="Numbers.js"></script>
+          <script type="text/javascript" src="GameState.js"></script>
+          <script type="text/javascript" src="GlBars.js"></script>
+          <script type="text/javascript" src="Log.js"></script>
+          
+          <script type="text/javascript" src="Gl.js"></script>
+          <script type="text/javascript" src="Util.js"></script>
+          <script type="text/javascript" src="Graphics.js"></script>
+          <script type="text/javascript" src="Physics.js"></script>
+          <script type="text/javascript" src="Enemies.js"></script>
+          <script type="text/javascript" src="Setup.js"></script>
+          <script type="text/javascript" src="Input.js"></script>
+          <script type="text/javascript" src="Passwords.js"></script>
+          <script type="text/javascript" src="Attacks.js"></script>
+          <script type="text/javascript" src="Hud.js"></script>
+          <script type="text/javascript" src="Player.js"></script>
+          <script type="text/javascript" src="Camera.js"></script>
+          <script type="text/javascript" src="GameState.js"></script>
+          <script type="text/javascript" src="Model/ModelLoader.js"></script>
+
+		<!--
+		 * Load Google's ThreeD Library. We just want it for the particle system.
+		-->
+		<script type="text/javascript" src="Libs/tdl/base.js"></script>
+		<script type="text/javascript">
+			tdl.require('tdl.buffers');
+			tdl.require('tdl.fast');
+			tdl.require('tdl.fps');
+			tdl.require('tdl.log');
+			tdl.require('tdl.math');
+			tdl.require('tdl.models');
+			tdl.require('tdl.particles');
+			tdl.require('tdl.primitives');
+			tdl.require('tdl.programs');
+			tdl.require('tdl.textures');
+			tdl.require('tdl.webgl');
+		</script>
 
 		<script type="text/javascript" src="Log.js"></script>
 		<script type="text/javascript" src="Helper.js"></script>
         <script type="text/javascript" src="Game.js"></script>
+          <script type="text/javascript" src="Shader/GLSL_Shader.js"></script>          
+          <script type="text/javascript" src="Model/ModelLoader.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Parser.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Objects.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Model.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Geometry.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Texture.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Material.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Properties70.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_Connections.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_LayerElementUV.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_LayerElementNormal.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_AnimationCurve.js"></script>
+          <script type="text/javascript" src="Model/FBX/FBX_AnimationCurveNode.js"></script>
+          <script type="text/javascript" src="Model/Model.js"></script>
+          <script type="text/javascript" src="Model/Mesh.js"></script>
 
         <title>CS679 | Project 3</title>
         <meta name="description" content="Home Page" />
-        <meta name="keywords" content="asplund,mwasplund,wisconsin,wausau,madison,matthew,home,philisawesome" />
+        <meta name="keywords" content="cs679, graphics, game, webgl" />
         <link href="Project3.css" rel="stylesheet" type="text/css">
     </head>
     <body>

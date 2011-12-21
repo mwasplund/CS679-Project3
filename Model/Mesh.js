@@ -332,13 +332,13 @@ function Mesh(i_Model, i_Parent)
  	      this.DiffuseColor = Property.Value;
  	    else if(Property.Name == "Specular")
  	      this.SpecularColor = Property.Value;
-      else if(Property.Name == "Shininess")
- 	      this.Shininess = Property.Value;
+      //else if(Property.Name == "Shininess")
+ 	  //    this.Shininess = Property.Value;
   	}
   }
   
   
-  checkGLError();
+ 
   
   // Check for children
   for(var i = 0; i < i_Model.Children.length; i++)
@@ -391,7 +391,7 @@ function Mesh_TSR(i_Matrix)
 }
 
 function Mesh_PreDraw()
-{
+{	
 	if(!this.HasGeometry)
 		return;
 
@@ -399,8 +399,8 @@ function Mesh_PreDraw()
   	gl.uniform3fv(CurrentShader.Program.AmbientColor_Uniform, this.AmbientColor);
   	gl.uniform3fv(CurrentShader.Program.DiffuseColor_Uniform, this.DiffuseColor);
     gl.uniform3fv(CurrentShader.Program.SpecularColor_Uniform,this.SpecularColor);
-    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess || 30.0);
-  	
+    gl.uniform1f(CurrentShader.Program.Shininess_Uniform, this.Shininess);
+  	 	
   	// Bind the texture UV
   	var HasDiffuseColorTexture = this.DiffuseColorTexture != null;
   	gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Enabled_Uniform, HasDiffuseColorTexture);
@@ -410,7 +410,7 @@ function Mesh_PreDraw()
   	  gl.bindTexture(gl.TEXTURE_2D, this.DiffuseColorTexture);
   	  gl.uniform1i(CurrentShader.Program.DiffuseColorTexture_Uniform, 0);
   	}
-  	
+  
   	var HasTransparentColorTexture = this.TransparentColorTexture != null;
   	gl.uniform1i(CurrentShader.Program.TransparentColorTexture_Enabled_Uniform, HasTransparentColorTexture);
   	if(HasTransparentColorTexture)
@@ -437,6 +437,7 @@ function Mesh_PreDraw()
    	  gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
     	gl.vertexAttribPointer(CurrentShader.Program.vertexNormalAttribute, this.VertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
     }
+
 }
 
 
@@ -444,6 +445,7 @@ function Mesh_PreDraw()
 function Mesh_SmartDraw(i_MatrixRefs, i_Refs)
 {
 	this.PreDraw();
+	
 	var Copy = new Array();
 	for(var i = 0; i < i_MatrixRefs.length; i++)
 		Copy.push(mat4.create(i_MatrixRefs[i]));
@@ -458,7 +460,9 @@ function Mesh_SmartDraw(i_MatrixRefs, i_Refs)
 			if(this.HasGeometry)
 			{
 				setmvMatrixUniform(Copy[i]);
+
 				gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+				
 			} 
 	}
 

@@ -1,5 +1,3 @@
-LoadjsFile("Numbers.js");
-LoadjsFile("GlBars.js");
 var gl;
 var mMatrix;
 var pMatrix;
@@ -64,15 +62,40 @@ function drawModel()
 	this.model.Draw();	
 }
 
+function setupFlame(particleSystem) {
+  var emitter = particleSystem.createParticleEmitter();
+  emitter.setTranslation(0, 0, 0);
+  emitter.setState(tdl.particles.ParticleStateIds.ADD);
+  emitter.setColorRamp(
+      [1, 1, 0, 1,
+       1, 0, 0, 1,
+       0, 0, 0, 1,
+       0, 0, 0, 0.5,
+       0, 0, 0, 0]);
+  emitter.setParameters({
+      numParticles: 20,
+      lifeTime: 2,
+      timeRange: 2,
+      startSize: 8,
+      endSize: 16,
+      velocity:[0, 9, 0],
+	  velocityRange: [4.5, 4.5, 4.5],
+      worldAcceleration: [0, -2, 0],
+      spinSpeedRange: 4});
+}
+
+var particleSystem;
 function InitializeWebGL(canvas)
 {
   // Initialize
   Debug.Trace("Initializing WebGL...");
   
-  gl = tryGetContext(canvas, "webgl");
-  if (!gl) gl = tryGetContext(canvas, "experimental-webgl");
-  if (!gl) gl = tryGetContext(canvas, "moz-webgl");
-  if (!gl) gl = tryGetContext(canvas, "webkit-3d");
+  gl = tdl.webgl.setupWebGL(canvas);
+
+  particleSystem = new tdl.particles.ParticleSystem(
+      gl, null, tdl.math.pseudoRandom);
+  setupFlame(particleSystem);
+
 
   if(!gl)
   {
@@ -94,26 +117,60 @@ function InitializeWebGL(canvas)
   pMatrix = mat4.create();
   vMatrix = mat4.create();
   
-  InitializeShaders();
+  InitializeShaders("Shader/");
   initializeGlNumbers();
   initializeGlBars();
 }
-
-/******************************************************/
+	
+	/******************************************************/
 /* InitializeShaders
 /*
 /* This function Loads all the shaders that will be used 
 /* during the time of the game.
 /******************************************************/
-function InitializeShaders() 
+function InitializeShaders(i_Path) 
 {
-  Shaders.push(LoadShader("PerFragmentLighting"));
-  Shaders.push(LoadShader("PerVertexLighting"));
-  Shaders.push(LoadShader("TimeTest"));
-  Shaders.push(LoadShader("Numbers"));
-  Shaders.push(LoadShader("Bars"));
+  Shaders.push(LoadShader("PerFragmentLighting", i_Path+"PerFragmentLighting.vs", i_Path+"PerFragmentLighting.fs"));
+  Shaders.push(LoadShader("PerVertexLighting", i_Path+"PerVertexLighting.vs", i_Path+"PerVertexLighting.fs"));
+  Shaders.push(LoadShader("TimeTest", i_Path+"TimeTest.vs", i_Path+"TimeTest.fs"));
+  Shaders.push(LoadShader("Numbers", i_Path+"Numbers.vs", i_Path+"Numbers.fs"));
+  Shaders.push(LoadShader("Bars", i_Path+"Bars.vs", i_Path+"Bars.fs"));
   CurrentShader = GetShader("PerFragmentLighting");
+  
+  // Add the shader names to the selector
+  var SelectShader = document.getElementById('SelectShader');
+  for(var i = 0; i < Shaders.length; i++)
+  {
+	   var NewOption = document.createElement('option');
+	   NewOption.text = Shaders[i].Name;
+	   NewOption.value = Shaders[i].Name;
+	  
+	  try {
+		SelectShader.add(NewOption, null); // standards compliant; doesn't work in IE
+	  }
+	  catch(ex) {
+		SelectShader.add(NewOption); // IE only
+	  }
+  }
 }
+
+/******************************************************/
+/* GetShader
+/*
+/* This function finds one of the preloaded shaders.
+/******************************************************/
+function GetShader(i_ShaderName)
+{
+	for(var i = 0; i < Shaders.length; i++)
+	{
+		if(Shaders[i].Name == i_ShaderName)
+			return Shaders[i];
+	}
+
+	// Could not find the shader
+	return null;
+}
+
 
 /******************************************************/
 /* GetShader
@@ -191,10 +248,28 @@ function PreDrawGL(currentTime)
 {
 	gl.useProgram(CurrentShader.Program);
 
-	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
+    gl.clearColor(0, 0, 0, 1.0);
+    //gl.clearDepth(1);
 
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LESS);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, glBars.barTexture);
+
+    gl.disable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    gl.disable(gl.STENCIL_TEST);
+
+    gl.colorMask(true, true, true, true);
+    gl.depthMask(true);
+
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+	gl.uniform1f(CurrentShader.Program.Time_Uniform, currentTime);
 	gl.uniform1i(CurrentShader.Program.Light0_Enabled_Uniform, Light0_Enabled);
 
     var playerPos = getLocalPlayer().getPosition();
@@ -209,7 +284,6 @@ function PreDrawGL(currentTime)
   }
 
 	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 2.0, 2000.0, pMatrix);
-
 
 	gl.uniform3fv(CurrentShader.Program.Camera_Position_Uniform, CameraPos);
 	mat4.lookAt(CameraPos, playerPos, Up, vMatrix);	

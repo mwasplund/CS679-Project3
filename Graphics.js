@@ -28,6 +28,20 @@ function preDraw() {
 	PreDrawGL();
 }
 
+var g_eyeSpeed          = 0.1;
+var g_eyeHeight         = 2;
+var g_eyeRadius         = 3;
+  var clock = 0.0;
+  var projection = new Float32Array(16);
+  var tdlview = new Float32Array(16);
+  var world = new Float32Array(16);
+  var worldInverse = new Float32Array(16);
+  var viewProjection = new Float32Array(16);
+  var worldViewProjection = new Float32Array(16);
+  var viewInverse = new Float32Array(16);
+  var eyePosition = new Float32Array(3);
+  var tdltarget = new Float32Array(3);
+  var tdlup = new Float32Array([0,1,0]);
 function postDraw() {
     var fog = calcFog();
     if (in2dWorld) {
@@ -36,6 +50,25 @@ function postDraw() {
         Loader.DrawModels(new Date().getTime());
 		glNumbers.draw();
 		glBars.draw();
+
+		eyePosition[0] = Math.sin(clock * g_eyeSpeed) * g_eyeRadius;
+		eyePosition[1] = g_eyeHeight;
+		eyePosition[2] = Math.cos(clock * g_eyeSpeed) * g_eyeRadius;
+
+		tdl.fast.matrix4.mul(viewProjection, vMatrix, pMatrix);
+		tdl.fast.matrix4.inverse(viewInverse, vMatrix);
+
+		tdl.fast.matrix4.translation(world, [0, 0, 0]);
+        particleSystem.draw(viewProjection, world, viewInverse);
+		//
+
+		// Set all alpha to 1...
+
+        /*
+		gl.colorMask(false, false, false, true);
+		gl.clearColor(0,0,0,1);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+        */
     }
 }
 

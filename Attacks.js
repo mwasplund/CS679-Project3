@@ -90,7 +90,7 @@ function initializeAttacks() {
     var lightningBolt = function (player) {
         var ret = new Attack(player);
         ret.damage = 10;
-        ret.cooldown = msToTicks(1500);
+        ret.cooldown = msToTicks(30000);
         ret.name = "Lightning Bolt";
 		ret.description = "Cast out a lightning bolt. It will deal damage to all enemies in a straight line.";
 		setImage(ret, "icons/123.png");
@@ -116,7 +116,7 @@ function initializeAttacks() {
         ret.name = "Fireball";
 		ret.description = null;
 		ret.radius = 18;
-        ret.cooldown = msToTicks(1500);
+        ret.cooldown = msToTicks(30000);
 		setImage(ret, "icons/Fire Mod 1.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -132,17 +132,61 @@ function initializeAttacks() {
         }
         return ret;
     };
-    var iceAttack = function (player) {
+    var icestorm = function (player) {
         var ret = new Attack(player);
-        ret.name = "Unavailable";
+        ret.name = "Ice Storm";
 		ret.description = null;
+		ret.radius = 18;
+        ret.cooldown = msToTicks(30000);
 		setImage(ret, "icons/15.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-            Debug.debug("ice");
+			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
+					msToTicks(1000), msToTicks(200),
+					function(e) { return true; },
+					function(e) { 
+					});
+        }
+        return ret;
+    };
+    var heal = function (player) {
+        var ret = new Attack(player);
+		ret.damage = 10;
+        ret.name = "Healing Circle";
+		ret.description = null;
+		ret.radius = 15;
+        ret.cooldown = msToTicks(90000);
+		setImage(ret, "icons/16.png");
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
+					msToTicks(1000), msToTicks(200),
+					function(e) { return true; },
+					function(e) { 
+						e.heal(ret.damage, src);
+					});
+        }
+        return ret;
+    };
+    var dummy = function (player) {
+        var ret = new Attack(player);
+		ret.damage = 2;
+        ret.name = "Unavailable";
+		ret.description = null;
+		ret.radius = 18;
+        ret.cooldown = msToTicks(30000);
+		setImage(ret, "icons/17.png");
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
         }
         return ret;
     };
@@ -232,7 +276,7 @@ function initializeAttacks() {
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningBolt, fireball, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack, iceAttack];
+    specialAttacks = [earthAttack, lightningBolt, fireball, icestorm, dummy, dummy, dummy, dummy, dummy, heal];
 
 	attacksInitialized = true;
 }

@@ -2163,7 +2163,7 @@ a: -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//envChrome1-pCylinder1.png"
         RelativeFilename: "../images/envChrome1-pCylinder1.png"
     }
-    Texture: 5283260304, "Texture::file1", "" {
+    Texture: 5283260304, "Texture::file1", "" {dw
         Type: "TextureVideoClip"
         Version: 202
         TextureName: "Texture::file1"

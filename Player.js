@@ -35,6 +35,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset) {
 		isPlayer: true,
 		health: stats.health,
 		damage: entityDamage,
+		heal: entityHeal,
 		cooldown: function() { 
 			for (var i = 0; i < this.basicAttacks.length; i++) {
 				this.basicAttacks[i].ready--;

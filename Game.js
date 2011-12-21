@@ -2,24 +2,6 @@
 /* Attach load event and load the needed Javascript 
 /* files.
 /******************************************************/
-LoadjsFile("Model/Model.js", "graphics3d");
-LoadjsFile("Shader/GLSL_Shader.js", "graphics3d");
-
-LoadjsFile("Util.js");
-LoadjsFile("Graphics.js", "graphics2d");
-LoadjsFile("Gl.js", "graphics3d");
-LoadjsFile("Physics.js", "engine");
-LoadjsFile("Enemies.js", "engine");
-LoadjsFile("Setup.js", "engine");
-LoadjsFile("Input.js", "interface");
-LoadjsFile("Passwords.js", "interface");
-LoadjsFile("Attacks.js");
-LoadjsFile("Hud.js", "hud");
-LoadjsFile("Player.js", "engine");
-LoadjsFile("Camera.js", "graphics2d");
-LoadjsFile("GameState.js");
-LoadjsFile("Model/ModelLoader.js", "graphics3d");
-
 var canvases = [];
 var target;
 var hud;

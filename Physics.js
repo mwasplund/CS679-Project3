@@ -97,12 +97,12 @@ function splitToFour(val) {
 	return ret;
 }
 
-function createNumberEffect(val, position, start, end, isPlayer) {
+function createNumberEffect(val, src, start, end, color) {
 	var effect = {};
-	effect.position = position;
+	effect.src = src;
 	effect.start = start;
 	effect.end = end;
-	effect.isPlayer = isPlayer;
+	effect.color = color;
 	effect.val = splitToFour(val);
 	effect.act = function() {
 		if (tick > this.end) this.dead = true;
@@ -110,7 +110,7 @@ function createNumberEffect(val, position, start, end, isPlayer) {
 	effect.draw = function(ctx) {
 	}
 	effect.drawGL = function() {
-		glNumbers.addNumber(this.val, this.position, (tick - this.start) / (this.end - this.start), this.isPlayer ? [1, 0, 0] : [0, 1, 0]);
+		glNumbers.addNumber(this.val, this.src.position || this.src, (tick - this.start) / (this.end - this.start), this.color);
 	}
 	addEffect(effect);
 	return effect;
