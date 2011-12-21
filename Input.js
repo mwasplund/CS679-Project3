@@ -62,6 +62,13 @@ function keydown(event){
         case KEY_3 :
         case KEY_4 :
         case KEY_5 :
+			if (cheatsEnabled) {
+				var e = makeEnemyType(event.keyCode - KEY_0);
+				e.position = getMouse().getWorldPosition().slice(0);
+				e.home = e.position.slice(0);
+				addEnemy(e);
+			}
+			break;
         case KEY_6 :
         case KEY_7 :
         case KEY_8 :

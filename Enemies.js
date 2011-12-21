@@ -18,23 +18,99 @@ function removeEnemy(i) {
 }
 
 function makeEnemyType(type) {
-	var e;
+
+    var isRanged = Math.random() < 0.7;
+	var stats = {
+		radius: 12,
+		speed: 2.2,
+		sight: 200,
+		memory: Math.ceil(5000 / timeStep),
+		health: isRanged ? 14 : 9,
+		regen: 0.01,
+		isRanged: isRanged,
+	}
 	switch (type) {
+		case 1:
 		case "1":
-			return makeSpiderEnemy(true);
-			break;
+			var offset = [0, 25, 0];
+			var scale = [5, 5, 5];
+			stats.height = 40;
+			stats.speed = 2.5;
+			if (!isRanged) {
+				stats.radius *= 0.5;
+				stats.height *= 0.5;
+				scale = vec3.scale(scale, 0.5);
+				offset = vec3.scale(offset, 0.5);
+				stats.attack = simpleDirectAttack();
+			} else {
+				stats.attack = simpleProjectileAttack();
+			}
+
+			return makeEnemy(stats, null, Loader.GetModel("monsterWeak"), scale, 0, offset);
+		case 2:
 		case "2":
-			return makeSpiderEnemy();
-			break;
+			var offset = [0, 7, 0];
+			var scale = [0.1, 0.1, 0.1];
+			stats.speed = 2.0;
+			if (!isRanged) {
+				stats.radius *= 0.7;
+				stats.height *= 0.7;
+				scale = vec3.scale(scale, 0.7);
+				offset = vec3.scale(offset, 0.7);
+				stats.speed *= 1.5;
+				stats.attack = simpleDirectAttack();
+			} else {
+				stats.attack = simpleProjectileAttack();
+			}
+			stats.height = stats.radius;
+			return makeEnemy(stats, null, Loader.GetModel("WolfSpider_Linked"), scale, Math.PI, offset);
+		case 3:
 		case "3":
-			return makeSpiderEnemy(true);
-			break;
+			var offset = [0, 25, 0];
+			var scale = [1, 1, 1];
+			stats.height = 70;
+			stats.speed = 2.5;
+			if (!isRanged) {
+				stats.radius *= 1.2;
+				stats.height *= 1.2;
+				scale = vec3.scale(scale, 1.2);
+				offset = vec3.scale(offset, 1.2);
+				stats.attack = simpleDirectAttack();
+			} else {
+				stats.attack = simpleProjectileAttack();
+			}
+			return makeEnemy(stats, null, Loader.GetModel("monsterMediumStrength"), scale, 0, offset);
+		case 4:
 		case "4":
-			return makeSpiderEnemy();
-			break;
+			var offset = [0, 10, 0];
+			var scale = [1, 1, 1];
+			stats.height = 20;
+			stats.speed = 2.5;
+			if (!isRanged) {
+				stats.radius *= 0.5;
+				stats.height *= 0.5;
+				scale = vec3.scale(scale, 0.5);
+				offset = vec3.scale(offset, 0.5);
+				stats.attack = simpleDirectAttack();
+			} else {
+				stats.attack = simpleProjectileAttack();
+			}
+			return makeEnemy(stats, null, Loader.GetModel("goodGuyWalk"), scale, 0, offset);
+		case 5:
 		case "5":
-			return makeSpiderEnemy(true);
-			break;
+			var offset = [0, 50, 0];
+			var scale = [10, 10, 10];
+			stats.height = 80;
+			stats.speed = 2.5;
+			if (!isRanged) {
+				stats.radius *= 0.5;
+				stats.height *= 0.5;
+				scale = vec3.scale(scale, 0.5);
+				offset = vec3.scale(offset, 0.5);
+			} else {
+				stats.attack = simpleProjectileAttack();
+			}
+			return makeEnemy(stats, null, Loader.GetModel("monsterWeak"), scale, 0, offset);
 		default:
 			break;
 	}
@@ -181,19 +257,6 @@ function entityMove(func) {
     }
 }
 
-function makeSpiderEnemy() {
-    var isRanged = Math.random() < 0.7;
-	return makeEnemy({
-			radius: 16,
-			speed: 2.2,
-            sight: 200,
-            memory: Math.ceil(5000 / timeStep),
-			health: isRanged ? 14 : 9,
-			regen: 0.01,
-			isRanged: isRanged,
-		}, null, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
-}
-
 function entityCanSee(ent, target) {
     if (dist2(ent.position, target.position) > ent.stats.sight + target.radius) return false;
     if (intersectPathWalls(ent.position, target.position, 0)) return false;
@@ -217,21 +280,29 @@ function simpleDirectAttack(dmg, cd, rng) {
 	return ret;
 }
 
-function simpleProjectileAttack(dmg, cd, rng, spd) {
+function simpleProjectile(src, tgt, dmg, rng, spd) {
 	if (!dmg) dmg = 4;
-	if (!cd) cd = 3000 / timeStep;
-	if (!rng) rng = 150;
 	if (!spd) spd = 4.0;
+	var proj = createProjectile(modelDrawer("bolder"), src.position, tgt.position, spd, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
+	proj.scale = vec3.scale(proj.scale, 4);
+	return proj;
+}
+
+function simpleProjectileAttack(cd, rng, apply) {
+	if (!rng) rng = 150;
+	if (!cd) cd = msToTicks(3000);
+	apply = apply || function(src, tgt) {
+		simpleProjectile(src, tgt);
+	}
 	var ret = {};
-	ret.damage = dmg;
 	ret.cooldown = cd;
 	ret.range = rng;
 	ret.ready = 0;
+	ret.baseApply = apply;
 
 	ret.apply = function(src, tgt) {
-		var proj = createProjectile(modelDrawer("bolder"), src.position, tgt.position, spd, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
-		proj.scale = vec3.scale(proj.scale, 4);
 		this.ready = this.cooldown;
+		this.baseApply.apply(this, [src, tgt]);
 	};
 	return ret;
 }
@@ -254,6 +325,12 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	var ret = {};
 	position = position || [1e10, 1e10];
 
+	ret.radius = stats.radius;
+	ret.height = stats.height;
+	ret.scale = i_Scale;
+	ret.offset = i_Offset;
+	ret.attack = stats.attack;
+
 	ret.inAttackRange = inAttackRange;
 	ret.damage = function(dmg, src) {
         if (!this.target || !this.target.entity) {
@@ -272,24 +349,17 @@ function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
 	ret.move = entityMove(slidingMove);
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
-	ret.radius = isRanged ? stats.radius : stats.radius * 0.7;
-	ret.height = ret.radius;
 	ret.fillStyle = "#FF2222";
 	ret.model = i_Model;
 	ret.rotation = 0;
 	ret.position = position.slice(0);
     ret.home = position.slice(0);
 	ret.direction = [0, 1];
-	ret.scale = isRanged ? i_Scale : [i_Scale[0] * 0.5, i_Scale[1] * 0.5, i_Scale[2] * 0.5];
 	ret.rotation = 0;
-	ret.offset = i_Offset;
 	ret.preRotate = i_PreRotate;
 	ret.drawGL = drawEntity;
 	ret.updateTarget = enemyUpdateTarget;
 	ret.isEnemy = true;
-    if (!isRanged) ret.stats.speed = getLocalPlayer().stats.speed - 0.1;
-	if (isRanged) ret.attack = simpleProjectileAttack();
-    else ret.attack = simpleDirectAttack();
 
     ret.hasTarget = function() {
         return this.target;
