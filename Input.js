@@ -15,7 +15,15 @@ var keyId = {
 };
 
 var NUMPAD_0 = 96;
+var NUMPAD_1 = 97;
+var NUMPAD_2 = 98;
+var NUMPAD_3 = 99;
+var NUMPAD_4 = 100;
 var NUMPAD_5 = 101;
+var NUMPAD_6 = 102;
+var NUMPAD_7 = 103;
+var NUMPAD_8 = 104;
+var NUMPAD_9 = 105;
 var KEY_0 = 48;
 var KEY_1 = 49;
 var KEY_2 = 50;
@@ -32,9 +40,8 @@ var KEY_TAB = 9;
 var keyState = [];
 var lastKeyDownTick = 0;
 
-// TODO(cjhopman): convert to use js-hotkeys
+var cheatsEnabled = true;
 function keyup(event){
-    //console.log("keyup: " + event.keyCode + " " + tick);
     keyState[event.keyCode] = 0;
     return false;
 }
@@ -61,15 +68,40 @@ function keydown(event){
             break;   
 
         case NUMPAD_0 :
-			var atks = getLocalPlayer().getSpecialAttacks();
-			for (var i = 0; i < atks.length; i++) {
-				atks[i].ready = 0;
+			if (cheatsEnabled) {
+				var atks = getLocalPlayer().getSpecialAttacks();
+				for (var i = 0; i < atks.length; i++) {
+					atks[i].ready = 0;
+				}
 			}
             break;
-        case NUMPAD_5 :
-            shouldReset = true;
+        case NUMPAD_1 :
+			if (cheatsEnabled) {
+				getLocalPlayer().heal(10);
+			}
             break;
-
+        case NUMPAD_2 :
+			if (cheatsEnabled) {
+				getLocalPlayer().damage(10, getLocalPlayer());
+			}
+            break;
+        case NUMPAD_3 :
+			if (cheatsEnabled) {
+				for (var i = 0; i < 10; i++) {
+					getLocalPlayer().cooldown();
+				}
+			}
+            break;
+        case NUMPAD_4 :
+			if (cheatsEnabled) {
+				getLocalPlayer().stats.speed *= 1.1;
+			}
+            break;
+        case NUMPAD_9 :
+			if (cheatsEnabled) {
+				shouldReset = true;
+			}
+            break;
 		case 187: // =
 			getOptions().increment("hudHeight");
 			break;

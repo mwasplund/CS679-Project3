@@ -166,7 +166,8 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 	ret.ready = 0;
 
 	ret.apply = function(src, tgt) {
-		createProjectile(modelDrawer("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
+		var proj = createProjectile(modelDrawer("bolder"), src.position, tgt.position, spd, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
+		proj.scale = vec3.scale(proj.scale, 4);
 		this.ready = this.cooldown;
 	};
 	return ret;

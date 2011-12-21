@@ -33,6 +33,10 @@ function addMoveEffect(ent, effect) {
 	if (!ent.moveEffects) ent.moveEffects = [];
 	ent.moveEffects.push(effect);
 }
+function addEntityEffect(ent, effect) {
+	if (!ent.effects) ent.effects = [];
+	ent.effects.push(effect);
+}
 
 var effects = [];
 function addEffect(e) {
@@ -54,6 +58,13 @@ function processEffects(effects, context) {
 
 function effectPhase() {
 	processEffects(effects, null);
+    var entities = getEntities();
+    for (var i = 0; i < entities.length; i++) {
+		var ent = entities[i];
+		if (ent.effects) {
+			processEffects(ent.effects, ent);
+		}
+    }
 }
 
 function nullDrawer() {
@@ -164,6 +175,15 @@ function createEffect(act, lastBreath) {
 			if (--this.lifetime < 1) this.dead = true;
 		},
 		lastBreath: lastBreath || function() { }, 
+		addAction: function(func) {
+			this.act = (function(old) {
+				return function(context) {
+					old.apply(this, [context]);
+					func.apply(this, [context]);
+				}
+			})(this.act);
+		}
+
 	};
 }
 
@@ -255,7 +275,6 @@ function projectileMove() {
 		this.last = e;
 		if (!this.continues) {
 			this.dead = true;
-            this.updateModel();
 			return;
 		}
 	}
@@ -271,7 +290,7 @@ function projectileMove() {
 	} 
 	clipMove.apply(this);
 	if (dist2(this.position, this.home) > this.range) this.dead = true;
-    this.updateModel();
+    if (this.updateModel) this.updateModel();
 }
 
 function getEntityAtPoint(pt) {

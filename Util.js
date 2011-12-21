@@ -30,6 +30,13 @@ function makeSlider(label, slidefun, slideparams, linkedParam)
 	};
 }
 
+function rotate2(vec, angle) {
+	var s = Math.sin(angle);
+	var c = Math.cos(angle);
+	return [vec[0] * c + vec[1] * s,
+		   -vec[0] * s + vec[1] * c];
+}
+
 // convert integer to string with commas
 function formatNumber(val) {
 	var str = val.toString();

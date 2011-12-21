@@ -58,6 +58,30 @@ var meleeAttacks;
 var rangedAttacks;
 var specialAttacks;
 
+var poisonEmitterParams = {
+	numParticles: 50,
+	lifeTime: 1,
+	startSize: 1,
+	endSize: 6,
+	position:[0, 10, 0],
+	positionRange:[0, 0, 10],
+	velocity:[0, 0, 0],
+	velocityRange: [8, 4, 8],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getPoisonEmitter() {
+	var emitter = particleSystem.createTrail(3000, poisonEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 1, 1, 1,
+			0, 1, 0, 1,
+			0, 1, 0, 0.5,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 var lightningEmitterParams = {
 	numParticles: 50,
 	lifeTime: 1,
@@ -158,6 +182,7 @@ function getFireballEmitter() {
 	return emitter;
 }
 function initializeAttacks() {
+	var acceptEnemy = function(e) { return !e.isPlayer; };
 	if (attacksInitialized) {
 		return;
 	}
@@ -182,7 +207,8 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            createProjectile(modelDrawer("bolder"), src.position, tgt, 2, 14, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            var proj = createProjectile(modelDrawer("bolder"), src.position, tgt, 3, 14, 500, acceptEnemy, function(e) { e.damage(dmg, src); }, false);
+			proj.scale = vec3.scale(proj.scale, 3);
         }
         return ret;
     };
@@ -199,12 +225,9 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 10, 6, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, true);
+            var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 10, 6, 500, acceptEnemy, function(e) { e.damage(dmg, src); }, true);
 			proj.scale = vec3.scale(proj.scale, 60);
-			//proj.preRotate0 = 0;
 			proj.preRotate = -Math.PI / 2;
-			//proj.preRotate2 = Math.PI / 2;
-			//proj.offset[0] = 50;
 
 			addEmitter(proj, getLightningEmitter());
         }
@@ -249,7 +272,7 @@ function initializeAttacks() {
             tgt = tgt.position || tgt;
 			var effect = createStationaryEffect(nullDrawer(), createArc(tgt, ret.radius),
 					msToTicks(2500), msToTicks(200),
-					function(e) { return true; },
+					acceptEnemy,
 					function(e) { 
 						if (hasMoveEffect(e)) return;
 						var slow = function(ent) {
@@ -261,6 +284,66 @@ function initializeAttacks() {
 						addMoveEffect(e, effect);
 					});
 			addEmitter(effect, getIceEmitter());
+        }
+        return ret;
+    };
+    var poisonShot = function (player) {
+        var ret = new Attack(player);
+        ret.damage = 2;
+        ret.cooldown = msToTicks(30000);
+        ret.name = "Venom Shot";
+		ret.description = "Cast out multiple venomous shots in an arc. Any enemies hit will take damage over several seconds.";
+		setImage(ret, "icons/123.png");
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+            tgt = tgt.position || tgt;
+            var dmg = this.damage;
+			var applyPoison = function(e) {
+				var dot = function(e) {
+					if (--this.damageReady < 1) {
+						e.damage(dmg, src);
+						this.damageReady = this.damageDelay;
+					}
+				};
+				var poison = createEffect(dot);
+				poison.damageReady = 0;
+				poison.damageDelay = msToTicks(700);
+				poison.lifetime = msToTicks(5000);
+				addEmitter(poison, getEntityEmitter([0, 1, 0]));
+				addEntityEffect(e, poison);
+			}
+			this.numShots = 5;
+			var angle = Math.PI / 8;
+			for (var a = -angle; a <= angle + 0.001; a += (2 * angle) / (this.numShots - 1)) {
+				var dir = sub2(tgt, src.position);
+				dir = rotate2(dir, a);
+				var proj = createProjectile(nullDrawer(), src.position, add2(src.position, dir), 5, 6, 500, acceptEnemy, applyPoison, false);
+				addEmitter(proj, getPoisonEmitter());
+			}
+        }
+        return ret;
+    };
+
+    var haste = function (player) {
+        var ret = new Attack(player);
+        ret.name = "Haste";
+		ret.description = "Haste increases your movement speed and decreases your attack cooldowns for several seconds.";
+		ret.radius = 15;
+        ret.cooldown = msToTicks(60000);
+		setImage(ret, "icons/16.png");
+        ret.attack = function(src, tgt) { 
+            if (this.ready > 0) return null;
+            this.ready = this.cooldown;
+            this.wait = this.cooldown;
+			var hasteEffect = createEffect(function(e) {
+						e.velocity *= 1.3;
+						e.cooldown();
+					});
+			hasteEffect.lifetime = msToTicks(12000);
+			addEmitter(hasteEffect, getEntityEmitter([1, 1, 1]));
+			addMoveEffect(src, hasteEffect);
         }
         return ret;
     };
@@ -382,15 +465,16 @@ function initializeAttacks() {
             basicCooldown.apply(this, [src]);
             tgt = tgt.position || tgt;
             var dmg = this.damage;
-            var proj = createProjectile(modelDrawer("bolder"), src.position, tgt, 8, 2, 500, function(e) { return !e.isPlayer; }, function(e) { e.damage(dmg, src); }, false);
+            var proj = createProjectile(modelDrawer("bolder"), src.position, tgt, 8, 2, 500, acceptEnemy, function(e) { e.damage(dmg, src); }, false);
 			proj.offset[1] = 20;
+			proj.scale = vec3.scale(proj.scale, 4);
         }
         return ret;
     };
 
 	meleeAttacks = [daggerAttack, axeAttack, saberAttack];
     rangedAttacks = [bowAttack];
-    specialAttacks = [earthAttack, lightningBolt, fireball, icestorm, dummy, dummy, dummy, dummy, dummy, heal];
+    specialAttacks = [earthAttack, lightningBolt, fireball, icestorm, poisonShot, dummy, dummy, dummy, haste, heal];
 
 	attacksInitialized = true;
 }
