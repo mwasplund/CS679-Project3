@@ -40,7 +40,7 @@ var KEY_TAB = 9;
 var keyState = [];
 var lastKeyDownTick = 0;
 
-var cheatsEnabled = true;
+var cheatsEnabled = false;
 function keyup(event){
     keyState[event.keyCode] = 0;
     return false;
