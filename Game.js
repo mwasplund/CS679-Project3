@@ -192,8 +192,10 @@ function gameLoop()
 	{
 		  // Lets set an axe as the 
 		  var Axe = Loader.GetModel("hammer");
-		  var GoodGuy = Loader.GetModel("goodGuyWalk");
-		  GoodGuy.Model.addChild("Model::rightHand", Axe.Model);	
+		  var GoodGuy = Loader.GetModel("goodGuyWalkTextured");
+		  if (GoodGuy) {
+			  //GoodGuy.Model.addChild("Model::rightHand", Axe.Model);	
+		  }
 	}
 	
 	

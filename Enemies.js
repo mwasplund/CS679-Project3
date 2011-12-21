@@ -122,7 +122,7 @@ function makeEnemyType(type) {
 			} else {
 				stats.attack = simpleProjectileAttack();
 			}
-			return makeEnemy(stats, null, Loader.GetModel("goodGuyWalk"), scale, 0, offset);
+			return makeEnemy(stats, null, Loader.GetModel("goodGuyWalkTextured"), scale, 0, offset);
 		case 5:
 		case "5":
 			var offset = [0, 50, 0];

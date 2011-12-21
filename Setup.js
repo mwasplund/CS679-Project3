@@ -68,7 +68,7 @@ function loadLevel(levelFunc) {
 	for (var i = 0; i < objs.length; i++) {
 		var o = objs[i];
 		if (o.id == "player") {
-			initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0], [o.xLoc, o.yLoc]);
+			initializePlayer(Loader.GetModel("goodGuyWalkTextured"), [2, 2, 2], 0, [0,20,0], [o.xLoc, o.yLoc]);
 			Debug.info("Player: " + o.xLoc + "," + o.yLoc);
 		}
 	}

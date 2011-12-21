@@ -123,7 +123,7 @@ function InitializeModels()
   //Loader.load("handFbx");
   Loader.load("WolfSpider_Linked");
   Loader.load("Sphere");
-  Loader.load("goodGuyWalk");
+  Loader.load("goodGuyWalkTextured");
   Loader.load("Ground");
   
   Loader.StartLoading();
@@ -234,12 +234,6 @@ function setMatrixUniforms(program)
 function setmvMatrixUniform(i_mvMatrix)
 {
 	gl.uniformMatrix4fv(CurrentShader.Program.mvMatrixUniform, false, i_mvMatrix);
-
-  var normalMatrix = mat3.create();
-  mat4.toInverseMat3(mvMatrix, normalMatrix);
-  mat3.transpose(normalMatrix);
-  gl.uniformMatrix3fv(CurrentShader.Program.nMatrixUniform, false, normalMatrix);
-
 }
 
 /******************************************************/
