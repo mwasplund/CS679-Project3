@@ -332,7 +332,7 @@ function initializeAttacks() {
         ret.name = "Teleport";
 		ret.description = "Teleport toward the target location. You cannot teleport through enemies or walls.";
 		ret.radius = 15;
-        ret.cooldown = msToTicks(12000);
+        ret.cooldown = msToTicks(8000);
 		setImage(ret, "icons/17.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;

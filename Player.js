@@ -50,6 +50,31 @@ function getPlayerDeathEmitter() {
 	return emitter;
 }
 
+var victoryEmitterParams = {
+	numParticles: 10000,
+	lifeTime: 5,
+	timeRange: 5,
+	startSize: 4,
+	endSize: 10,
+	velocity: [0, 30, 0],
+	velocityRange: [20, 10, 20],
+	worldAcceleration: [0, -10, 0],
+	spinSpeedRange: 4,
+}
+function getPlayerVictoryEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setParameters(victoryEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 0, 0, 1,
+			0, 1, 0, 1,
+			0, 0, 1, 1,
+			0, 1, 0, 1,
+			1, 0, 0, 1,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	return emitter;
+}
 function entityHealth() {
 	return Math.min(1, Math.max(0, this.health / this.stats.health));
 };

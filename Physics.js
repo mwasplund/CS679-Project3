@@ -342,10 +342,17 @@ function attackPhase() {
 function cleanupPhase() {
     cleanupDeadEnemies();
 	if (levelEnd.check()) {
-		if (!shouldReset) {
-			currentLevel++;
+		if (!getLocalPlayer().isDying) {
+			getLocalPlayer().isDead = true;
+			getLocalPlayer().isDying = true;
+
+			var effect = addDelayedBreath(msToTicks(5000), function() {
+				currentLevel++;
+				shouldReset = true;
+				});
+			effect.position = getLocalPlayer().position.slice(0);
+			addEmitter(effect, getPlayerVictoryEmitter());
 		}
-		shouldReset = true;
 	}
 }
 
