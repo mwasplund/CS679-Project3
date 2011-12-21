@@ -5,6 +5,7 @@
   <meta name="description" content="Home Page" />
   <meta name="keywords" content="asplund,mwasplund,wisconsin,wausau,madison,matthew,home,philisawesome" />
   <link href="Demo.css" rel="stylesheet" type="text/css">
+  <link href="sceneassets/favicon.png" rel="icon" type="image/png" />
   <script type="text/javascript" src="Helper.js"></script>
   <script type="text/javascript" src="Demo.js"></script>
   <script type="text/javascript" src="Events.js"></script>
@@ -34,10 +35,31 @@
   <script type="text/javascript" src="Model/FBX/FBX_AnimationCurveNode.js"></script>
   <script type="text/javascript" src="Model/Model.js"></script>
   <script type="text/javascript" src="Model/Mesh.js"></script>
+  
+  		<!--
+		 * Load Google's ThreeD Library. We just want it for the particle system.
+		-->
+		<script type="text/javascript" src="Libs/tdl/base.js"></script>
+		<script type="text/javascript">
+			tdl.require('tdl.buffers');
+			tdl.require('tdl.fast');
+			tdl.require('tdl.fps');
+			tdl.require('tdl.log');
+			tdl.require('tdl.math');
+			tdl.require('tdl.models');
+			tdl.require('tdl.particles');
+			tdl.require('tdl.primitives');
+			tdl.require('tdl.programs');
+			tdl.require('tdl.textures');
+			tdl.require('tdl.webgl');
+		</script>
+
+  
 </head>
 <body>
-   <canvas id='3dCanvas'>Your browser does not support HTML5.</canvas>
-   
+    <div id="3dDiv">
+      <canvas id='3dCanvas'>Your browser does not support HTML5.</canvas>
+    </div>
    <div id="Menu_Loading">
 		 <h1>Loading...</h1>
 		 <input id="PercentLoaded" type="text" disabled="disabled" value="0"/>
@@ -79,7 +101,7 @@ T - Try again
    </div>
    
    <div id="Menu_Debug">
-     Collision: <input type="input" id="Collision" disabled="disabled" value=""/><br/> 
+     Collision: <input type="text" id="Collision" disabled="disabled" value=""/><br/> 
      Enable Polygon Smooth <input type="checkbox" id="EnableAntialiasing"/><br/>
      Select Shader
    	<select id="SelectShader" onchange="SelectShader(this.options[this.selectedIndex].value)">

@@ -1,20 +1,24 @@
 function draw() {
-    preDraw();
-    drawHud();
-	prepareHudForMinimap();
+		if(GameState != GAME_STATE.LOADING)
+		{
 
-    drawEnemies();
-    drawEnvironment();
-    drawSelections();
-    drawSpecial();
-    drawPlayers();
-	
-	if (!in2dWorld) {
-		for(var i = 0; i < SceneModels.length; i++)
-			SceneModels[i].Draw();
-	}
-	
-    postDraw();
+        preDraw();
+        drawHud();
+      	prepareHudForMinimap();
+    
+        drawEnemies();
+        drawEnvironment();
+        drawSelections();
+        drawSpecial();
+        drawPlayers();
+    	
+      	if (!in2dWorld) {
+      		for(var i = 0; i < SceneModels.length; i++)
+      			SceneModels[i].Draw();
+      	}
+    	
+        postDraw();
+    }
 }
 
 function preDraw() {
@@ -47,8 +51,6 @@ function postDraw() {
     if (in2dWorld) {
         fog.draw2d();
     } else {
-		if(GameState != GAME_STATE.LOADING)
-		{
 			Loader.DrawModels(new Date().getTime());
 			glNumbers.draw();
 			glBars.draw();
@@ -69,9 +71,6 @@ function postDraw() {
 			gl.colorMask(false, false, false, true);
 			gl.clearColor(0,0,0,1);
 			gl.clear(gl.COLOR_BUFFER_BIT);
-		}
-
-
     }
 }
 

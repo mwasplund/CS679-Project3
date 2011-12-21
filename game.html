@@ -2,7 +2,9 @@
 <html lang="en">
     <head>
         <link type="text/css" href="Libs/jquery-ui-1.8.13.custom.css" rel="Stylesheet" />	
-		<link href="Project3.css" rel="stylesheet" type="text/css">
+    		<link href="Game.css" rel="stylesheet" type="text/css">
+    		<link href="sceneassets/favicon.png" rel="icon" type="image/png" />
+
         <script type="text/javascript" src="Libs/jquery-1.6.4.js"></script>
         <script type="text/javascript" src="Libs/jquery-ui-1.8.13.custom.min.js"></script>
 
@@ -74,9 +76,17 @@
         <title>CS679 | Project 3</title>
         <meta name="description" content="Home Page" />
         <meta name="keywords" content="cs679, graphics, game, webgl" />
-        <link href="Project3.css" rel="stylesheet" type="text/css">
-    </head>
+            </head>
     <body>
+    
+        <audio id="Music" autoplay="autoplay" loop="loop">
+          <source src="sceneassets/Mattias_Westlund-Mattias_Westlund_-_Legends_of_the_North.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+
+        <img id="VOLUME_ON" onclick="SetMusicState_Off()" src="sceneassets/Volume-Normal-icon.png" alt="ON"/>
+        <img id="VOLUME_OFF" onclick="SetMusicState_On()" src="sceneassets/Volume-Normal-Red-icon.png" alt="OFF"/>
+        
         <div id="2dDiv" style="position:absolute; top:0px;left:0px;display:none;">
             <canvas id="2dCanvas"></canvas>
         </div>
@@ -86,6 +96,32 @@
         <div id="hudDiv" style="position:absolute; top:0px;left:0px;">
             <canvas id="hudCanvas"></canvas>    
         </div>
+        
+        <div id="Menu_Loading">
+		      <h1>Welcome!</h1>
+              You find yourself in a cave for no other reason than to kill some 
+              monsters and discover some treasure!		  
+          <br/>
+
+          
+          <br/>Controls:
+          <br/>ASWD - Control Movement
+          <br>Mouse - Targeting<br/>Left click - Small Attack
+          <br/>Right Click - Large Attack<br><br>
+          <input id="PercentLoaded" type="text" disabled="disabled" value="0"/><br><br>
+          <input id="Btn_StartPlaying" type="Button" disabled="disabled" onclick="SetGameState_Playing()" value="Start Playing"/></div>
+     
+     <div id="Menu_Paused">
+       <div class="Center">
+	       Game Paused!
+	       <br/>
+	       [Press P to <input type="Button" onclick="SetGameState_Playing()" value="Resume"/>]
+	     </div>
+     </div>
+
+        
+        
+        
 		   <div id="Menu_Debug">
 			 Collision: <input type="input" id="Collision" disabled="disabled" value=""/><br/> 
 			 Enable Smart Draw <input type="checkbox" id="EnableSmartDraw" onchange="SetSmartDraw(this.checked)"/><br/>
