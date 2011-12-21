@@ -30,7 +30,7 @@ function calcBounds(objs) {
 		var o = objs[i];
 		for (var j = 0; j < xvals.length; j++) {
 			var x = xvals[j];
-			var y = xvals[y];
+			var y = yvals[j];
 			if (o[x]) {
 				bounds[0][0] = Math.min(bounds[0][0], o[x]);
 				bounds[1][0] = Math.max(bounds[1][0], o[x]);
@@ -49,13 +49,27 @@ function calcBounds(objs) {
 }
 
 
+var levelBounds;
 function loadLevel(levelFunc) {
 	clear();
 	var objs = levelFunc();
 	normalizeCoords(objs);
 	var bounds = calcBounds(objs);
+	levelBounds = bounds;
 	initializeEntityBuckets(bounds, 40, 40);
 	initializeWallBuckets(bounds, 100, 100);
+	pushWall(makeWall([bounds[0][0] + 100, bounds[0][1] + 100], [bounds[1][0] - 100, bounds[0][1] + 100]));
+	pushWall(makeWall([bounds[1][0] - 100, bounds[0][1] + 100], [bounds[1][0] - 100, bounds[1][1] - 100]));
+	pushWall(makeWall([bounds[1][0] - 100, bounds[1][1] - 100], [bounds[0][0] + 100, bounds[1][1] - 100]));
+	pushWall(makeWall([bounds[0][0] + 100, bounds[1][1] - 100], [bounds[0][0] + 100, bounds[0][1] + 100]));
+
+	for (var i = 0; i < objs.length; i++) {
+		var o = objs[i];
+		if (o.id == "player") {
+			initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0], [o.xLoc, o.yLoc]);
+			Debug.info("Player: " + o.xLoc + "," + o.yLoc);
+		}
+	}
 
 	for (var i = 0; i < objs.length; i++) {
 		var o = objs[i];
@@ -65,20 +79,60 @@ function loadLevel(levelFunc) {
 				Debug.info("Wall: " + o.xStart + "," + o.yStart + " " + o.xFinish + " " + o.yFinish);
 				break;
 			case "enemy":
-				addEnemy(makeSpiderEnemy([o.xLoc, o.yLoc]));
+				makeEnemiesFromProto(o);
 				Debug.info("Enemy: " + o.xLoc + "," + o.yLoc);
 				break;
 			case "player":
-				initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0], [o.xLoc, o.yLoc]);
-				Debug.info("Player: " + o.xLoc + "," + o.yLoc);
 				break;
 			case "end":
-
+				makeLevelEnd(o.xLoc, o.yLoc);
 				break;
 			default:
 				Debug.error("Unrecognized object id: " + o.id);
 				break;
 		}
+	}
+}
+
+var endEmitterParams = {
+	numParticles: 2000,
+	lifeTime: 6,
+	timeRange: 6,
+	startSize: 6,
+	endSize: 12,
+	velocity:[0, 0, 0],
+	velocityRange: [20, 1, 20],
+	position: [0, 50, 0],
+	positionRange: [20, 0, 20],
+	worldAcceleration: [0, -6, 0],
+	spinSpeedRange: 4
+};
+function getEndEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[1, 0, 0, 1,
+			0, 1, 0, 1,
+			0, 0, 1, 1,
+			0, 1, 0, 1,
+			1, 0, 0, 1,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	emitter.setParameters(endEmitterParams);
+	return emitter;
+}
+var levelEnd;
+function makeLevelEnd(x, y) {
+	levelEnd = {};
+	levelEnd.position = [x, y];
+	endEmitterParams.position[0] = x;
+	endEmitterParams.position[2] = y;
+	levelEnd.emitter = getEndEmitter();
+	levelEnd.check = function() {
+	}
+	levelEnd.message = null;
+	levelEnd.lastBreath = function() {
+		particleSystem.removeEmitter(this.emitter);
 	}
 }
 

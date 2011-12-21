@@ -240,11 +240,11 @@ function getEntitiesInArc(arc) {
 function getEnemiesInRect(topLeft, bottomRight) {
 	return getEntitiesInRect(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
 }
-function getEnemiesInCircle(topLeft, bottomRight) {
-	return getEntitiesInCircle(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+function getEnemiesInCircle(center, radius) {
+	return getEntitiesInCircle(center, radius).filter(function(e) { return !e.isPlayer; });
 }
-function getEnemiesInArc(topLeft, bottomRight) {
-	return getEntitiesInArc(topLeft, bottomRight).filter(function(e) { return !e.isPlayer; });
+function getEnemiesInArc(arc) {
+	return getEntitiesInArc(arc).filter(function(e) { return !e.isPlayer; });
 }
 
 

@@ -15,12 +15,84 @@ function removeEnemy(i) {
     enemies.pop();
 	e.removed = true;
 	e.updateModel();
+}
 
-    //addEnemy(makeSpiderEnemy());
+function makeEnemyType(type) {
+	var e;
+	switch (type) {
+		case "1":
+			return makeSpiderEnemy(true);
+			break;
+		case "2":
+			return makeSpiderEnemy();
+			break;
+		case "3":
+			return makeSpiderEnemy(true);
+			break;
+		case "4":
+			return makeSpiderEnemy();
+			break;
+		case "5":
+			return makeSpiderEnemy(true);
+			break;
+		default:
+			break;
+	}
+}
+
+function outsideBounds(pos) {
+	return pos[0] < levelBounds[0][0] || pos[0] > levelBounds[1][0] ||
+		pos[1] < levelBounds[0][1] || pos[1] > levelBounds[1][1];
+}
+
+function placeEnemyNear(e, pos) {
+	var dist = 10;
+	if (!pos) {
+		pos = [(levelBounds[0][0] + levelBounds[1][0]) / 2, (levelBounds[0][1] + levelBounds[1][1]) / 2];
+		dist = Math.max(pos[0] - levelBounds[0][0], pos[1] - levelBounds[0][1]);
+	}
+	var home = null;
+	var ct = 0;
+	while (!home && ct++ < 100) {
+		dist = dist < 1000 ? dist * 1.1 : dist;
+		home = add2(pos, scale2(dist, randomPos()));
+		if (getEnemiesInCircle(home, 32).length > 0) {
+			home = null;
+			continue;
+		}
+		if (outsideBounds(home)) {
+			home = null;
+			continue;
+		}
+		var players = getPlayers();
+		for (var i = 0; home && i < players.length; i++) {
+			var p = players[i];
+			if (dist2(home, p.position) < 300) {
+				home = null;
+			}
+		}
+	}
+	Debug.info(home);
+	home = home || [1e10, 1e10];
+	e.position = home.slice(0);
+	e.home = home.slice(0);
 }
 
 function randomPos() {
 	return [(Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2];
+}
+
+
+function makeEnemiesFromProto(o) {
+	var type = o.enemy;
+	var num = o.num;
+	var pos = o.xLoc ? [o.xLoc, o.yLoc] : null;
+
+	for (var i = 0; i < num; i++) {
+		var e = makeEnemyType(type);
+		placeEnemyNear(e, pos);
+		addEnemy(e);
+	}
 }
 
 function enemyUpdateTarget() {
@@ -109,17 +181,8 @@ function entityMove(func) {
     }
 }
 
-function makeSpiderEnemy(pos) {
+function makeSpiderEnemy() {
     var isRanged = Math.random() < 0.7;
-	while (!pos) {
-		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 1900];
-        if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
-		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) { pos = null; continue; }
-
-        if (dist2(pos, getLocalPlayer().position) < 300) { 
-            pos = null; continue;
-        }
-	}
 	return makeEnemy({
 			radius: 16,
 			speed: 2.2,
@@ -128,7 +191,7 @@ function makeSpiderEnemy(pos) {
 			health: isRanged ? 14 : 9,
 			regen: 0.01,
 			isRanged: isRanged,
-		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
+		}, null, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
 }
 
 function entityCanSee(ent, target) {
@@ -189,6 +252,7 @@ function entityHeal(dmg, src) {
 function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
     var isRanged = stats.isRanged;
 	var ret = {};
+	position = position || [1e10, 1e10];
 
 	ret.inAttackRange = inAttackRange;
 	ret.damage = function(dmg, src) {
