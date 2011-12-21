@@ -49,7 +49,9 @@ function WindowLoaded()
   
   // Load the models
   InitializeModels();
-  
+  	TestModel = Loader.GetModel("Ground");
+	CameraPos = [0,0, -30];
+	
   // Set initial time
   var CurDate = new Date();
   PrevTime = CurDate.getTime();
@@ -138,56 +140,7 @@ function GameLoop()
   // Timer = setTimeout("GameLoop()", 1/30 * 1000);
 }
  
-/******************************************************/
-/* InitializeModels
-/*
-/* This function Loads all the models that will be used 
-/* during the time of the game. We cache all our models
-/* in an array and reuse then throughout the game!
-/******************************************************/
-function InitializeModels() 
-{
-  Loader = new ModelLoader();
 
-  var Path = "sceneAssets/Models/";
-  Loader.load("skeleton", Path + "skeleton.FBX");
-  Loader.load("Fancy_Bounce_Ball", Path + "Fancy_Bounce_Ball.FBX");
-  Loader.load("BoneArm", Path + "BoneArm.FBX");
-  Loader.load("Link", Path + "Link.FBX");
-  Loader.load("TestCube", Path + "TestCube.FBX");
-  Loader.load("fbxTest", Path + "fbxTest.FBX");
-  Loader.load("handFbx", Path + "handFbx.FBX");
-  Loader.load("WolfSpider_Linked", Path + "WolfSpider_Linked.FBX");
-  Loader.load("GyroStaff", Path + "GyroStaff.FBX");
-  Loader.load("Ground", Path + "Ground.FBX");
-  
-  Loader.StartLoading();
-
-	TestModel = Loader.GetModel("Ground");
-	CameraPos = [0,0, -30];
-
-}
-
-
-/******************************************************/
-/* AreModelsLoaded
-/*
-/* This function checks if all the models are loaded
-/******************************************************/
-function AreModelsLoaded() 
-{
-	PercentLoaded = Loader.getPercentLoaded();
-	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
-//	Debug.log(PercentLoaded);
-	
-	if(PercentLoaded == 100)
-	{
-    $("#Collision").val("Done Loading");
-    Loader.StopLoading();
-	  return true;
-	}
-	return false;
-}
     
 /******************************************************/
 /* Update

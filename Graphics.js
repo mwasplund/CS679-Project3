@@ -33,9 +33,12 @@ function postDraw() {
     if (in2dWorld) {
         fog.draw2d();
     } else {
-        Loader.DrawModels(new Date().getTime());
-		glNumbers.draw();
-		glBars.draw();
+		if(GameState != GAME_STATE.LOADING)
+		{
+        	Loader.DrawModels(new Date().getTime());
+			glNumbers.draw();
+			glBars.draw();
+		}
     }
 }
 

@@ -57,8 +57,9 @@ function ModelLoader()
   }
 }
 
-function ModelRef()
+function ModelRef(i_Model)
 {
+	this.Model = i_Model;
 	this.DoDraw = false;
 	this.Position = [0,0,0];
 	this.Rotate = [0,0,0];
@@ -88,7 +89,7 @@ function ModelLoader_GetModel(i_ModelName)
 	{
 		if(this.Models[i].Name == i_ModelName)
 		{
-			var Ref = new ModelRef();
+			var Ref = new ModelRef(this.Models[i]);
 			this.Models[i].Refs.push(Ref);
 			return Ref;
 		}
