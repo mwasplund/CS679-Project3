@@ -137,6 +137,7 @@ function addDelayedBreath(ticks, func) {
 	var effect = createEffect(null, func);
 	effect.lifetime = ticks;
 	addEffect(effect);
+	return effect;
 }
 
 function addEmitter(effect, emitter) {

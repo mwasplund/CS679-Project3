@@ -26,6 +26,30 @@ function getEntityEmitter(color) {
 	return emitter;
 }
 
+var deathEmitterParams = {
+	numParticles: 1000,
+	lifeTime: 5,
+	timeRange: 5,
+	startSize: 4,
+	endSize: 10,
+	velocity: [0, 30, 0],
+	velocityRange: [20, 10, 20],
+	worldAcceleration: [0, -10, 0],
+	spinSpeedRange: 4,
+}
+function getPlayerDeathEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setParameters(deathEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.SUBTRACT);
+	emitter.setColorRamp(
+			[0, 0, 0, 1],
+			[1, 1, 1, 1],
+			[0, 1, 1, 1],
+			[0, 1, 1, 0.5],
+			[0, 0, 0, 0]);
+	return emitter;
+}
+
 function entityHealth() {
 	return Math.min(1, Math.max(0, this.health / this.stats.health));
 };
@@ -145,6 +169,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset, position) {
     };
 
 	player.thinkAttack = function() {
+		if (this.isDead) return;
         var ret;
         if (this.specialTarget) {
             var atk = this.getCurrentSpecialAttack();

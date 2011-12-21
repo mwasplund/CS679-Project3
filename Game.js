@@ -198,8 +198,19 @@ function gameLoop()
 		  }
 	}
 	
+	if (getLocalPlayer().isDead) {
+		if (!getLocalPlayer().isDying) {
+			getLocalPlayer().isDying = true;
+			var effect = addDelayedBreath(msToTicks(5000), function() {
+				shouldReset = true;
+				});
+			effect.position = getLocalPlayer().position.slice(0);
+			addEmitter(effect, getPlayerDeathEmitter());
+		}
+	}
+
 	
-    if (shouldReset || getLocalPlayer().health <= 0) {
+    if (shouldReset) {
         setup();
     }
     var maxSteps = 8; // 1000 / timeStep / maxSteps ~= min framerate

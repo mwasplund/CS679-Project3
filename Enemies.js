@@ -278,6 +278,7 @@ function enemyThinkAttack() {
 
 function entityMove(func) {
     return function() {
+		if (this.isDead) return;
         entityBuckets.remove(this);
         func.apply(this);
         entityBuckets.add(this);
