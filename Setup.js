@@ -1,14 +1,18 @@
+var shouldReset;
 function setup() {
 	clear();
     initializeEntityBuckets([[-1200, -1200], [1200, 1200]], 40, 40);
     initializeWallBuckets([[-1200, -1200], [1200, 1200]], 100, 100);
+
+    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2], 0, [0,20,0]);
     for (var i = 0; i < 50; i++) {
         addEnemy(makeSpiderEnemy());
     }
 
     setupWalls();
-
-    initializePlayer(Loader.GetModel("goodGuyWalk"), [2, 2, 2]);
+	
+	// Add 3d Models to sceen
+	SceneModels.push(Loader.GetModel("Ground"));
 }
 
 var walls;
@@ -28,6 +32,7 @@ function clearEntities() {
 }
 	
 function clear() {
+    shouldReset = false;
 	clearWalls();
 	clearEntities();
 }
@@ -80,7 +85,7 @@ function makeWall(pt0, pt1) {
     // Make a 3d version of this wall
     var Dir = vec3.normalize([pt0[0] - pt1[0], 0, pt0[1] - pt1[1]]);
     var Right = vec3.normalize(vec3.cross(Dir, [0,1,0]));
-    var Height = 10;
+    var Height = 40;
     var Indices = [1,0,4,1,5,4,
                    1,0,2,1,2,3,
                    3,2,6,3,6,7,
@@ -150,8 +155,7 @@ function makeWall(pt0, pt1) {
     };
     
     ret.pts = [pt0.slice(0), pt1.slice(0)];
-    ret.draw = function() {
-        var ctx = target.context;
+    ret.draw = function(ctx) {
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -165,11 +169,60 @@ function makeWall(pt0, pt1) {
     return ret;
 }
 
+var options;
 function getOptions() {
-    return {
+	if (!options) {
+		initializeOptions();
+	}
+	return options;
+}
+function initializeOptions(force) {
+	if (options && !force) return;
+    options =  {
         playerVelocity: 3.3,
         keyUpWaitMax: 30,
+
+		hudHeight: 0.13,
+		hudHeightBounds: [0, 0.4],
+		hudHeightStep: 0.01,
     };
+	options.enforceBounds = function(str, report) {
+		var bds = this[str + "Bounds"];
+		if (this[str] == undefined || bds == undefined) {
+			if (report) {
+				Debug.error("value or valueBounds does not exist");
+			}
+			return;
+		}
+		this[str] = Math.min(bds[1], Math.max(bds[0], this[str]));
+	}
+	options.increment = function(str) {
+		var step = this[str + "Step"];
+		if (this[str] == undefined || step == undefined) {
+			Debug.error("value or valueStep does not exist");
+			return;
+		}
+		this.setValue(str, this[str] + step, true);
+	}
+	options.decrement = function(str) {
+		var step = this[str + "Step"];
+		if (this[str] == undefined || step == undefined) {
+			Debug.error("value or valueStep does not exist");
+			return;
+		}
+		this.setValue(str, this[str] - step, true);
+	}
+	options.setValue = function(str, val, report) {
+		if (this[str] == undefined) {
+			if (report) {
+				Debug.error("(" + str + ") does not exist.");
+			}
+			return;
+		}
+		this[str] = val;
+		this.enforceBounds(str, false);
+		if (this[str + "Listener"]) this[str + "Listener"]();
+	}
 }
 
 function getBucketsFromRectOff(p0, p1) {

@@ -17,7 +17,7 @@ function SetSmartDraw(i_Value)
 
 function ModelLoader()
 {
-	this.Optimization_GroupModelRefs = false;
+	this.Optimization_GroupModelRefs = true;
 
   this.load = ModelLoader_load;
   this.LoadLoop = ModelLoader_LoadLoop;
@@ -32,6 +32,10 @@ function ModelLoader()
   this.GetModel = ModelLoader_GetModel;
   this.DrawModels = function(i_CurTime)
   {
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.enableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
+
 	if(this.Optimization_GroupModelRefs)
 	{
 		for(var i = 0; i < this.Models.length; i++)
@@ -46,6 +50,10 @@ function ModelLoader()
 			this.Models[i].Draw(i_CurTime);
 		}
 	}
+
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
+    gl.disableVertexAttribArray(CurrentShader.Program.textureCoordAttribute);
   }
   
   this.getPercentLoaded = function()
@@ -57,14 +65,15 @@ function ModelLoader()
   }
 }
 
-function ModelRef()
+function ModelRef(i_Model)
 {
+	this.Model = i_Model;
 	this.DoDraw = false;
 	this.Position = [0,0,0];
 	this.Rotate = [0,0,0];
 	this.Scale = [1.0,1.0,1.0];
 	this.Time = 0;
-	this.StartTime = Math.random() * 1000;
+	this.StartTime = Date.now();
 	
 	this.Draw = function()
 	{
@@ -88,7 +97,7 @@ function ModelLoader_GetModel(i_ModelName)
 	{
 		if(this.Models[i].Name == i_ModelName)
 		{
-			var Ref = new ModelRef();
+			var Ref = new ModelRef(this.Models[i]);
 			this.Models[i].Refs.push(Ref);
 			return Ref;
 		}
@@ -121,6 +130,22 @@ function ModelLoader_load(i_FileName)
         FilePath = "sceneassets/models/" + i_FileName + ".fbx";
         $.get(FilePath).success(loadSuccess);
     });
+	
+	// Add the model to the list of selections
+	  var SelectModel = document.getElementById('SelectModel');
+	  if(SelectModel != null)
+	  {
+		   var NewOption = document.createElement('option');
+		   NewOption.text = i_FileName;
+		   NewOption.value = i_FileName;
+		  
+		  try {
+			SelectModel.add(NewOption, null); // standards compliant; doesn't work in IE
+		  }
+		  catch(ex) {
+			SelectModel.add(NewOption); // IE only
+		  }
+	  }
 };
 
 function ModelLoader_TimerFunc()

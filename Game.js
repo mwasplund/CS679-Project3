@@ -2,24 +2,6 @@
 /* Attach load event and load the needed Javascript 
 /* files.
 /******************************************************/
-LoadjsFile("Model/Model.js", "graphics3d");
-LoadjsFile("Shader/GLSL_Shader.js", "graphics3d");
-
-LoadjsFile("Util.js");
-LoadjsFile("Graphics.js", "graphics2d");
-LoadjsFile("Gl.js", "graphics3d");
-LoadjsFile("Physics.js", "engine");
-LoadjsFile("Enemies.js", "engine");
-LoadjsFile("Setup.js", "engine");
-LoadjsFile("Input.js", "interface");
-LoadjsFile("Passwords.js", "interface");
-LoadjsFile("Attacks.js");
-LoadjsFile("Hud.js", "hud");
-LoadjsFile("Player.js", "engine");
-LoadjsFile("Camera.js", "graphics2d");
-LoadjsFile("GameState.js");
-LoadjsFile("Model/ModelLoader.js", "graphics3d");
-
 var canvases = [];
 var target;
 var hud;
@@ -49,9 +31,7 @@ $(window).load(function() {
 
 	// Load the models
 	InitializeModels();
-
-	//Load levels
-	InitializeLevels();
+	initializeOptions();
 
 	initializeListeners();
 
@@ -142,6 +122,7 @@ function initializeListeners() {
     document.onkeypress = function () { };
 	$(document).mousemove(mousemove);
 	document.onmousedown = mousedown;
+	document.onmousewheel = mousewheel;
 	$(document).mouseup(mouseup);
 	
 	/*
@@ -207,6 +188,18 @@ function prepareGame() {
 /******************************************************/
 function gameLoop()
 {
+	if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
+	{
+		  // Lets set an axe as the 
+		  var Axe = Loader.GetModel("hammer");
+		  var GoodGuy = Loader.GetModel("goodGuyWalk");
+		  GoodGuy.Model.addChild("Model::rightHand", Axe.Model);	
+	}
+	
+	
+    if (shouldReset || getLocalPlayer().health <= 0) {
+        setup();
+    }
     var maxSteps = 8; // 1000 / timeStep / maxSteps ~= min framerate
 	var beginTime = new Date().getTime();
 	var lastTime = beginTime;
@@ -246,79 +239,6 @@ function gameLoop()
     setTimeout(gameLoop, Math.max(5, 1000 / maxFps - dt));
 }
  
-/******************************************************/
-/* InitializeModels
-/*
-/* This function Loads all the models that will be used 
-/* during the time of the game. We cache all our models
-/* in an array and reuse then throughout the game!
-/******************************************************/
-function InitializeModels() 
-{
-  Loader = new ModelLoader();
-  
-  Loader.load("skeleton");
-  Loader.load("Fancy_Bounce_Ball");
-  Loader.load("BoneArm");
-  Loader.load("Link");
-  Loader.load("TestCube");
-  Loader.load("fbxTest");
-  Loader.load("handFbx");
-  Loader.load("WolfSpider_Linked");
-  Loader.load("Sphere");
-  Loader.load("goodGuyWalk");
-  
-  Loader.StartLoading();
-}
-
-
-/******************************************************/
-/* AreModelsLoaded
-/*
-/* This function checks if all the models are loaded
-/******************************************************/
-function AreModelsLoaded() 
-{
-	PercentLoaded = Loader.getPercentLoaded();
-	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
-//	Debug.log(PercentLoaded);
-	
-	if(PercentLoaded == 100)
-	{
-    $("#Collision").val("Done Loading");
-    Loader.StopLoading();
-	  return true;
-	}
-	return false;
-}
-
-/******************************************************/
-/* InitializeLevels
-/*
-/* Load and store the levels, or just the first level.
-/******************************************************/
-function InitializeLevels() 
-{
-	//CurrentLevel = new Level(1);
-}
-
-/******************************************************/
-/* SelectLevel
-/*
-/* Select a level to play.
-/******************************************************/
-function SelectLevel(i_LevelName)
-{
-	for(var k = 0; k < 2; k++)
-	{
-		if(Levels[k].Name == i_LevelName)
-		{
-			CurrentLevel = Levels[k];
-			Debug.Trace("CurrentLevel: "+ CurrentLevel);
-			return;
-		}
-	}
-}
     
 /******************************************************/
 /* Update
@@ -329,10 +249,6 @@ function Update(i_DeltaMiliSec)
 {
   if(GameState == GAME_STATE.PLAYING)
   {		    
-    player.model.Update(i_DeltaMiliSec);
-    
-    for(var i = 0; i < enemies.length; i ++)
-      enemies[i].model.Update(i_DeltaMiliSec);
   }
   else if(GameState == GAME_STATE.LOADING && AreModelsLoaded())
   {

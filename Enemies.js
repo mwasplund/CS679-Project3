@@ -16,6 +16,8 @@ function removeEnemy(i) {
 	e.removed = true;
 	e.position = [-1e12, -1e12];
 	e.updateModel();
+
+    //addEnemy(makeSpiderEnemy());
 }
 
 function randomPos() {
@@ -57,6 +59,10 @@ function enemyLook() {
 			this.setTarget(p);
         }
     }
+}
+
+function getEntitySpeed(e) {
+    return e.speed || e.stats.speed;
 }
 
 function enemyThinkMove() {
@@ -105,19 +111,25 @@ function entityMove(func) {
 }
 
 function makeSpiderEnemy(pos) {
+    var isRanged = Math.random() < 0.7;
 	while (!pos) {
-		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 2000];
+		pos = [(Math.random() - 0.5) * 750, (Math.random() - 0.5) * 1900];
         if (Math.abs(pos[0]) < 50 || Math.abs(pos[1]) < 50) { pos = null; continue; }
-		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) pos = null;
+		if (getEnemiesInRect(sub2(pos, [32, 32]), add2(pos, [32, 32])).length > 0) { pos = null; continue; }
+
+        if (dist2(pos, getLocalPlayer().position) < 300) { 
+            pos = null; continue;
+        }
 	}
 	return makeEnemy({
 			radius: 16,
 			speed: 2.2,
             sight: 200,
             memory: Math.ceil(5000 / timeStep),
-			health: 14,
-			regen: 0.01
-		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1]);
+			health: isRanged ? 14 : 9,
+			regen: 0.01,
+			isRanged: isRanged,
+		}, pos, Loader.GetModel("WolfSpider_Linked"), [0.1,0.1,0.1], Math.PI, [0,7,0]);
 }
 
 function entityCanSee(ent, target) {
@@ -137,7 +149,7 @@ function simpleDirectAttack(dmg, cd, rng) {
 	ret.range = rng;
 	ret.ready = 0;
 	ret.apply = function(src, tgt) {
-		tgt.damage(this.damage, "direct");
+		tgt.damage(this.damage, src);
 		this.ready = this.cooldown;
 	};
 	return ret;
@@ -155,47 +167,65 @@ function simpleProjectileAttack(dmg, cd, rng, spd) {
 	ret.ready = 0;
 
 	ret.apply = function(src, tgt) {
-		createProjectile(src.position, tgt.position, spd, 4, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg); });
+		createProjectile(modelDrawer("Sphere"), src.position, tgt.position, spd, 1, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
 		this.ready = this.cooldown;
 	};
 	return ret;
 }
 
-function entityDamage(dmg) {
+function entityDamage(dmg, src) {
 	this.health -= dmg;
 	this.isDead = this.health <= 0;
+	createNumberEffect(dmg, this, tick, tick + msToTicks(1000), this.isPlayer ? [1, 0, 0] : [0, 1, 0]);
+}
+function entityHeal(dmg, src) {
+	dmg = Math.min(dmg, this.stats.health - this.health);
+	this.health += dmg;
+	if (dmg > 0) {
+		createNumberEffect(dmg, this, tick, tick + msToTicks(1000), [0, 0, 1]);
+	}
 }
 
-function makeEnemy(stats, position, i_Model, i_Scale) {
+function makeEnemy(stats, position, i_Model, i_Scale, i_PreRotate, i_Offset) {
+    var isRanged = stats.isRanged;
 	var ret = {};
 
 	ret.inAttackRange = inAttackRange;
-	ret.damage = entityDamage;
+	ret.damage = function(dmg, src) {
+        if (!this.target || !this.target.entity) {
+            this.setTarget(src);
+        }
+        entityDamage.apply(this, [dmg, src]);
+    }
 	ret.cooldown = function() { this.attack.ready--; };
 	ret.stats = stats;
 	ret.health = ret.stats.health;
+	ret.getHealth = entityHealth;
+	ret.heal = entityHeal;
 	ret.thinkMove = enemyThinkMove;
 	ret.updateModel = updateModel;
 	ret.look = enemyLook;
 	ret.move = entityMove(slidingMove);
 	ret.draw = drawCircle;
 	ret.drawSelected = drawCircleSelected;
-	ret.radius = stats.radius;
-	ret.fillStyle = "#111166";
+	ret.radius = isRanged ? stats.radius : stats.radius * 0.7;
+	ret.height = ret.radius;
+	ret.fillStyle = "#FF2222";
 	ret.model = i_Model;
 	ret.rotation = 0;
 	ret.position = position.slice(0);
     ret.home = position.slice(0);
 	ret.direction = [0, 1];
-	ret.scale = i_Scale;
+	ret.scale = isRanged ? i_Scale : [i_Scale[0] * 0.5, i_Scale[1] * 0.5, i_Scale[2] * 0.5];
 	ret.rotation = 0;
-	ret.drawGL = drawModel;
-    ret.lastEvent = -1e12;
+	ret.offset = i_Offset;
+	ret.preRotate = i_PreRotate;
+	ret.drawGL = drawEntity;
 	ret.updateTarget = enemyUpdateTarget;
 	ret.isEnemy = true;
-
-	//ret.attack = simpleDirectAttack();
-	ret.attack = simpleProjectileAttack();
+    if (!isRanged) ret.stats.speed = getLocalPlayer().stats.speed - 0.1;
+	if (isRanged) ret.attack = simpleProjectileAttack();
+    else ret.attack = simpleDirectAttack();
 
     ret.hasTarget = function() {
         return this.target;

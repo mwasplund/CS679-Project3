@@ -13,7 +13,21 @@ var keyId = {
     down: 83,
     nextAttack: 82,
 };
-  var KEY_1 = 49;
+
+var NUMPAD_0 = 96;
+var NUMPAD_5 = 101;
+var KEY_0 = 48;
+var KEY_1 = 49;
+var KEY_2 = 50;
+var KEY_3 = 51;
+var KEY_4 = 52;
+var KEY_5 = 53;
+var KEY_6 = 54;
+var KEY_7 = 55;
+var KEY_8 = 56;
+var KEY_9 = 57;
+
+var KEY_TAB = 9;
 
 var keyState = [];
 var lastKeyDownTick = 0;
@@ -29,6 +43,7 @@ function getKeyState(id) {
     return keyState[id] ? keyState[id] : 0;
 }
 
+var swapMouseKeys = false;
 function keydown(event){
     Debug.debug("keydown: " + event.keyCode + " " + tick);
     switch(event.keyCode) {
@@ -36,13 +51,35 @@ function keydown(event){
 			// If the keyCode doesn't explicitly appear here, we ignore it
 			return true;
         case KEY_1 :
-          SetDebugState(!DEBUG);             
-          break;   
+        case KEY_2 :
+        case KEY_3 :
+        case KEY_4 :
+        case KEY_5 :
+        case KEY_6 :
+        case KEY_7 :
+        case KEY_8 :
+            break;   
+
+        case NUMPAD_0 :
+            swapMouseKeys = !swapMouseKeys;
+            break;
+        case NUMPAD_5 :
+            shouldReset = true;
+            break;
+
+		case 187: // =
+			getOptions().increment("hudHeight");
+			break;
+		case 189: // -
+			getOptions().decrement("hudHeight");
+			break;
         case 220: // \
+              SetDebugState(!DEBUG);             
             toggleDebugData();
             break;
 
         case 82: // r
+            return;
             break;
 
 		case 192: // ~
@@ -76,25 +113,47 @@ function keydown(event){
 
         case 66: // b
             break;
+
+		case KEY_TAB:
+			shouldExpandMinimapFlag = !shouldExpandMinimapFlag;
+			break;
     }
     //checkPasswords(event.keyCode);
     keyState[event.keyCode] = keyState[event.keyCode] > 0 ? keyState[event.keyCode] : 1;
     lastKeyDownTick = tick;
 
+	event.preventDefault();
     return false;
 }
 
+var shouldExpandMinimapFlag = false;
+function shouldExpandMinimap() {
+	return shouldExpandMinimapFlag;
+	return keyState[KEY_TAB];
+}
+
+function mousewheel(e) {
+    e = e || window.event;
+    var dw = e.detail || (e.wheelDelta / -120);
+
+    getLocalPlayer().cycleSpecialAttack(dw);
+}
+
 function mousedown(event) {
+	if (hudMouseDown(event)) return false;
 	switch (event.button) {
 		case 0: // left
-
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            !swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		case 1: // middle
 
 			break;
 		case 2: // right
-			getLocalPlayer().setTarget(getTargetFromMouse());
-
+            var pl = getLocalPlayer();
+            var tgt = getTargetFromMouse();
+            swapMouseKeys ? pl.setTarget(tgt) : pl.setSpecialTarget(tgt);
 			break;
 		default:
 	}
@@ -114,9 +173,8 @@ function getTargetFromMouse() {
 		// TODO(cjhopman) get this working
 		var pos = getMouse().getWorldPosition();
 		//var ent = getEntityAtLine3d([getCamera().position3d(), pos]);
-		var ent = getEntityAtPoint(pos);
-		if (!ent) ent = pos;
-		return ent;
+		//var ent = getEntityAtPoint(pos);
+		return pos;
 	}
 }
 
@@ -147,9 +205,14 @@ var mouse = {
     },
 };
 
-function unProject(wx, wy, wz, mvMatrix, pMatrix, viewport) {
-	mvMatrix = mvMatrix || getMvMatrix();
-	pMatrix = pMatrix || getProjMatrix();
+function getViewport() {
+ return [0, 0, gl.viewportWidth, gl.viewportHeight];
+}
+
+function unProject(wx, wy, wz, viewport) {
+	// MWA - what is the point of this?
+	//mvMatrix = mvMatrix || getMvMatrix();
+	//pMatrix = pMatrix || getProjMatrix();
 	viewport = viewport || getViewport();
 	var inp = [
 		(wx - viewport[0]) * 2 / viewport[2] - 1,
@@ -157,11 +220,11 @@ function unProject(wx, wy, wz, mvMatrix, pMatrix, viewport) {
 		wz * 2 - 1,
 		1.0
 			];
+	var EditMatrix = mat4.create();
+	mat4.multiply(pMatrix, vMatrix, EditMatrix);
+	mat4.inverse(EditMatrix);
 
-	mat4.multiply(pMatrix, mvMatrix);
-	mat4.inverse(pMatrix);
-
-	mat4.multiplyVec4(pMatrix, inp);
+	mat4.multiplyVec4(EditMatrix, inp);
 	if (inp[3] === 0.0) return null;
 
 	return [inp[0] / inp[3], inp[1] / inp[3], inp[2] / inp[3]];
@@ -171,6 +234,7 @@ function getMouse() {
 	return mouse;
 }
 function mousemove(event) {
+	if (hudMouseMove(event)) return false;
 	getMouse().position = [event.clientX, event.clientY];
 	return false;
 }
