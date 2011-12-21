@@ -107,6 +107,32 @@ function getHealEmitter() {
 	return emitter;
 }
 
+var iceEmitterParams = {
+	numParticles: 1000,
+	lifeTime: 5,
+	timeRange: 5,
+	startSize: 6,
+	endSize: 12,
+	velocity:[0, 0, 0],
+	velocityRange: [12, 1, 12],
+	position: [0, 50, 0],
+	positionRange: [10, 0, 10],
+	worldAcceleration: [0, -8, 0],
+	spinSpeedRange: 4
+};
+function getIceEmitter() {
+	var emitter = particleSystem.createParticleEmitter();
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setParameters(iceEmitterParams);
+	emitter.setColorRamp(
+			[1, 1, 1, 1,
+			0, 0.0, 1, 1,
+			0, 0.0, 1, 0.5,
+			0, 0, 0, 0.25,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 var fireballEmitterParams = {
 		numParticles: 1000,
 		lifeTime: 5,
@@ -221,11 +247,20 @@ function initializeAttacks() {
             this.ready = this.cooldown;
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
-			createStationaryEffect(modelDrawer("Sphere"), createArc(tgt, ret.radius),
-					msToTicks(1000), msToTicks(200),
+			var effect = createStationaryEffect(nullDrawer(), createArc(tgt, ret.radius),
+					msToTicks(2500), msToTicks(200),
 					function(e) { return true; },
 					function(e) { 
+						if (hasMoveEffect(e)) return;
+						var slow = function(ent) {
+							ent.velocity *= 0.3;
+						}
+						var effect = createEffect(slow);
+						effect.lifetime = msToTicks(20000);
+						addEmitter(effect, getEntityEmitter([0, 0, 1]));
+						addMoveEffect(e, effect);
 					});
+			addEmitter(effect, getIceEmitter());
         }
         return ret;
     };
@@ -243,7 +278,7 @@ function initializeAttacks() {
             this.wait = this.cooldown;
             tgt = tgt.position || tgt;
 			var effect = createStationaryEffect(nullDrawer(), createArc(tgt, ret.radius),
-					msToTicks(1000), msToTicks(200),
+					msToTicks(2500), msToTicks(300),
 					function(e) { return true; },
 					function(e) { 
 						e.heal(ret.damage, src);

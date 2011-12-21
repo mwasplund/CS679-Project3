@@ -5,6 +5,27 @@ function drawEntity() {
 		drawModel.apply(this);
 	}
 }
+
+var entityEmitterParams = {
+	numParticles: 20,
+	lifeTime: 2,
+	startSize: 5,
+	endSize: 10,
+	velocity: [0, 10, 0],
+	velocityRange: [5, 5, 5],
+	worldAcceleration: [0, -3, 0],
+	spinSpeedRange: 4,
+}
+function getEntityEmitter(color) {
+	var emitter = particleSystem.createTrail(3000, entityEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[color[0], color[1], color[2], 1,
+			color[0], color[1], color[2], 0.5,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 function entityHealth() {
 	return Math.min(1, Math.max(0, this.health / this.stats.health));
 };

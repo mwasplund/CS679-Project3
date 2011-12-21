@@ -11,19 +11,27 @@ function update() {
     addDebugValue("intersectE/C", entIntersectEntities / entIntersectCount);
 }
 
-function processEffects() {
-
-}
-
 function movePhase() {
     var entities = getEntities();
     for (var i = 0; i < entities.length; i++) {
         var ent = entities[i];
         ent.thinkMove();
+		if (ent.moveEffects) {
+			processEffects(ent.moveEffects, ent);
+		}
         ent.move();
     }
 
 	getCamera().move();
+}
+
+function hasMoveEffect(ent) {
+	return ent.moveEffects && ent.moveEffects.length > 0;
+}
+
+function addMoveEffect(ent, effect) {
+	if (!ent.moveEffects) ent.moveEffects = [];
+	ent.moveEffects.push(effect);
 }
 
 var effects = [];
@@ -31,17 +39,21 @@ function addEffect(e) {
 	effects.push(e);
 }
 
-function effectPhase() {
+function processEffects(effects, context) {
 	var j = 0;
 	for (var i = 0; i < effects.length; i++) {
-		effects[i].act();
+		effects[i].act(context);
 		if (!effects[i].dead) {
             effects[j++] = effects[i];
         } else {
-            if (effects[i].lastBreath) effects[i].lastBreath();
+            if (effects[i].lastBreath) effects[i].lastBreath(context);
         }
 	}
 	effects.length = j;
+}
+
+function effectPhase() {
+	processEffects(effects, null);
 }
 
 function nullDrawer() {
@@ -114,24 +126,26 @@ function addEmitter(effect, emitter) {
 	if (!effect.emitters) {
 		effect.emitters = [];
 		effect.act = (function(old) {
-				return function() {
-					if (old) old.apply(this);
-					var a = directionToAngle(this.direction) || 0;
+				return function(context) {
+					var direction = this.direction || context.direction || [1, 0];
+					var position = this.position || context.position || [0, 0];
+					if (old) old.apply(this, [context]);
+					var a = directionToAngle(direction);
 					for (var i = 0; i < this.emitters.length; i++) {
 						var em = this.emitters[i];
 						if (em.birthParticles) {
 							em.setRotateY(a);
-							em.birthParticles([this.position[0], 0, this.position[1]]);	
+							em.birthParticles([position[0], 0, position[1]]);	
 							em.setRotateY(0);
 						} else {
-							em.setTranslation(this.position[0], 0, this.position[1]);
+							em.setTranslation(position[0], 0, position[1]);
 						}
 					}
 				}
 			})(effect.act);
 		effect.lastBreath = (function(old) {
-				return function() {
-					if (old) old.apply(this);
+				return function(context) {
+					if (old) old.apply(this, [context]);
 					for (var i = 0; i < this.emitters.length; i++) {
 						particleSystem.removeEmitter(this.emitters[i]);
 					}
@@ -139,6 +153,18 @@ function addEmitter(effect, emitter) {
 		})(effect.lastBreath);
 	}
 	effect.emitters.push(emitter);
+}
+
+function createEffect(act, lastBreath) {
+	return {
+		lifetime: 999999999,
+		act: function(context) {
+			if (act) act.apply(this, [context]);
+			this.lifetime--;
+			if (--this.lifetime < 1) this.dead = true;
+		},
+		lastBreath: lastBreath || function() { }, 
+	};
 }
 
 function createNumberEffect(val, src, start, end, color) {
