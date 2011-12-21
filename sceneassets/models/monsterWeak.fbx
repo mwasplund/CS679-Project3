@@ -1876,7 +1876,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp2-body.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp2-body.png"
+        RelativeFilename: "../images/ramp2-body.png"
     }
     Video: 5263777792, "Video::file2", "Clip" {
         Type: "Clip"
@@ -1885,7 +1885,7 @@ a: 0
         }
         UseMipMap: 0
         Filename: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-eyeball.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-eyeball.png"
+        RelativeFilename: "../images/ramp1-eyeball.png"
     }
     Texture: 5263230304, "Texture::file1", "" {
         Type: "TextureVideoClip"
@@ -1898,7 +1898,7 @@ a: 0
         }
         Media: "Video::file1"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp2-body.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp2-body.png"
+        RelativeFilename: "../images/ramp2-body.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
@@ -1915,7 +1915,7 @@ a: 0
         }
         Media: "Video::file2"
         FileName: "/Users/Rachina/Documents/ART 529 files/Tony/sourceimages//ramp1-eyeball.png"
-        RelativeFilename: "../../ART 529 files/Tony/sourceimages/ramp1-eyeball.png"
+        RelativeFilename: "../images/ramp1-eyeball.png"
         ModelUVTranslation: 0,0
         ModelUVScaling: 1,1
         Texture_Alpha_Source: "None"
