@@ -40,7 +40,7 @@ function WindowLoaded()
   } 
   
   InitializeCanvas();
-  InitializeWebGL(Canvas, "../../Shader/");  
+  InitializeWebGL(Canvas);  
   if(!gl)
     return;
   

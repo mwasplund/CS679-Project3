@@ -146,20 +146,6 @@ function GetShader(i_ShaderName)
 	return null;
 }
 
-/******************************************************/
-/* InitializeShaders
-/*
-/* This function Loads all the shaders that will be used 
-/* during the time of the game.
-/******************************************************/
-function InitializeShaders() 
-{
-  Shaders.push(LoadShader("PerFragmentLighting"));
-  Shaders.push(LoadShader("PerVertexLighting"));
-  Shaders.push(LoadShader("TimeTest"));
-  CurrentShader = GetShader("PerFragmentLighting");
-
-}
 
 /******************************************************/
 /* GetShader
