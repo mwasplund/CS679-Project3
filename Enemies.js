@@ -212,14 +212,48 @@ function makeEnemyType(type) {
 			var offset = [0, 50, 0];
 			var scale = [10, 10, 10];
 			stats.height = 80;
-			stats.speed = 2.5;
+			stats.speed = 2.3;
+			stats.health = 35;
 			if (!isRanged) {
+				var slowBeam = function(src, tgt) {
+					var slowApply = function(e) { 
+						e.damage(8, src);
+						if (hasMoveEffect(e)) return;
+						var slow = function(ent) {
+							ent.velocity *= 0.3;
+						}
+						var effect = createEffect(slow);
+						effect.lifetime = msToTicks(2000);
+						addEmitter(effect, getEntityEmitter([0, 0, 1]));
+						addMoveEffect(e, effect);
+					};
+					if (++this.attackNum % 5 != 0) this.ready = msToTicks(400);
+					var proj = createProjectile(nullDrawer(), src.position, tgt.position, 2, 3, 400, function(e) { return !e.isEnemy; }, slowApply);
+					addEmitter(proj, getWebEmitter());
+				}
+				stats.attack = simpleProjectileAttack(slowBeam, msToTicks(2000), 60);
+				stats.attack.attackNum = 0;
+
 				stats.radius *= 0.5;
 				stats.height *= 0.5;
+
+				stats.health *= 0.6;
+
 				scale = vec3.scale(scale, 0.5);
 				offset = vec3.scale(offset, 0.5);
 			} else {
-				stats.attack = simpleProjectileAttack();
+				var eyebeam = function(src, tgt) {
+					var numShots = 3;
+					var angle = Math.PI / 6;
+					tgt = tgt.position || tgt;
+					for (var a = -angle; a <= angle + 0.001; a += (2 * angle) / (numShots - 1)) {
+						var dir = sub2(tgt, src.position);
+						dir = rotate2(dir, a);
+						var proj = createProjectile(nullDrawer(), src.position, add2(src.position, dir), 3, 4, 1000, function(e) { return !e.isEnemy; }, function(e) { e.damage(16, src); });
+						addEmitter(proj, getEyebeamEmitter());
+					}
+				}
+				stats.attack = simpleProjectileAttack(eyebeam, msToTicks(1500), 100);
 			}
 			return makeEnemy(stats, null, Loader.GetModel("monsterWeak"), scale, 0, offset);
 		default:
