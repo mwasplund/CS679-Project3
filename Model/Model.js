@@ -8,6 +8,7 @@ function Model(i_FileName)
   this.Draw = Model_Draw;
   this.SmartDraw = Model_SmartDraw;
   this.Refs = new Array();
+  this.Meshes = new Array();
   
   this.Update = function(i_Ref)
   {
@@ -18,6 +19,17 @@ function Model(i_FileName)
   		  this.Meshes[i].Update(i_Ref);
   		}
 	  }
+  }
+  
+  this.addChild = function(i_TargetMeshName, i_Mesh)
+  {
+	  for(var i = 0; i < this.Meshes.length; i++)
+	  {
+		if(this.Meshes[i].addChild(i_TargetMeshName, i_Mesh))
+			return true;
+	  }
+	  
+	  return false;
   }
   
   // Variables
@@ -47,7 +59,7 @@ function Model_ParseFile(i_Parser)
     return null;
   }
   
-  this.Meshes = new Array();
+
   for(var i = 0; i < i_Parser.Models.length; i++)
   {
     var CurrentModel = i_Parser.Models[i];

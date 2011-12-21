@@ -99,6 +99,56 @@ function InitializeWebGL(canvas)
   initializeGlNumbers();
   initializeGlBars();
 }
+
+/******************************************************/
+/* InitializeModels
+/*
+/* This function Loads all the models that will be used 
+/* during the time of the game. We cache all our models
+/* in an array and reuse then throughout the game!
+/******************************************************/
+function InitializeModels() 
+{
+  Loader = new ModelLoader();
+  
+  Loader.load("hammer");
+  //Loader.load("Fancy_Bounce_Ball");
+  Loader.load("bolder");
+  Loader.load("lightningBolt");
+  Loader.load("monsterWeak");
+  Loader.load("monsterMediumStrength");
+  //Loader.load("Link");
+  //Loader.load("TestCube");
+  //Loader.load("fbxTest");
+  //Loader.load("handFbx");
+  Loader.load("WolfSpider_Linked");
+  Loader.load("Sphere");
+  Loader.load("goodGuyWalk");
+  Loader.load("Ground");
+  
+  Loader.StartLoading();
+}
+
+
+/******************************************************/
+/* AreModelsLoaded
+/*
+/* This function checks if all the models are loaded
+/******************************************************/
+function AreModelsLoaded() 
+{
+	PercentLoaded = Loader.getPercentLoaded();
+	$("#PercentLoaded").val("Loaded: " + PercentLoaded + "%");
+//	Debug.log(PercentLoaded);
+	
+	if(PercentLoaded == 100)
+	{
+    $("#Collision").val("Done Loading");
+    Loader.StopLoading();
+	  return true;
+	}
+	return false;
+}
 	
 	/******************************************************/
 /* InitializeShaders

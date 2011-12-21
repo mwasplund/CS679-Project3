@@ -149,6 +149,7 @@ function Mesh_Update(i_Ref)
 function Mesh(i_Model, i_Parent)
 { 
   // Attach Functions
+  this.Name = i_Model.Name;
   this.Parent = i_Parent;
   this.PreDraw = Mesh_PreDraw;
   this.Draw = Mesh_Draw;
@@ -162,6 +163,25 @@ function Mesh(i_Model, i_Parent)
   this.Animations = i_Model.Animations;
   this.AnimationStartTime = 0;
   this.Children = new Array();
+  
+  this.addChild = function(i_TargetMeshName, i_Mesh)
+  {
+	  // Check if it is this mesh we are attaching it to
+	  if(this.Name == i_TargetMeshName)
+	  {
+		  this.Children.push(i_Mesh);
+		  return true;
+	  }
+	  
+	  for(var i = 0; i < this.Children.length; i++)
+	  {
+		if(this.Children[i].addChild(i_TargetMeshName, i_Mesh))
+			return true;
+	  }
+	  
+	  return false;
+  }
+  
   
   if(i_Model.Geometry == null)
   {

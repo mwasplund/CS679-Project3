@@ -47,28 +47,31 @@ function postDraw() {
     if (in2dWorld) {
         fog.draw2d();
     } else {
-        Loader.DrawModels(new Date().getTime());
-		glNumbers.draw();
-		glBars.draw();
+		if(GameState != GAME_STATE.LOADING)
+		{
+			Loader.DrawModels(new Date().getTime());
+			glNumbers.draw();
+			glBars.draw();
+	
+			eyePosition[0] = Math.sin(clock * g_eyeSpeed) * g_eyeRadius;
+			eyePosition[1] = g_eyeHeight;
+			eyePosition[2] = Math.cos(clock * g_eyeSpeed) * g_eyeRadius;
+	
+			tdl.fast.matrix4.mul(viewProjection, vMatrix, pMatrix);
+			tdl.fast.matrix4.inverse(viewInverse, vMatrix);
+	
+			tdl.fast.matrix4.translation(world, [0, 0, 0]);
+			particleSystem.draw(viewProjection, world, viewInverse);
+			//
+	
+			// Set all alpha to 1...
+	
+			gl.colorMask(false, false, false, true);
+			gl.clearColor(0,0,0,1);
+			gl.clear(gl.COLOR_BUFFER_BIT);
+		}
 
-		eyePosition[0] = Math.sin(clock * g_eyeSpeed) * g_eyeRadius;
-		eyePosition[1] = g_eyeHeight;
-		eyePosition[2] = Math.cos(clock * g_eyeSpeed) * g_eyeRadius;
 
-		tdl.fast.matrix4.mul(viewProjection, vMatrix, pMatrix);
-		tdl.fast.matrix4.inverse(viewInverse, vMatrix);
-
-		tdl.fast.matrix4.translation(world, [0, 0, 0]);
-        particleSystem.draw(viewProjection, world, viewInverse);
-		//
-
-		// Set all alpha to 1...
-
-        /*
-		gl.colorMask(false, false, false, true);
-		gl.clearColor(0,0,0,1);
-		gl.clear(gl.COLOR_BUFFER_BIT);
-        */
     }
 }
 
