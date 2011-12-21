@@ -63,7 +63,7 @@ var poisonEmitterParams = {
 	lifeTime: 1,
 	startSize: 1,
 	endSize: 6,
-	position:[0, 10, 0],
+	position:[0, 25, 0],
 	positionRange:[0, 0, 10],
 	velocity:[0, 0, 0],
 	velocityRange: [8, 4, 8],
@@ -87,7 +87,7 @@ var lightningEmitterParams = {
 	lifeTime: 1,
 	startSize: 1,
 	endSize: 6,
-	position:[0, 10, 0],
+	position:[0, 30, 0],
 	positionRange:[0, 0, 0],
 	velocity:[0, 0, 0],
 	velocityRange: [8, 4, 8],
@@ -228,6 +228,7 @@ function initializeAttacks() {
             var proj = createProjectile(modelDrawer("lightningBolt"), src.position, tgt, 10, 6, 500, acceptEnemy, function(e) { e.damage(dmg, src); }, true);
 			proj.scale = vec3.scale(proj.scale, 60);
 			proj.preRotate = -Math.PI / 2;
+			proj.offset[1] = 30;
 
 			addEmitter(proj, getLightningEmitter());
         }

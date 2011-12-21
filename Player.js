@@ -43,7 +43,7 @@ function initializePlayer(i_Model, i_Scale, i_PreRotate, i_Offset, position) {
 		rotation: 0,
 		offset: i_Offset,
 		preRotate: i_PreRotate,
-        radius: 20,
+        radius: 10,
 		height: 40,
         rotation: 0,
         fillStyle: "#00FF44",

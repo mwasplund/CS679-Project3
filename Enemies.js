@@ -17,6 +17,29 @@ function removeEnemy(i) {
 	e.updateModel();
 }
 
+var eyebeamEmitterParams = {
+	numParticles: 50,
+	lifeTime: 0.5,
+	startSize: 5,
+	endSize: 2,
+	position:[0, 20, 0],
+	positionRange:[0, 0, 0],
+	velocity:[0, 0, 0],
+	velocityRange: [8, 4, 8],
+	worldAcceleration: [0, -1, 0],
+	spinSpeedRange: 4
+};
+function getEyebeamEmitter() {
+	var emitter = particleSystem.createTrail(1000, eyebeamEmitterParams);
+	emitter.setState(tdl.particles.ParticleStateIds.ADD);
+	emitter.setColorRamp(
+			[0, 0.2, 1, 1,
+			0, 0.2, 0.8, 1,
+			0, 0, 0.8, 0.5,
+			0, 0, 0, 0]);
+	return emitter;
+}
+
 function makeEnemyType(type) {
 
     var isRanged = Math.random() < 0.7;
@@ -41,9 +64,13 @@ function makeEnemyType(type) {
 				stats.height *= 0.5;
 				scale = vec3.scale(scale, 0.5);
 				offset = vec3.scale(offset, 0.5);
-				stats.attack = simpleDirectAttack();
+				stats.attack = simpleDirectAttack(3);
 			} else {
-				stats.attack = simpleProjectileAttack();
+				var eyebeam = function(src, tgt) {
+					var proj = createProjectile(nullDrawer(), src.position, tgt.position, 2, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(2, src); });
+					addEmitter(proj, getEyebeamEmitter());
+				}
+				stats.attack = simpleProjectileAttack(eyebeam, msToTicks(2000), 100);
 			}
 
 			return makeEnemy(stats, null, Loader.GetModel("monsterWeak"), scale, 0, offset);
@@ -280,7 +307,7 @@ function simpleDirectAttack(dmg, cd, rng) {
 	return ret;
 }
 
-function simpleProjectile(src, tgt, dmg, rng, spd) {
+function simpleProjectile(src, tgt, dmg, spd) {
 	if (!dmg) dmg = 4;
 	if (!spd) spd = 4.0;
 	var proj = createProjectile(modelDrawer("bolder"), src.position, tgt.position, spd, 3, 10000, function(e) { return !e.isEnemy; }, function(e) { e.damage(dmg, src); });
@@ -288,7 +315,7 @@ function simpleProjectile(src, tgt, dmg, rng, spd) {
 	return proj;
 }
 
-function simpleProjectileAttack(cd, rng, apply) {
+function simpleProjectileAttack(apply, cd, rng) {
 	if (!rng) rng = 150;
 	if (!cd) cd = msToTicks(3000);
 	apply = apply || function(src, tgt) {

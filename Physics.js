@@ -154,7 +154,7 @@ function addEmitter(effect, emitter) {
 						if (em.birthParticles) {
 							em.parameters.positionRange[2] = velocity;
 							em.setRotateY(a);
-							em.birthParticles([position[0] - direction[0] * velocity / 2, 0, position[1] - direction[1] * velocity / 2]);	
+							em.birthParticles([position[0] - direction[0] * velocity / 2, em.parameters.position[1], position[1] - direction[1] * velocity / 2]);	
 							em.setRotateY(0);
 						} else {
 							em.setTranslation(position[0], 0, position[1]);
