@@ -33,13 +33,13 @@ function initializeLogSystem(sys, lev) {
     logFileMap[sys] = [];
 }
 
-initializeLogSystem("general",    2);
-initializeLogSystem("hud",        2);
-initializeLogSystem("graphics2d", 2);
-initializeLogSystem("interface",  2);
-initializeLogSystem("graphics3d", 2);
-initializeLogSystem("engine",     2);
-initializeLogSystem("log",        2);
+initializeLogSystem("general",    0);
+initializeLogSystem("hud",        0);
+initializeLogSystem("graphics2d", 0);
+initializeLogSystem("interface",  0);
+initializeLogSystem("graphics3d", 0);
+initializeLogSystem("engine",     0);
+initializeLogSystem("log",        0);
 
 function getErrorObject(idx) {
     try { throw Error(""); }

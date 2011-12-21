@@ -446,6 +446,11 @@ function drawHud() {
 	var ctx = hud.context;
 	drawDebugData(ctx);
 
+	if (levelEnd.message) {
+		ctx.font = "34pt sans-serif";
+		ctx.fillText(levelEnd.message, 100, 100);
+	}
+
 	drawScaledRect(hud, hudRects.hud, "#000000");
 	drawHudBackground(ctx);
 	drawScaledRect(hud, hudRects.minimap, "#AAAAAA");

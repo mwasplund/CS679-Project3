@@ -331,7 +331,7 @@ function initializeAttacks() {
         ret.name = "Teleport";
 		ret.description = "Teleport toward the target location. You cannot teleport through enemies or walls.";
 		ret.radius = 15;
-        ret.cooldown = msToTicks(30000);
+        ret.cooldown = msToTicks(12000);
 		setImage(ret, "icons/17.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;
@@ -357,7 +357,7 @@ function initializeAttacks() {
         ret.name = "Haste";
 		ret.description = "Haste increases your movement speed and decreases your attack cooldowns for several seconds.";
 		ret.radius = 15;
-        ret.cooldown = msToTicks(45000);
+        ret.cooldown = msToTicks(30000);
 		setImage(ret, "icons/88.png");
         ret.attack = function(src, tgt) { 
             if (this.ready > 0) return null;

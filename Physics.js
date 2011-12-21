@@ -340,6 +340,12 @@ function attackPhase() {
 
 function cleanupPhase() {
     cleanupDeadEnemies();
+	if (levelEnd.check()) {
+		if (!shouldReset) {
+			currentLevel++;
+		}
+		shouldReset = true;
+	}
 }
 
 // If an object on the path will intersect the line

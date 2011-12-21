@@ -1,6 +1,8 @@
 var shouldReset;
+var currentLevel;
 function setup() {
-	loadLevel(getLevels()[0]);
+	currentLevel = currentLevel || 0;
+	loadLevel(getLevels()[currentLevel]);
 	// Add 3d Models to sceen
 	SceneModels.push(Loader.GetModel("Ground"));
 }
@@ -129,6 +131,29 @@ function makeLevelEnd(x, y) {
 	endEmitterParams.position[2] = y;
 	levelEnd.emitter = getEndEmitter();
 	levelEnd.check = function() {
+		this.message = null;
+		var players = getPlayers();
+		var plInEnd = 0;
+		for (var i = 0; i < players.length; i++) {
+			if (dist2(player.position, levelEnd.position) < 60) plInEnd++;
+		}
+		var enemies = getEnemiesInCircle(this.position, 300);
+		var pos = this.position;
+		enemies = enemies.filter(function(e) {
+				return !intersectPathWalls(e.position, pos, 0);
+				});
+		var enNearEnd = enemies.length;
+
+		if (plInEnd == 0) return false;
+		if (enNearEnd > 0) {
+			this.message = "You must kill all nearby enemies before ending the level";
+			return false;
+		}
+		if (plInEnd < players.length) {
+			this.message = "Some players are missing..."
+			return false;
+		}
+		return true;
 	}
 	levelEnd.message = null;
 	levelEnd.lastBreath = function() {
@@ -154,6 +179,10 @@ function clearEntities() {
 	
 function clear() {
     shouldReset = false;
+	if (levelEnd && levelEnd.lastBreath) {
+		levelEnd.lastBreath();
+	}
+	levelEnd = null;
 	clearWalls();
 	clearEntities();
 }
@@ -272,11 +301,12 @@ function makeWall(pt0, pt1) {
     ret.mesh = new Mesh(FakeModel ,null);
     ret.drawGL = function()
     {
+		var drawDist = 300;
 		var p = getLocalPlayer();
-		if (Math.min(
-					dist2(p.position, this.pts[1]), 
-					dist2(p.position, this.pts[0])
-					) > 300) return;
+		if (dist2(this.pts[0], p.position) > drawDist &&
+				!intersectLineCircle([this.pts[0], this.pts[1]], [p.position, 300])) {
+			return;
+		}
 
 		gl.enableVertexAttribArray(CurrentShader.Program.vertexPositionAttribute);
 		gl.enableVertexAttribArray(CurrentShader.Program.vertexNormalAttribute);
