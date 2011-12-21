@@ -16,6 +16,31 @@ var GAME_STATE =
 }; 
 
 /******************************************************/
+/* SetMusicState_On
+/*
+/* Turn on the music
+/******************************************************/
+function SetMusicState_On()
+{
+  $("#VOLUME_ON").css({"display":"inline"});
+  $("#VOLUME_OFF").css({"display":"none"});
+  document.getElementById('Music').play();
+}
+
+/******************************************************/
+/* SetMusicState_Off
+/*
+/* Turn off the music
+/******************************************************/
+function SetMusicState_Off()
+{
+  $("#VOLUME_ON").css({"display":"none"});
+  $("#VOLUME_OFF").css({"display":"inline"});
+  document.getElementById('Music').pause();
+}
+
+
+/******************************************************/
 /* SetGameState_Beat_Level
 /*
 /* Transfer from any state to Beat Level. This should 

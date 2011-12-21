@@ -78,6 +78,15 @@
         <meta name="keywords" content="cs679, graphics, game, webgl" />
             </head>
     <body>
+    
+        <audio id="Music" autoplay="autoplay" loop="loop">
+          <source src="sceneassets/Mattias_Westlund-Mattias_Westlund_-_Legends_of_the_North.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+
+        <img id="VOLUME_ON" onclick="SetMusicState_Off()" src="sceneassets/Volume-Normal-icon.png" alt="ON"/>
+        <img id="VOLUME_OFF" onclick="SetMusicState_On()" src="sceneassets/Volume-Normal-Red-icon.png" alt="OFF"/>
+        
         <div id="2dDiv" style="position:absolute; top:0px;left:0px;display:none;">
             <canvas id="2dCanvas"></canvas>
         </div>
@@ -93,6 +102,8 @@
               You find yourself in a cave for no other reason than to kill some 
               monsters and discover some treasure!		  
           <br/>
+
+          
           <br/>Controls:
           <br/>ASWD - Control Movement
           <br>Mouse - Targeting<br/>Left click - Small Attack

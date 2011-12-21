@@ -3,6 +3,27 @@
  background-color:#5D2B1C;
  overflow:hidden;
 }
+
+img#VOLUME_ON {
+ width:64px;
+ height:64px;
+ position:absolute;
+ top:0px;
+ right:0px;
+ z-index:10;
+}
+
+img#VOLUME_OFF {
+ width:64px;
+ height:64px;
+ position:absolute;
+ top:0px;
+ right:0px;
+ display:none;
+ z-index:10;
+}
+
+
 canvas#Canvas3D 
 {
 	position:absolute;
